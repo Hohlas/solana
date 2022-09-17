@@ -10,8 +10,8 @@ echo 'export PATH='$PATH >> ~/.bashrc
 source ~/.bashrc
 # create cron
 crontab -l >~/tmp.txt  # copy crontab to tmp.txt
-echo "  
-MAILTO=""
+echo "
+MAILTO=''
 */10 * * * * ~/solana/watch_test.sh 
 */10 * * * * ~/solana/watch_main.sh
 " >> ~/tmp.txt     # add 
