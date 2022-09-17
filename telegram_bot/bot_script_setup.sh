@@ -9,11 +9,12 @@ export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 echo 'export PATH='$PATH >> ~/.bashrc
 source ~/.bashrc
 # create cron
-sudo tee <<EOF >/dev/null ~/crontab.txt  
+crontab -l >~/tmp.txt  # copy crontab to tmp.txt
+echo "  
 MAILTO=""
 */10 * * * * ~/solana/watch_test.sh 
 */10 * * * * ~/solana/watch_main.sh
-EOF
-crontab ~/crontab.txt  # copy crontab.txt to crontab
-sudo rm ~/crontab.txt  # remove tmp file
+" >> ~/tmp.txt     # add 
+crontab ~/tmp.txt  # copy tmp.txt to crontab
+sudo rm ~/tmp.txt  # remove tmp file
 sudo systemctl restart cron
