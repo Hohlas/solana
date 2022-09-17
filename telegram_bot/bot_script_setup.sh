@@ -15,5 +15,5 @@ MAILTO=""
 */10 * * * * ~/solana/watch_main.sh
 EOF
 crontab ~/crontab.txt  # copy crontab.txt to crontab
-sudo rm ~/crontab.txt
+sudo rm ~/crontab.txt  # remoe tmp file
 sudo systemctl restart cron
