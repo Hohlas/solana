@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "install telegram bot"
-sudo apt update && sudo apt install jq cron
+sudo apt update && sudo apt upgrade && sudo apt install jq cron
 echo "install solana"
 mkdir ~/solana && cd ~/solana
 sh -c "$(curl -sSfL https://release.solana.com/v1.14.1/install)" 
@@ -20,3 +20,4 @@ MAILTO=''
 crontab ~/tmp.txt  # copy tmp.txt to crontab
 sudo rm ~/tmp.txt  # remove tmp file
 sudo systemctl restart cron
+echo "telegram bot installed successfully"
