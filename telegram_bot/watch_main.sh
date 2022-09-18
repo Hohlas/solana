@@ -1,7 +1,7 @@
 #!/bin/bash
 # мониторинг нод, ставится на удаленный сервер.
 export LC_NUMERIC="en_US.UTF-8"
-SOLANA_PATH="/root/.local/share/solana/install/active_release/bin/solana" #Поменять на свой путь к active_release. обрати вниманеи что путь со словом "solana" его не удалять!!!
+SOLANA_PATH="$HOME/.local/share/solana/install/active_release/bin/solana" #Поменять на свой путь к active_release. обрати вниманеи что путь со словом "solana" его не удалять!!!
 #Cluster: m-mainnet-beta или t-testnet
 CLUSTER=m
 #если хочешь 1 ноду то в скобках указывается только один pub,vote,ip,TEXT и т.д. Добавить можно сколько угодно нод но каждый новый параметр через пробел!  
