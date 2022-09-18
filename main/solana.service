@@ -1,0 +1,44 @@
+[Unit]
+Description=Solana TdS node
+After=network.target syslog.target systuner.service
+Wants=systuner.service
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+LimitNOFILE=1024000
+Environment="SOLANA_METRICS_CONFIG=host=https://metrics.solana.com:8086,db=mainnet-beta,u=mainnet-beta_write,p=password"
+ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator \
+--entrypoint entrypoint.mainnet-beta.solana.com:8001 \
+--entrypoint entrypoint2.mainnet-beta.solana.com:8001 \
+--entrypoint entrypoint3.mainnet-beta.solana.com:8001 \
+--entrypoint entrypoint4.mainnet-beta.solana.com:8001 \
+--entrypoint entrypoint5.mainnet-beta.solana.com:8001 \
+--known-validator 7Np41oeYqPefeNQEHSv1UDhYrehxin3NStELsSKCT4K2 \
+--known-validator GdnSyH3YtwcxFvQrVVJMm1JhTS4QVX7MFsX56uJLUfiZ \
+--known-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
+--known-validator CakcnaRDHka2gXyfbEd2d3xsvkJkqsLw2akB3zsN1D2S \
+--expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
+--wal-recovery-mode skip_any_corrupted_record \
+--minimal-snapshot-download-speed 41943040 \
+--identity /root/solana/keys/validator-keypair.json \
+--vote-account /root/solana/keys/vote.json \
+--ledger /root/solana/ledger \
+--log /root/solana/solana.log \
+--limit-ledger-size 50000000 \
+--dynamic-port-range 8000-8020 \
+--incremental-snapshots \
+--full-snapshot-interval-slots 50000 \
+--incremental-snapshot-interval-slots 100 \
+--maximum-full-snapshots-to-retain 1 \
+--maximum-incremental-snapshots-to-retain 2 \
+--maximum-local-snapshot-age 2000 \
+--full-rpc-api \
+--no-port-check \
+--rpc-bind-address 127.0.0.1 \
+--rpc-port 8899
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+[Install]
+WantedBy=multi-user.target
