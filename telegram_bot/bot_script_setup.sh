@@ -17,6 +17,6 @@ echo "MAILTO=''
 */10 * * * * ~/solana/watch_main.sh
 " >> ~/tmp.txt     # add 
 crontab $HOME/tmp.txt  # copy tmp.txt to crontab
-#sudo rm $HOME/tmp.txt  # remove tmp file
+sudo rm $HOME/tmp.txt  # remove tmp file
 sudo systemctl restart cron
 echo "telegram bot installed successfully"
