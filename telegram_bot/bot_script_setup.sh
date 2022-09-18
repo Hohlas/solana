@@ -5,7 +5,7 @@ echo "install solana"
 mkdir ~/solana && cd ~/solana
 sh -c "$(curl -sSfL https://release.solana.com/v1.14.1/install)" 
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-echo 'export PATH='$PATH >> ~/.bashrc
+echo 'export PATH='$PATH >> $HOME/.bashrc
 source $HOME/.bashrc
 echo "download telegram scripts"
 curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/watch_main.sh > ~/solana/watch_main.sh && chmod +x ~/solana/watch_main.sh
