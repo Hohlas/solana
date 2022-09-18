@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "install telegram bot"
-sudo apt update && sudo apt upgrade -y && sudo apt install jq cron -y
+sudo apt update && sudo apt upgrade -y && sudo apt install jq cron iputils-ping -y
 echo "install solana"
 mkdir ~/solana && cd ~/solana
 sh -c "$(curl -sSfL https://release.solana.com/v1.14.1/install)" 
