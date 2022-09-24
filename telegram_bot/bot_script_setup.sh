@@ -3,7 +3,7 @@ echo "install telegram bot"
 sudo apt update && sudo apt upgrade -y && sudo apt install jq cron iputils-ping -y
 echo "install solana"
 mkdir ~/solana && cd ~/solana
-sh -c "$(curl -sSfL https://release.solana.com/v1.14.1/install)" 
+sh -c "$(curl -sSfL https://release.solana.com/v1.14.2/install)" 
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 echo 'export PATH='$PATH >> $HOME/.bashrc
 source $HOME/.bashrc
