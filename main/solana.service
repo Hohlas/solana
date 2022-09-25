@@ -22,8 +22,8 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
 --wal-recovery-mode skip_any_corrupted_record \
 --minimal-snapshot-download-speed 41943040 \
---identity /root/solana/keys/validator-keypair.json \
---vote-account /root/solana/keys/vote.json \
+--identity /root/solana/validator-keypair.json \
+--vote-account /root/solana/vote.json \
 --ledger /root/solana/ledger \
 --log /root/solana/solana.log \
 --limit-ledger-size 50000000 \
