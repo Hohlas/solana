@@ -7,7 +7,7 @@ CLUSTER=t
 #если хочешь 1 ноду то в скобках указывается только один pub,vote,ip,TEXT и т.д. Добавить можно сколько угодно нод но каждый новый параметр через пробел!  
 PUB_KEY=(8HzsgkGhEFP2MKuuPDy5f8qvqR6hmwPqeq7UMY3X2Z6T mFJG277eG7EFS7Zu2UU5BkFZQW7PpAVfjMaFsTqXAUq CpFKK4LrfnCZ32gQPPW8hVMqFsMSe46k7cUjs8h77iQQ 7AChWSSbAwgvGzpcFLtRocZoCACpQLmgUQFrKZpNertx)
 VOTE=(CgXsXRodb3aTwqPEkyUwL3aPTmHxVdT8CVv5QeeMBAnG 2r71p3Gv2GhEbJWZp7ZZMvBzYMr3KjwvfV5oNTKXxTaX E64siUgPsM5GSCbdbrzQzf5FsB6XgrBpSPJhk2euTfQV 6A1JchLmcv1EQquRUth8RLqiV7UP1A6eZTGyCHkAMugZ)
-IP=(198.244.176.185 146.19.24.21 23.111.154.14 23.227.189.38)
+IP=(103.104.75.214 185.16.39.34 23.111.154.14 23.227.189.38)
 # telegram bot token, chat id,text,alarm text...
 BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
 CHAT_ALARM=-1001611695684
