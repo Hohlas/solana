@@ -35,7 +35,6 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-local-snapshot-age 1500 \
 --full-rpc-api \
 --private-rpc \
---no-port-check \
 --rpc-port 8899
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
