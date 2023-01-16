@@ -34,7 +34,7 @@ do
     fi
 done
 
-if (( $(echo "$(date +%M) < 5" | bc -l) )); then
+if (( $(echo "$(date +%M) < 10" | bc -l) )); then
 INFO=""
 for index in ${!PUB_KEY[*]}
 do
