@@ -13,8 +13,8 @@ curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/watch_tes
 echo "create cron task"
 crontab -l >$HOME/tmp.txt  # copy crontab to tmp.txt
 echo "MAILTO=''
-*5,15,25,35,45,55 * * * * ~/solana/watch_test.sh 
-*6,16,26,36,46,56 * * * * ~/solana/watch_main.sh
+5,15,25,35,45,55 * * * * ~/solana/watch_test.sh 
+6,16,26,36,46,56 * * * * ~/solana/watch_main.sh
 " >> ~/tmp.txt     # add 
 crontab $HOME/tmp.txt  # copy tmp.txt to crontab
 sudo rm $HOME/tmp.txt  # remove tmp file
