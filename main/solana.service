@@ -29,7 +29,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --limit-ledger-size 50000000 \
 --dynamic-port-range 8000-8020 \
 --incremental-snapshots \
---full-snapshot-interval-slots 200000 \
+--full-snapshot-interval-slots 250000 \
 --incremental-snapshot-interval-slots 5000 \
 --maximum-full-snapshots-to-retain 1 \
 --maximum-incremental-snapshots-to-retain 1 \
