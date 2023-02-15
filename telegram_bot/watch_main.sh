@@ -12,7 +12,7 @@ IP=(185.16.39.34 146.19.24.21 185.16.39.22 185.225.191.203)
 BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
 CHAT_ALARM=-1001611695684
 CHAT_INFO=-1001548522888
-NODE_NAME=("BUKA" "HOHLA" "VALERA" "hAlameda)
+NODE_NAME=("BUKA" "HOHLA" "VALERA" "hAlameda")
 BALANCEWARN=(1 1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
 date
