@@ -1,7 +1,6 @@
 [Unit]
 Description=Solana TdS node
-After=network.target syslog.target systuner.service
-Wants=systuner.service
+After=network.target syslog.target
 StartLimitIntervalSec=0
 [Service]
 Type=simple
