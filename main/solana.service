@@ -1,13 +1,12 @@
 [Unit]
 Description=Solana TdS node
-After=network.target syslog.target systuner.service
-Wants=systuner.service
+After=network.target syslog.target
 StartLimitIntervalSec=0
 [Service]
 Type=simple
 Restart=always
 RestartSec=1
-LimitNOFILE=1024000
+LimitNOFILE=1000000
 Environment="SOLANA_METRICS_CONFIG=host=https://metrics.solana.com:8086,db=mainnet-beta,u=mainnet-beta_write,p=password"
 ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator \
 --entrypoint entrypoint.mainnet-beta.solana.com:8001 \
