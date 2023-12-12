@@ -1,5 +1,8 @@
 # JITO 
 
+* [Setup](#setup)
+* [Upgrade](#upgrade)
+
 ## Setup
 
 install the rust compiler and a few related packages
