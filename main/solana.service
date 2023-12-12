@@ -33,6 +33,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-incremental-snapshots-to-retain 4 \
 --maximum-local-snapshot-age 2500 \
 --accounts-hash-interval-slots 2500 \
+--no-skip-initial-accounts-db-clean \
 --full-rpc-api \
 --private-rpc \
 --rpc-port 8899
