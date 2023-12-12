@@ -12,3 +12,12 @@ rustup update
 sudo apt-get update
 sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
 ```
+
+```bash
+sudo docker pull c29r3/solana-snapshot-finder:latest; \
+sudo docker run -it --rm \
+-v ~/solana/validator-ledger:/solana/snapshot \
+--user $(id -u):$(id -g) \
+c29r3/solana-snapshot-finder:latest \
+--snapshot_path /solana/snapshot
+```
