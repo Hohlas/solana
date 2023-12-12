@@ -1,5 +1,7 @@
 # JITO 
+
 ## Setup
+
 install the rust compiler and a few related packages
 ```bash
 curl https://sh.rustup.rs -sSf | sh
@@ -23,6 +25,7 @@ git submodule update --init --recursive
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"
 ```
 ## Upgrade
+
 ```bash
 cd jito-solana
 git pull
