@@ -2,6 +2,7 @@
 
 * [Setup](#setup)
 * [Upgrade](#upgrade)
+* [Command Line Arguments](#Command Line Arguments)
 
 ## Setup
 
@@ -35,4 +36,24 @@ git pull
 git checkout tags/$TAG
 git submodule update --init --recursive
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"
+```
+Local Testing
+```bash
+nohup ./start > faucet.log &
+nohup ./bootstrap > validator.log &
+```
+stop local validator
+```bash
+pkill solana-faucet && pkill -f 'bash ./.*bootstrap'
+```
+
+## Command Line Arguments
+```bash
+--tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \
+--tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
+--merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
+--commission-bps 800 \
+--relayer-url ${RELAYER_URL} \
+--block-engine-url ${BLOCK_ENGINE_URL} \
+--shred-receiver-address ${SHRED_RECEIVER_ADDR} \
 ```
