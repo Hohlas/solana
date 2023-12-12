@@ -4,6 +4,7 @@
 * [Upgrade](#upgrade)
 * [Command Line Arguments](#command-line-arguments)
 * [Checking](#checking)
+[DASHBOARD](https://jito.retool.com/embedded/public/3557dd68-f772-4f4f-8a7b-f479941dba02)
 
 ## Setup
 
@@ -33,8 +34,8 @@ monitor
 ```bash
 solana-validator -l /root/solana/ledger monitor
 ```
-## Upgrade
 
+## Upgrade
 ```bash
 cd jito-solana
 git pull
@@ -73,4 +74,6 @@ solana-validator -l /root/solana/ledger set-relayer-config ---relayer-url http:/
 ```bash
 solana-validator -l /root/solana/ledger set-shred-receiver-address --shred-receiver-address 74.118.140.240:1002
 ```
+
+## Checking
 
