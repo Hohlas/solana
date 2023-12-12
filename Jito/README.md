@@ -2,7 +2,8 @@
 
 * [Setup](#setup)
 * [Upgrade](#upgrade)
-* [Command Line Arguments](#Command Line Arguments)
+* [Command Line Arguments](#command-line-arguments)
+* [Checking](#checking)
 
 ## Setup
 
@@ -64,4 +65,11 @@ pkill solana-faucet && pkill -f 'bash ./.*bootstrap'
 
 ## Changing Command Line Arguments
 ```bash
-
+solana-validator -l /root/solana/ledger set-block-engine-config --block-engine-url https://nyc.testnet.block-engine.jito.wtf
+```
+```bash
+solana-validator -l /root/solana/ledger set-relayer-config ---relayer-url http://amsterdam.mainnet.relayer.jito.wtf:8100
+```
+```bash
+solana-validator -l /root/solana/ledger set-shred-receiver-address --shred-receiver-address 74.118.140.240:1002
+```
