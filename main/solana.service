@@ -28,10 +28,11 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --limit-ledger-size 50000000 \
 --dynamic-port-range 8000-8020 \
 --full-snapshot-interval-slots 250000 \
---incremental-snapshot-interval-slots 5000 \
+--incremental-snapshot-interval-slots 2500 \
 --maximum-full-snapshots-to-retain 1 \
---maximum-incremental-snapshots-to-retain 5 \
---maximum-local-snapshot-age 5000 \
+--maximum-incremental-snapshots-to-retain 4 \
+--maximum-local-snapshot-age 2500 \
+--accounts-hash-interval-slots 2500 \
 --full-rpc-api \
 --private-rpc \
 --rpc-port 8899
