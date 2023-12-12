@@ -28,6 +28,10 @@ git submodule update --init --recursive
 
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"
 ```
+monitor
+```bash
+solana-validator -l /root/solana/ledger monitor
+```
 ## Upgrade
 
 ```bash
@@ -57,3 +61,7 @@ pkill solana-faucet && pkill -f 'bash ./.*bootstrap'
 --block-engine-url https://amsterdam.mainnet.block-engine.jito.wtf \
 --shred-receiver-address 74.118.140.240:1002 \
 ```
+
+## Changing Command Line Arguments
+```bash
+
