@@ -63,7 +63,7 @@ pkill solana-faucet && pkill -f 'bash ./.*bootstrap'
 --shred-receiver-address 74.118.140.240:1002 \
 ```
 
-## Changing Command Line Arguments
+Changing Command Line Arguments
 ```bash
 solana-validator -l /root/solana/ledger set-block-engine-config --block-engine-url https://nyc.testnet.block-engine.jito.wtf
 ```
@@ -73,3 +73,4 @@ solana-validator -l /root/solana/ledger set-relayer-config ---relayer-url http:/
 ```bash
 solana-validator -l /root/solana/ledger set-shred-receiver-address --shred-receiver-address 74.118.140.240:1002
 ```
+
