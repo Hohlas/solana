@@ -53,7 +53,7 @@ pkill solana-faucet && pkill -f 'bash ./.*bootstrap'
 --tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
 --merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
 --commission-bps 800 \
---relayer-url ${RELAYER_URL} \
---block-engine-url ${BLOCK_ENGINE_URL} \
---shred-receiver-address ${SHRED_RECEIVER_ADDR} \
+--relayer-url http://amsterdam.mainnet.relayer.jito.wtf:8100 \
+--block-engine-url https://amsterdam.mainnet.block-engine.jito.wtf \
+--shred-receiver-address 74.118.140.240:1002 \
 ```
