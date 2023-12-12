@@ -77,6 +77,7 @@ solana-validator -l /root/solana/ledger set-shred-receiver-address --shred-recei
 ```
 
 ## Checking
+
 ```bash
 block_engine_stage-stats
 ```
