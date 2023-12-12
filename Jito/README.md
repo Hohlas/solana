@@ -4,7 +4,8 @@
 * [Upgrade](#upgrade)
 * [Command Line Arguments](#command-line-arguments)
 * [Checking](#checking)
-[DASHBOARD](https://jito.retool.com/embedded/public/3557dd68-f772-4f4f-8a7b-f479941dba02)
+* [DASHBOARD](https://jito.retool.com/embedded/public/3557dd68-f772-4f4f-8a7b-f479941dba02)
+* 
 
 ## Setup
 
@@ -76,4 +77,6 @@ solana-validator -l /root/solana/ledger set-shred-receiver-address --shred-recei
 ```
 
 ## Checking
-
+```bash
+block_engine_stage-stats
+```
