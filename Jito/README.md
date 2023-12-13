@@ -24,6 +24,7 @@ sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cma
 echo 'export BLOCK_ENGINE_URL=https://frankfurt.mainnet.block-engine.jito.wtf' >> $HOME/.bashrc
 echo 'export RELAYER_URL=http://frankfurt.mainnet.relayer.jito.wtf:8100' >> $HOME/.bashrc
 echo 'export SHRED_RECEIVER_ADDR=145.40.93.84:1002' >> $HOME/.bashrc
+curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/solana.service > ~/solana/solana.service
 
 ```
 ```bash
