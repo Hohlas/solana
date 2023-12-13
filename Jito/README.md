@@ -17,7 +17,7 @@ source $HOME/.cargo/env
 rustup component add rustfmt
 rustup update
 sudo apt-get update
-sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
+sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
 
 ```
 ```bash
