@@ -27,7 +27,7 @@ echo 'export SHRED_RECEIVER_ADDR=145.40.93.84:1002' >> $HOME/.bashrc
 export TAG=v1.16.23-jito
 ```
 ```bash
-source $HOME/.bashrc
+source $HOME/.bashrc \
 ```
 ```bash
 git clone https://github.com/jito-foundation/jito-solana.git --recurse-submodules
