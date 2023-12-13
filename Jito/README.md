@@ -29,6 +29,10 @@ curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/solana.service > 
 ```
 ```bash
 export TAG=v1.16.23-jito
+if [ -e $HOME/.local/share/solana/install/active_release ]; # remoove
+then rm $HOME/.local/share/solana/install/active_release;   # old link
+fi
+ln -s $HOME/.local/share/solana/install/releases/$TAG $HOME/.local/share/solana/install/active_release
 ```
 ```bash
 git clone https://github.com/jito-foundation/jito-solana.git --recurse-submodules
