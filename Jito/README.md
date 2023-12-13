@@ -19,21 +19,23 @@ sudo apt-get update
 sudo apt-get install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
 ```
 ```bash
-export TAG=v1.16.23-jito
+echo 'export BLOCK_ENGINE_URL=https://frankfurt.mainnet.block-engine.jito.wtf' >> $HOME/.bashrc
+echo 'export RELAYER_URL=http://frankfurt.mainnet.relayer.jito.wtf:8100' >> $HOME/.bashrc
+echo 'export SHRED_RECEIVER_ADDR=145.40.93.84:1002' >> $HOME/.bashrc
 ```
 ```bash
-Setup
+export TAG=v1.16.23-jito
+```
 ```bash
 git clone https://github.com/jito-foundation/jito-solana.git --recurse-submodules
 cd jito-solana
 git checkout tags/$TAG
 git submodule update --init --recursive
-
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"
 ```
 monitor
 ```bash
-solana-validator -l /root/solana/ledger monitor
+solana-validator -l ~/solana/ledger monitor
 ```
 
 ## Upgrade
