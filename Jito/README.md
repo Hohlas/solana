@@ -12,8 +12,15 @@
 
 install the rust compiler and a few related packages
 ```bash
-curl https://sh.rustup.rs -sSf | sh
-source $HOME/.cargo/env
+if command -v rustc &> /dev/null
+then
+    echo "Rust already installed"
+else
+    echo "install Rust..."
+    curl https://sh.rustup.rs -sSf | sh
+    source $HOME/.cargo/env
+    echo "Rust successfully installed"
+fi
 rustup component add rustfmt
 rustup update
 sudo apt-get update
