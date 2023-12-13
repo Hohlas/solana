@@ -5,7 +5,8 @@
 * [Command Line Arguments](#command-line-arguments)
 * [Checking](#checking)
 * [DASHBOARD](https://jito.retool.com/embedded/public/3557dd68-f772-4f4f-8a7b-f479941dba02)
-* 
+* [jito-foundation.gitbook](https://jito-foundation.gitbook.io/mev/jito-solana/building-the-software)
+* [jito-labs.gitbook](https://jito-labs.gitbook.io/mev/searcher-resources/getting-started)
 
 ## Setup
 
