@@ -21,18 +21,21 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
 --wal-recovery-mode skip_any_corrupted_record \
 --minimal-snapshot-download-speed 41943040 \
---identity /root/solana/validator-keypair.json \
+--identity /root/solana/validator_link.json \
+--authorized-voter /root/solana/validator-keypair.json \
 --vote-account /root/solana/vote.json \
 --ledger /root/solana/ledger \
+--accounts /mnt/disk3/accounts \
+--accounts-hash-cache-path /mnt/ramdisk/accounts_hash_cache
 --log /root/solana/solana.log \
 --limit-ledger-size 50000000 \
 --dynamic-port-range 8000-8020 \
---full-snapshot-interval-slots 250000 \
---incremental-snapshot-interval-slots 2500 \
+--full-snapshot-interval-slots 0 \
+--incremental-snapshot-interval-slots 0 \
 --maximum-full-snapshots-to-retain 1 \
 --maximum-incremental-snapshots-to-retain 4 \
 --maximum-local-snapshot-age 2500 \
---accounts-hash-interval-slots 2500 \
+--accounts-hash-interval-slots 25000 \
 --no-skip-initial-accounts-db-clean \
 --full-rpc-api \
 --private-rpc \
