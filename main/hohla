@@ -1,0 +1,4 @@
+export Name=HOHLA 
+export SERV=root@95.214.54.198 # test node IP 
+export validator_key=AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd
+export vote_account=3FLezD8GJgnawEHhZcsjdPxZVar9FzqEdViusQ5ZdSwe
