@@ -1,3 +1,4 @@
 export NAME=valera
+export SERV=149.50.96.50
 export validator_key=CpFKK4LrfnCZ32gQPPW8hVMqFsMSe46k7cUjs8h77iQQ
 export vote_account=E64siUgPsM5GSCbdbrzQzf5FsB6XgrBpSPJhk2euTfQV
