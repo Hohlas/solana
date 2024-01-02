@@ -13,4 +13,4 @@ echo 'vote: '$vote
 echo '--'
 if [[ $link == $empty ]]; then echo 'link=empty: voting OFF'; fi
 if [[ $link == $validator ]]; then echo 'link=validator: voting ON'; fi
-###
+### ###
