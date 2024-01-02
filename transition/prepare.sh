@@ -7,7 +7,7 @@ chmod 600 ~/keys/ssh.key;
 else 
 echo -e "\033[1;31m Warning: there is no any ssh.key file in ~/keys \033[0m"
 fi
-# # #  get IP to $SERV   # # #
+# # #  get IP to $SERV   # # # #
 addr='main'
 if [[ $NODE == "main" ]]; then addr='test'; fi
 echo 'set SERV: '$addr'.'${NAME,,}
