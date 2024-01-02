@@ -12,5 +12,5 @@ addr='main'
 if [[ $NODE == "main" ]]; then addr='test'; fi
 tmp=$(curl https://raw.githubusercontent.com/Hohlas/solana/main/$addr/${NAME,,})
 SERV=$(echo "$tmp" | grep -o 'SERV=[^ ]*' | cut -d '=' -f2)
-echo 'set IP:  '$addr'.'${NAME,,}
+echo 'set IP: '$addr'.'${NAME,,}
 echo "$SERV"
