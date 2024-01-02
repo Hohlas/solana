@@ -10,7 +10,7 @@ fi
 # # #  get IP to $SERV   # # #
 addr='main'
 if [[ $NODE == "main" ]]; then addr='test'; fi
-echo 'addr='$addr
+echo 'set SERV: '$addr'.'${NAME,,}
 tmp=$(curl https://raw.githubusercontent.com/Hohlas/solana/main/$addr/${NAME,,})
 SERV=$(echo "$tmp" | grep -o 'SERV=[^ ]*' | cut -d '=' -f2)
 echo "$SERV"
