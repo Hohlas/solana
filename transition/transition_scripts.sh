@@ -6,8 +6,8 @@ if [ -f ~/keys/ssh.key ]; then chmod 600 ~/keys/ssh.key
 else echo -e '\033[31m - WARNING !!! no file ssh.key in ~/keys - \033[0m'
 fi 
 solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 5 --skip-new-snapshot-check
-scp -P 2010 -i /root/keys/ssh.key /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin root@$SERV:/root/solana/ledger
-echo 'send tower to '$SERV
+scp -P 2010 -i /root/keys/ssh.key /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin root@\$SERV:/root/solana/ledger
+echo 'send tower to '\$SERV
 EOF
 chmod +x ~/tower_out.sh
 
@@ -19,9 +19,8 @@ if [ -f ~/keys/ssh.key ]; then chmod 600 ~/keys/ssh.key
 else echo -e '\033[31m - WARNING !!! no file ssh.key in ~/keys - \033[0m'
 fi
 solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 5 --skip-new-snapshot-check
-scp -P 2010 -i /root/keys/ssh.key $SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
-# ~/vote_on.sh
-echo 'get tower from '$SERV
+scp -P 2010 -i /root/keys/ssh.key root@\$SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
+echo 'get tower from '\$SERV
 EOF
 chmod +x ~/tower_in.sh
 
