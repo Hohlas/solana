@@ -54,7 +54,7 @@ link=\$(solana address -k ~/solana/validator_link.json)
 validator=\$(solana address -k ~/solana/validator-keypair.json)
 vote=\$(solana address -k ~/solana/vote.json)
 echo '--'
-echo \$NODE'.'\$NAME # 
+echo \$NODE'.'\$NAME ## 
 echo 'epmty_validator: '\$empty
 echo 'validator_link: '\$link
 echo 'validator: '\$validator
@@ -64,3 +64,4 @@ if [[ \$link == \$empty ]]; then echo 'link=empty: voting OFF'; fi
 if [[ \$link == \$validator ]]; then echo 'link=validator: voting ON'; fi
 EOF
 chmod +x ~/address.sh
+###
