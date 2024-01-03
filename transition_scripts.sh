@@ -24,7 +24,7 @@ source \$HOME/.bashrc
 if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
 else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi 
-solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 5 --skip-new-snapshot-check
+solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 10 --skip-new-snapshot-check
 scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin \$SERV:/root/solana/ledger
 echo 'send tower to '\$SERV
 EOF
@@ -38,7 +38,7 @@ source \$HOME/.bashrc
 if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
 else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi
-solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 5 --skip-new-snapshot-check
+solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 10 --skip-new-snapshot-check
 scp -P 2010 -i /root/keys/*.ssh \$SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
 # ~/vote_on.sh
 echo 'get tower from '\$SERV
