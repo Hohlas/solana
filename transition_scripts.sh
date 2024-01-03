@@ -89,6 +89,14 @@ echo 'vote: '\$vote
 echo '--'
 if [[ \$link == \$empty ]]; then echo 'link=empty: voting OFF'; fi
 if [[ \$link == \$validator ]]; then echo 'link=validator: voting ON'; fi
+
+networkrpcURL=\$(cat \$HOME/.config/solana/cli/config.yml | grep json_rpc_url | grep -o '".*"' | tr -d '"')
+if [ "\$networkrpcURL" == "" ]; then networkrpcURL=\$(cat /root/.config/solana/cli/config.yml | grep json_rpc_url | awk '{ print \$2 }')
+fi
+if [ \$networkrpcURL = https://api.testnet.solana.com ]; then net="api.testnet";
+elif [ \$networkrpcURL = https://api.mainnet-beta.solana.com ]; then net="api.mainnet-beta";
+fi	
+echo 'NODE='$NODE 'network='$net
 EOF
 chmod +x ~/address.sh
 
