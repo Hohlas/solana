@@ -96,7 +96,7 @@ fi
 if [ \$networkrpcURL = https://api.testnet.solana.com ]; then net="api.testnet";
 elif [ \$networkrpcURL = https://api.mainnet-beta.solana.com ]; then net="api.mainnet-beta";
 fi	
-echo 'NODE='$NODE 'network='\$net
+echo \$NODE'.'\$NAME 'network='\$net
 EOF
 chmod +x ~/address.sh
 
