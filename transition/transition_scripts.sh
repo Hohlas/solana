@@ -1,30 +1,31 @@
-# # #   send tower to remote $SERV   # # #
+# # #   send tower to remote $SERV   # # # # # # # # # # # #
 sudo tee <<EOF >/dev/null ~/tower_out.sh
 #!/bin/bash
 source $HOME/.bashrc
-if [ -f ~/keys/ssh.key ]; then chmod 600 ~/keys/ssh.key
-else echo -e '\033[31m - WARNING !!! no file ssh.key in ~/keys - \033[0m'
+if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
+else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi 
 solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 5 --skip-new-snapshot-check
-scp -P 2010 -i /root/keys/ssh.key /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin root@\$SERV:/root/solana/ledger
-echo 'send tower to '\$SERV
+scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin root@$SERV:/root/solana/ledger
+echo 'send tower to '$SERV
 EOF
 chmod +x ~/tower_out.sh
 
-# # #   get tower from remote $SERV   # # #
+# # #   get tower from remote $SERV   # # # # # # # # # # # #
 sudo tee <<EOF >/dev/null ~/tower_in.sh
 #!/bin/bash
 source $HOME/.bashrc
-if [ -f ~/keys/ssh.key ]; then chmod 600 ~/keys/ssh.key
-else echo -e '\033[31m - WARNING !!! no file ssh.key in ~/keys - \033[0m'
+if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
+else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi
 solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 5 --skip-new-snapshot-check
-scp -P 2010 -i /root/keys/ssh.key root@\$SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
-echo 'get tower from '\$SERV
+scp -P 2010 -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
+# ~/vote_on.sh
+echo 'get tower from '$SERV
 EOF
 chmod +x ~/tower_in.sh
 
-# # #   Start Voting   # # #
+# # #   Start Voting   # # # # # # # # # # # # # # # # # # # # #
 sudo tee <<EOF >/dev/null ~/vote_on.sh
 #!/bin/bash
 source $HOME/.bashrc
@@ -35,7 +36,7 @@ echo 'Start Voting'
 EOF
 chmod +x ~/vote_on.sh
 
-# # #   Stop Voting   # # #
+# # #   Stop Voting   # # # # # # # # # # # # # # # # # # # # #
 sudo tee <<EOF >/dev/null ~/vote_off.sh
 #!/bin/bash
 source $HOME/.bashrc
@@ -49,7 +50,7 @@ echo 'No Voting mode'
 EOF
 chmod +x ~/vote_off.sh
 
-# # #   check address   # # #
+# # #   check address   # # # # # # # # # # # # # # # # # # # # #
 sudo tee <<EOF >/dev/null ~/address.sh
 #!/bin/bash
 source $HOME/.bashrc
@@ -58,7 +59,6 @@ link=\$(solana address -k ~/solana/validator_link.json)
 validator=\$(solana address -k ~/solana/validator-keypair.json)
 vote=\$(solana address -k ~/solana/vote.json)
 echo '--'
-echo \$NODE'.'\$NAME ##
 echo 'epmty_validator: '\$empty
 echo 'validator_link: '\$link
 echo 'validator: '\$validator
@@ -68,3 +68,4 @@ if [[ \$link == \$empty ]]; then echo 'link=empty: voting OFF'; fi
 if [[ \$link == \$validator ]]; then echo 'link=validator: voting ON'; fi
 EOF
 chmod +x ~/address.sh
+
