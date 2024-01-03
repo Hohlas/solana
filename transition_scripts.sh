@@ -73,7 +73,7 @@ EOF
 chmod +x ~/vote_off.sh
 
 
-sudo tee <<EOF >/dev/null ~/address.sh
+sudo tee <<EOF >/dev/null ~/check.sh
 #!/bin/bash
 # # #   check address   # # # # # # # # # # # # # # # # # # # # #
 source \$HOME/.bashrc
@@ -98,6 +98,6 @@ elif [ \$networkrpcURL = https://api.mainnet-beta.solana.com ]; then net="api.ma
 fi	
 echo \$NODE'.'\$NAME 'network='\$net
 EOF
-chmod +x ~/address.sh
+chmod +x ~/check.sh
 # # # # # # # # # # # # # # # # # # # # #
 
