@@ -21,6 +21,12 @@ sudo tee <<EOF >/dev/null ~/tower_out.sh
 #!/bin/bash
 # # #   send tower to remote $SERV   # # # # # # # # # # # #
 source \$HOME/.bashrc
+if [ -z "$1" ]; then
+    echo "warning! Input IP, like: ./tower.sh user@XXX.XX.XX.XX"
+    exit 1
+fi
+SERV=$1
+echo 'try to connect to '$SERV
 if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
 else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi 
@@ -35,6 +41,10 @@ sudo tee <<EOF >/dev/null ~/tower_in.sh
 #!/bin/bash
 # # #   get tower from remote $SERV   # # # # # # # # # # # #
 source \$HOME/.bashrc
+if [ -z "$1" ]; then
+    echo "warning! Input IP, like: ./tower.sh user@XXX.XX.XX.XX"
+    exit 1
+fi
 if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
 else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi
@@ -97,9 +107,7 @@ if [ \$networkrpcURL = https://api.testnet.solana.com ]; then net="api.testnet";
 elif [ \$networkrpcURL = https://api.mainnet-beta.solana.com ]; then net="api.mainnet-beta";
 fi	
 echo \$NODE'.'\$NAME 'network='\$net
-echo 'SERV=root@'\$(wget -q -4 -O- http://icanhazip.com)'  # copy to Primary server'
+echo `whoami`'@'\$(wget -q -4 -O- http://icanhazip.com)'  # copy user@xxx.xx.xx.xx to Primary server'
 EOF
 chmod +x ~/check.sh
-
-# # #
-
+# ~/check.sh
