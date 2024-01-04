@@ -38,13 +38,13 @@ link=\$(solana address -k ~/solana/validator_link.json)
 validator=\$(solana address -k ~/solana/validator-keypair.json)
 # get tower from Secondary server in 'voting OFF' mode
 if [[ \$link == \$empty ]]; then 
-echo 'voting OFF:  get tower from '\$SERV; 
+echo -e "\033[1;31m voting OFF |\033[0m"'  get tower from '\$SERV; 
 read -p "are you ready? " RESP; if [ "\$RESP" != "y" ]; then exit 1; fi
 scp -P 2010 -i /root/keys/*.ssh \$SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
 fi
 # send tower to Secondary server in 'voting ON' mode
 if [[ \$link == \$validator ]]; then 
-echo 'voting ON:  send tower to '\$SERV; 
+echo -e "\033[1;31m voting ON |\033[0m"'  send tower to '\$SERV; 
 read -p "are you ready? " RESP; if [ "\$RESP" != "y" ]; then exit 1; fi
 scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin \$SERV:/root/solana/ledger
 fi
@@ -105,3 +105,4 @@ if [[ \$link == \$empty ]]; then echo -e "\033[1;31m voting OFF\033[0m"; fi
 if [[ \$link == \$validator ]]; then echo  -e "\033[1;31m voting ON\033[0m"; fi
 EOF
 chmod +x ~/check.sh
+~/check.sh
