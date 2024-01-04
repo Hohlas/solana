@@ -29,7 +29,7 @@ scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-\$(solana-keygen p
 echo 'send tower to '\$SERV
 EOF
 chmod +x ~/tower_out.sh
-
+###
 
 sudo tee <<EOF >/dev/null ~/tower_in.sh
 #!/bin/bash
