@@ -100,5 +100,5 @@ echo \$NODE'.'\$NAME 'network='\$net
 echo 'SERV=root@'\$(wget -q -4 -O- http://icanhazip.com)
 EOF
 chmod +x ~/check.sh
-# # # # # # #
+
 
