@@ -97,7 +97,7 @@ if [ \$networkrpcURL = https://api.testnet.solana.com ]; then net="api.testnet";
 elif [ \$networkrpcURL = https://api.mainnet-beta.solana.com ]; then net="api.mainnet-beta";
 fi	
 echo \$NODE'.'\$NAME 'network='\$net
-echo 'current server: root@'\$(wget -q -4 -O- http://icanhazip.com)
+echo 'SERV=root@'\$(wget -q -4 -O- http://icanhazip.com)
 EOF
 chmod +x ~/check.sh
 # # # # # # # # # # # # # # # # # # # # #
