@@ -93,17 +93,15 @@ echo 'validator_link: '\$link
 echo 'validator: '\$validator
 echo 'vote: '\$vote
 echo '--'
-if [[ \$link == \$empty ]]; then echo 'link=empty: voting OFF'; fi
-if [[ \$link == \$validator ]]; then echo 'link=validator: voting ON'; fi
-
 networkrpcURL=\$(cat \$HOME/.config/solana/cli/config.yml | grep json_rpc_url | grep -o '".*"' | tr -d '"')
 if [ "\$networkrpcURL" == "" ]; then networkrpcURL=\$(cat /root/.config/solana/cli/config.yml | grep json_rpc_url | awk '{ print \$2 }')
 fi
 if [ \$networkrpcURL = https://api.testnet.solana.com ]; then net="api.testnet";
 elif [ \$networkrpcURL = https://api.mainnet-beta.solana.com ]; then net="api.mainnet-beta";
 fi	
-echo \$NODE'.'\$NAME 'network='\$net
-echo '~/tower.sh '`whoami`'@'\$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
+echo ' '\$NODE'.'\$NAME 'network='\$net
+echo ' ~/tower.sh '`whoami`'@'\$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
+if [[ \$link == \$empty ]]; then echo -e "\033[1;31m voting OFF\033[0m"; fi
+if [[ \$link == \$validator ]]; then echo  -e "\033[1;31m voting ON\033[0m"; fi
 EOF
 chmod +x ~/check.sh
-~/check.sh
