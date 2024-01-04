@@ -17,44 +17,40 @@ fi
 EOF
 chmod +x ~/get_ip.sh
 
-sudo tee <<EOF >/dev/null ~/tower_out.sh
+sudo tee <<EOF >/dev/null ~/tower.sh
 #!/bin/bash
 # # #   send tower to remote $SERV   # # # # # # # # # # # #
 source \$HOME/.bashrc
-if [ -z "$1" ]; then
+if [ -z "\$1" ]; then
     echo "warning! Input IP, like: ./tower.sh user@XXX.XX.XX.XX"
     exit 1
 fi
-SERV=$1
-echo 'try to connect to '$SERV
+SERV=\$1
+echo 'try to connect to '\$SERV
 if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
 else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi 
+# wait for window
 solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 10 --skip-new-snapshot-check
-scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin \$SERV:/root/solana/ledger
-echo 'send tower to '\$SERV
-EOF
-chmod +x ~/tower_out.sh
-###
-
-sudo tee <<EOF >/dev/null ~/tower_in.sh
-#!/bin/bash
-# # #   get tower from remote $SERV   # # # # # # # # # # # #
-source \$HOME/.bashrc
-if [ -z "$1" ]; then
-    echo "warning! Input IP, like: ./tower.sh user@XXX.XX.XX.XX"
-    exit 1
-fi
-if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
-else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
-fi
-solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 10 --skip-new-snapshot-check
+# read current keys status
+empty=\$(solana address -k ~/solana/empty-validator.json)
+link=\$(solana address -k ~/solana/validator_link.json)
+validator=\$(solana address -k ~/solana/validator-keypair.json)
+# get tower from Secondary server in 'voting OFF' mode
+if [[ \$link == \$empty ]]; then 
+echo 'voting OFF:  get tower from '\$SERV; 
+read -p "are you ready? " RESP; if [ "$RESP" != "y" ]; then exit 1; fi
 scp -P 2010 -i /root/keys/*.ssh \$SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
-# ~/vote_on.sh
-echo 'get tower from '\$SERV
+fi
+# send tower to Secondary server in 'voting ON' mode
+if [[ \$link == \$validator ]]; then 
+echo 'voting ON:  send tower to '\$SERV; 
+read -p "are you ready? " RESP; if [ "$RESP" != "y" ]; then exit 1; fi
+scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin \$SERV:/root/solana/ledger
+fi
 EOF
-chmod +x ~/tower_in.sh
-
+chmod +x ~/tower.sh
+###
 
 sudo tee <<EOF >/dev/null ~/vote_on.sh
 #!/bin/bash
@@ -107,7 +103,7 @@ if [ \$networkrpcURL = https://api.testnet.solana.com ]; then net="api.testnet";
 elif [ \$networkrpcURL = https://api.mainnet-beta.solana.com ]; then net="api.mainnet-beta";
 fi	
 echo \$NODE'.'\$NAME 'network='\$net
-echo `whoami`'@'\$(wget -q -4 -O- http://icanhazip.com)'  # copy user@xxx.xx.xx.xx to Primary server'
+echo '~/tower.sh '`whoami`'@'\$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
 EOF
 chmod +x ~/check.sh
-# ~/check.sh
+~/check.sh
