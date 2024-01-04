@@ -106,4 +106,4 @@ echo \$NODE'.'\$NAME 'network='\$net
 echo '~/tower.sh '`whoami`'@'\$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
 EOF
 chmod +x ~/check.sh
-# ~/check.sh # check
+
