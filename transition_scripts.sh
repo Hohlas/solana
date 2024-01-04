@@ -39,13 +39,13 @@ validator=\$(solana address -k ~/solana/validator-keypair.json)
 # get tower from Secondary server in 'voting OFF' mode
 if [[ \$link == \$empty ]]; then 
 echo 'voting OFF:  get tower from '\$SERV; 
-read -p "are you ready? " RESP; if [ "$RESP" != "y" ]; then exit 1; fi
+read -p "are you ready? " RESP; if [ "\$RESP" != "y" ]; then exit 1; fi
 scp -P 2010 -i /root/keys/*.ssh \$SERV:/root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
 fi
 # send tower to Secondary server in 'voting ON' mode
 if [[ \$link == \$validator ]]; then 
 echo 'voting ON:  send tower to '\$SERV; 
-read -p "are you ready? " RESP; if [ "$RESP" != "y" ]; then exit 1; fi
+read -p "are you ready? " RESP; if [ "\$RESP" != "y" ]; then exit 1; fi
 scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-\$(solana-keygen pubkey ~/solana/validator-keypair.json).bin \$SERV:/root/solana/ledger
 fi
 EOF
@@ -106,4 +106,4 @@ echo \$NODE'.'\$NAME 'network='\$net
 echo '~/tower.sh '`whoami`'@'\$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
 EOF
 chmod +x ~/check.sh
-
+~/check.sh
