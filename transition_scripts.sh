@@ -59,7 +59,7 @@ source \$HOME/.bashrc
 solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json
 ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 systemctl restart telegraf
-echo 'Start Voting'
+echo -e "\033[1;31m voting ON\033[0m"
 EOF
 chmod +x ~/vote_on.sh
 
@@ -74,7 +74,7 @@ fi
 solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json
 ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
 systemctl stop telegraf
-echo 'No Voting mode'
+echo -e "\033[1;31m voting OFF\033[0m"
 EOF
 chmod +x ~/vote_off.sh
 
