@@ -23,8 +23,9 @@ echo 'alias tower=~/tower.sh' >> $HOME/.bashrc
 echo 'alias vote_on=~/vote_on.sh' >> $HOME/.bashrc
 echo 'alias vote_off=~/vote_off.sh' >> $HOME/.bashrc
 echo "alias catch='solana catchup ~/solana/validator_link.json --our-localhost --follow --log'" >> $HOME/.bashrc
-echo "alias sol_monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
+echo "alias monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
 echo 'alias next=~/next.sh' >> $HOME/.bashrc
+echo 'alias set_net=~/set_net.sh' >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 # add PATH
@@ -32,13 +33,10 @@ if ! echo $PATH | grep -q "$HOME/.local/share/solana/install/active_release/bin"
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 echo 'export PATH='$PATH >> ~/.bashrc
 fi
-
 echo "export GIT='curl https://raw.githubusercontent.com/Hohlas/solana/main'" >> $HOME/.bashrc
 source $HOME/.bashrc
 
 # download settings and scripts
-echo "export GIT='curl https://raw.githubusercontent.com/Hohlas/solana/main'" >> $HOME/.bashrc
-source $HOME/.bashrc
 $GIT/setup/21-solana-validator.conf > /etc/sysctl.d/21-solana-validator.conf
 $GIT/setup/90-solana-nofiles.conf > /etc/security/limits.d/90-solana-nofiles.conf
 $GIT/setup/solana.logrotate > /etc/logrotate.d/solana.logrotate
@@ -47,7 +45,8 @@ $GIT/setup/tower.sh > ~/tower.sh
 $GIT/setup/vote_on.sh > ~/vote_on.sh
 $GIT/setup/vote_off.sh > ~/vote_off.sh
 $GIT/setup/next.sh > ~/next.sh
-chmod +x ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh 
+$GIT/setup/set_net.sh > ~/set_net.sh
+chmod +x ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh ~/set_net.sh
 sudo sysctl -p /etc/sysctl.d/21-solana-validator.conf
 sudo systemctl daemon-reload
 sudo systemctl restart logrotate
