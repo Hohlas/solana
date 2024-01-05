@@ -17,3 +17,4 @@ echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
 fi
 systemctl daemon-reload
 ~/check.sh
+# # #
