@@ -18,14 +18,14 @@ ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json # NO voting mo
 echo ' # SOLANA  ALIAS # ' >> $HOME/.bashrc
 echo "alias mount_keys='encfs ~/.crpt ~/keys'" >> $HOME/.bashrc
 echo "alias umount_keys='fusermount -u ~/keys'" >> $HOME/.bashrc
-echo 'alias check=~/check.sh' >> $HOME/.bashrc
+echo "alias check='source ~/check.sh'" >> $HOME/.bashrc
 echo 'alias tower=~/tower.sh' >> $HOME/.bashrc
 echo 'alias vote_on=~/vote_on.sh' >> $HOME/.bashrc
 echo 'alias vote_off=~/vote_off.sh' >> $HOME/.bashrc
 echo "alias catch='solana catchup ~/solana/validator_link.json --our-localhost --follow --log'" >> $HOME/.bashrc
 echo "alias monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
 echo 'alias next=~/next.sh' >> $HOME/.bashrc
-echo 'alias set_net=~/set_net.sh' >> $HOME/.bashrc
+echo "alias node_set='source ~/node_set.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 # add PATH
@@ -45,8 +45,8 @@ $GIT/setup/tower.sh > ~/tower.sh
 $GIT/setup/vote_on.sh > ~/vote_on.sh
 $GIT/setup/vote_off.sh > ~/vote_off.sh
 $GIT/setup/next.sh > ~/next.sh
-$GIT/setup/set_net.sh > ~/set_net.sh
-chmod +x ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh ~/set_net.sh
+$GIT/setup/node_set.sh > ~/node_set.sh
+chmod +x ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh ~/node_set.sh
 sudo sysctl -p /etc/sysctl.d/21-solana-validator.conf
 sudo systemctl daemon-reload
 sudo systemctl restart logrotate
