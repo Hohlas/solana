@@ -33,8 +33,8 @@ if ! echo $PATH | grep -q "$HOME/.local/share/solana/install/active_release/bin"
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 echo 'export PATH='$PATH >> ~/.bashrc
 fi
-echo "export GIT='curl https://raw.githubusercontent.com/Hohlas/solana/main'" >> $HOME/.bashrc
-source $HOME/.bashrc
+export GIT='curl https://raw.githubusercontent.com/Hohlas/solana/main'
+echo 'export GIT='$GIT >> $HOME/.bashrc
 
 # download settings and scripts
 $GIT/setup/21-solana-validator.conf > /etc/sysctl.d/21-solana-validator.conf
