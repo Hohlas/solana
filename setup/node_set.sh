@@ -1,4 +1,5 @@
-echo 'node='$NODE ' name='$NAME
+#!/bin/bash
+# # #   set MAIN/TEST settings
 curl https://raw.githubusercontent.com/Hohlas/solana/main/$NODE/${NAME,,} >> $HOME/.bashrc
 if [[ $NODE == "main" ]]; then 
 solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
