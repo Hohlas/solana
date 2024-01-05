@@ -11,11 +11,22 @@ echo 'validator_link: '$link
 echo 'validator: '$validator
 echo 'vote: '$vote
 echo '--'
-networkrpcURL=$(cat $HOME/.config/solana/cli/config.yml | grep json_rpc_url | grep -o '".*"' | tr -d '"')
-if [ $networkrpcURL = https://api.testnet.solana.com ]; then NET="api.testnet";
-elif [ $networkrpcURL = https://api.mainnet-beta.solana.com ]; then NET="api.mainnet-beta";
+
+if [[ $NODE == "main" ]]; then 
+echo -e "\033[31m "$NODE'.'$NAME" \033[0m"; 
+elif [[ $NODE == "test" ]]; then
+echo -e "\033[34m "$NODE'.'$NAME" \033[0m"; 
+else
+echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
+fi
+
+rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
+if [ $rpcURL = https://api.testnet.solana.com ]; then 
+echo -e "\033[34m network=api.testnet \033[0m";
+elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
+echo -e "\033[31m network=api.mainnet-beta \033[0m";
 fi	
-echo ' '$NODE'.'$NAME ' network='$NET
+
 echo ' ~/tower.sh '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
 if [[ $link == $empty ]]; then echo -e "\033[32m vote OFF\033[0m"; fi
 if [[ $link == $validator ]]; then echo  -e "\033[31m vote ON\033[0m"; fi
