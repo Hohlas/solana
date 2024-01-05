@@ -1,4 +1,3 @@
-
 # create dirs
 mkdir -p ~/solana/ledger
 mkdir -p /mnt/disk3/accounts
@@ -25,14 +24,17 @@ echo 'alias vote_on=~/vote_on.sh' >> $HOME/.bashrc
 echo 'alias vote_off=~/vote_off.sh' >> $HOME/.bashrc
 echo "alias catch='solana catchup ~/solana/validator_link.json --our-localhost --follow --log'" >> $HOME/.bashrc
 echo "alias sol_monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
+echo 'alias next=~/next.sh' >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
-source $HOME/.bashrc
 
 # add PATH
 if ! echo $PATH | grep -q "$HOME/.local/share/solana/install/active_release/bin"; then
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 echo 'export PATH='$PATH >> ~/.bashrc
 fi
+
+echo "export GIT='curl https://raw.githubusercontent.com/Hohlas/solana/main'" >> $HOME/.bashrc
+source $HOME/.bashrc
 
 # download settings and scripts
 echo "export GIT='curl https://raw.githubusercontent.com/Hohlas/solana/main'" >> $HOME/.bashrc
@@ -44,7 +46,8 @@ $GIT/setup/check.sh > ~/check.sh
 $GIT/setup/tower.sh > ~/tower.sh
 $GIT/setup/vote_on.sh > ~/vote_on.sh
 $GIT/setup/vote_off.sh > ~/vote_off.sh
-chmod +x ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh
+$GIT/setup/next.sh > ~/next.sh
+chmod +x ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh 
 sudo sysctl -p /etc/sysctl.d/21-solana-validator.conf
 sudo systemctl daemon-reload
 sudo systemctl restart logrotate
