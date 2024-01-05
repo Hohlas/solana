@@ -50,3 +50,4 @@ chmod +x ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh ~/node_set.s
 sudo sysctl -p /etc/sysctl.d/21-solana-validator.conf
 sudo systemctl daemon-reload
 sudo systemctl restart logrotate
+# # #
