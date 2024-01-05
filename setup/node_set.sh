@@ -1,6 +1,7 @@
 #!/bin/bash
 # # #   set MAIN/TEST settings
-curl https://raw.githubusercontent.com/Hohlas/solana/main/$NODE/${NAME,,} >> $HOME/.bashrc
+source $HOME/.bashrc
+$GIT/$NODE/${NAME,,} >> $HOME/.bashrc
 if [[ $NODE == "main" ]]; then 
 solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
 $GIT/Jito/solana.service > ~/solana/solana.service
