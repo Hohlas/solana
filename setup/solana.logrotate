@@ -1,0 +1,10 @@
+/root/solana/solana.log {
+  su $USER $USER
+  rotate 1
+  daily
+  dateext  
+  missingok
+  postrotate
+    systemctl kill -s USR1 solana.service
+  endscript
+}
