@@ -24,6 +24,7 @@ echo "alias check='source ~/check.sh'" >> $HOME/.bashrc
 echo 'alias tower=~/tower.sh' >> $HOME/.bashrc
 echo 'alias vote_on=~/vote_on.sh' >> $HOME/.bashrc
 echo 'alias vote_off=~/vote_off.sh' >> $HOME/.bashrc
+echo "alias logs='tail -f ~/solana/solana.log'" >> $HOME/.bashrc
 echo "alias catch='solana catchup ~/solana/validator_link.json --our-localhost --follow --log'" >> $HOME/.bashrc
 echo "alias monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
 echo 'alias next=~/next.sh' >> $HOME/.bashrc
