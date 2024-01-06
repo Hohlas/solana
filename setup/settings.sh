@@ -51,7 +51,7 @@ $GIT/setup/vote_on.sh > ~/vote_on.sh
 $GIT/setup/vote_off.sh > ~/vote_off.sh
 $GIT/setup/next.sh > ~/next.sh
 $GIT/setup/node_set.sh > ~/node_set.sh
-chmod +x ~/grafana_sutup.sh ~/grafana_update.sh ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh ~/node_set.sh
+chmod +x ~/grafana_setup.sh ~/check.sh ~/tower.sh ~/vote_on.sh ~/vote_off.sh ~/next.sh ~/node_set.sh
 sudo sysctl -p /etc/sysctl.d/21-solana-validator.conf
 sudo systemctl daemon-reload
 sudo systemctl restart logrotate
