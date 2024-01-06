@@ -31,4 +31,4 @@ echo -e '\n\e[42m dowload telegraf.conf \e[0m\n'
 curl https://raw.githubusercontent.com/Hohlas/solana/main/setup/telegraf.conf > /etc/telegraf/telegraf.conf
 sudo systemctl daemon-reload 
 sudo systemctl enable telegraf 
-sudo systemctl restart telegraf 
+# sudo systemctl restart telegraf 
