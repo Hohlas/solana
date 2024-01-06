@@ -1,12 +1,23 @@
 #!/bin/bash
 # # #   set MAIN/TEST settings
-cd ~/sol_git; git pull;
+# update from git
+if [ -d ~/sol_git ]; then 
+cd ~/sol_git; 
+git fetch origin; # get last updates from git
+git reset --hard origin/main # сбросить локальную ветку до последнего коммита из git
+else git clone https://github.com/Hohlas/solana.git ~/sol_git
+fi
+chmod +x ~/sol_git/setup/*.sh
 source $HOME/.bashrc
+
+# update .bashrc, key links, grafana name
 cat ~/sol_git/$NODE/${NAME,,} >> $HOME/.bashrc
 ln -sf ~/keys/*${NODE}_vote.json ~/solana/vote.json
 ln -sf ~/keys/*${NODE}_validator.json ~/solana/validator-keypair.json
 tmp="\"$NAME\""
 sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
+
+# update services and network url
 if [[ $NODE == "main" ]]; then 
 solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
 cp ~/sol_git/Jito/solana.service ~/solana/solana.service
