@@ -1,5 +1,5 @@
 #!/bin/bash
-# # #   set MAIN/TEST settings
+# # #   set MAIN/TEST settings   # # #
 cd ~/sol_git; git pull;
 source $HOME/.bashrc
 cat ~/sol_git/$NODE/${NAME,,} >> $HOME/.bashrc
