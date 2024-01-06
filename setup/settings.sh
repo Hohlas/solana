@@ -32,9 +32,9 @@ echo "alias node_set='source ~/sol_git/setup/node_set.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 # add PATH
-if ! echo $PATH | grep -q "$HOME/.local/share/solana/install/active_release/bin"; then
-export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-echo 'export PATH='$PATH >> ~/.bashrc
+if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
+    export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+    echo 'export PATH='$PATH >> ~/.bashrc
 fi
 source $HOME/.bashrc
 # download settings and scripts
