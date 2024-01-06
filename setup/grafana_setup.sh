@@ -10,8 +10,7 @@ deb https://repos.influxdata.com/ubuntu focal stable
 EOF
 sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 sudo apt-get update && sudo apt -y install telegraf git jq bc -y
-sudo systemctl enable --now telegraf
-sudo systemctl is-enabled telegraf
+sudo systemctl enable telegraf
 
 echo -e '\n\e[42m install monitor.sh \e[0m\n'
 if id "telegraf" &>/dev/null; then
@@ -36,6 +35,4 @@ fi # файл locale иногда отсутствует, из-за этого �
 
 echo -e '\n\e[42m dowload telegraf.conf \e[0m\n'
 cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
-sudo systemctl daemon-reload 
-sudo systemctl enable telegraf 
 # sudo systemctl restart telegraf 
