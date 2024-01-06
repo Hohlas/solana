@@ -5,7 +5,8 @@ source $HOME/.bashrc
 cat ~/sol_git/$NODE/${NAME,,} >> $HOME/.bashrc
 ln -sf ~/keys/*${NODE}_vote.json ~/solana/vote.json
 ln -sf ~/keys/*${NODE}_validator.json ~/solana/validator-keypair.json
-sed -i "/^  hostname = /c\  hostname = $NAME" /etc/telegraf/telegraf.conf
+tmp="\"$NAME\""
+sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
 if [[ $NODE == "main" ]]; then 
 solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
 cp ~/sol_git/Jito/solana.service ~/solana/solana.service
