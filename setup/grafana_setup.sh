@@ -35,4 +35,4 @@ fi # файл locale иногда отсутствует, из-за этого �
 
 echo -e '\n\e[42m dowload telegraf.conf \e[0m\n'
 cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
-# sudo systemctl restart telegraf 
+sed -i "/^  hostname = /c\  hostname = $NAME" /etc/telegraf/telegraf.conf
