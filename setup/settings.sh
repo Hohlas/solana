@@ -56,4 +56,4 @@ sudo sysctl -p /etc/sysctl.d/21-solana-validator.conf
 sudo systemctl daemon-reload
 sudo systemctl restart logrotate
 ~/grafana_sutup.sh 
-source ~/grafana_update.sh
+echo -e '\n\e[42m Solana setup complete \e[0m\n'
