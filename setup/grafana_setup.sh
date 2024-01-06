@@ -22,7 +22,9 @@ sudo adduser telegraf adm
 fi
 sudo -- bash -c 'echo "telegraf ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers'
 sudo cp /etc/telegraf/telegraf.conf /etc/telegraf/telegraf.conf.orig
-if [ ! -d ~/solanamonitoring ]; then 
+if [ -d ~/solanamonitoring ]; then 
+echo 'telegraf already installed'
+else
 cd ~/ 
 git clone https://github.com/stakeconomy/solanamonitoring/  
 chmod +x ~/solanamonitoring/monitor.sh
