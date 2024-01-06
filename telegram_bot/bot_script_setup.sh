@@ -1,13 +1,13 @@
 #!/bin/bash
 echo "install telegram bot"
 sudo apt update && sudo apt upgrade -y && sudo apt install jq cron iputils-ping -y
-echo "install solana"
-if [ ! -d ~/solana ]; then mkdir -p ~/solana; fi
-cd ~/solana
-sh -c "$(curl -sSfL https://release.solana.com/v1.17.5/install)" 
-export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-echo 'export PATH='$PATH >> $HOME/.bashrc
-source $HOME/.bashrc
+#echo "install solana"
+#if [ ! -d ~/solana ]; then mkdir -p ~/solana; fi
+#cd ~/solana
+#sh -c "$(curl -sSfL https://release.solana.com/v1.17.5/install)" 
+#export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+#echo 'export PATH='$PATH >> $HOME/.bashrc
+#source $HOME/.bashrc
 echo "download telegram scripts"
 curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/watch_main.sh > ~/solana/watch_main.sh && chmod +x ~/solana/watch_main.sh
 curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/watch_test.sh > ~/solana/watch_test.sh && chmod +x ~/solana/watch_test.sh
