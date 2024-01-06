@@ -28,7 +28,7 @@ echo "Download locale file to /etc/default";
 fi # файл locale иногда отсутствует, из-за этого появляется ошибка
 
 echo -e '\n\e[42m dowload telegraf.conf \e[0m\n'
-~/sol_git/setup/telegraf.conf > /etc/telegraf/telegraf.conf
+cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
 sudo systemctl daemon-reload 
 sudo systemctl enable telegraf 
 # sudo systemctl restart telegraf 
