@@ -12,7 +12,6 @@ sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
 sudo apt-get update && sudo apt -y install telegraf git jq bc -y
 sudo systemctl enable --now telegraf
 sudo systemctl is-enabled telegraf
-systemctl status telegraf
 
 echo -e '\n\e[42m install monitor.sh \e[0m\n'
 sudo adduser telegraf sudo
