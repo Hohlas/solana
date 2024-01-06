@@ -14,14 +14,19 @@ sudo systemctl enable --now telegraf
 sudo systemctl is-enabled telegraf
 
 echo -e '\n\e[42m install monitor.sh \e[0m\n'
+if id "telegraf" &>/dev/null; then
+    echo 'user "telegraf" already exists'
+else
 sudo adduser telegraf sudo
 sudo adduser telegraf adm
+fi
 sudo -- bash -c 'echo "telegraf ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers'
 sudo cp /etc/telegraf/telegraf.conf /etc/telegraf/telegraf.conf.orig
-sudo rm -rf /etc/telegraf/telegraf.conf
+if [ -d ~/solanamonitoring ]; then 
 cd ~/ 
 git clone https://github.com/stakeconomy/solanamonitoring/  
 chmod +x ~/solanamonitoring/monitor.sh
+fi
 if [ ! -e /etc/default/locale ]; 
 then curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/locale > /etc/default/locale; 
 echo "Download locale file to /etc/default"; 
