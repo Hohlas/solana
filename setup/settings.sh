@@ -39,13 +39,12 @@ fi
 source $HOME/.bashrc
 # download settings and scripts
 echo -e '\n\e[42m system config \e[0m\n'
-~/sol_git/setup/21-solana-validator.conf > /etc/sysctl.d/21-solana-validator.conf
-~/sol_git/setup/90-solana-nofiles.conf > /etc/security/limits.d/90-solana-nofiles.conf
-~/sol_git/setup/solana.logrotate > /etc/logrotate.d/solana.logrotate
+cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
+cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
+cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl restart logrotate
 systemctl daemon-reload
-cd ~/sol_git/setup
-chmod +x ./grafana_setup.sh ./check.sh ./tower.sh ./vote_on.sh ./vote_off.sh ./next.sh ./node_set.sh
+chmod +x ~/sol_git/setup/*.sh
 ./grafana_setup.sh 
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
