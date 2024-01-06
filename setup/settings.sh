@@ -43,8 +43,7 @@ echo -e '\n\e[42m Download scripts \e[0m\n'
 $GIT/setup/21-solana-validator.conf > /etc/sysctl.d/21-solana-validator.conf
 $GIT/setup/90-solana-nofiles.conf > /etc/security/limits.d/90-solana-nofiles.conf
 $GIT/setup/solana.logrotate > /etc/logrotate.d/solana.logrotate
-$GIT/setup/grafana_sutup.sh > ~/grafana_sutup.sh
-$GIT/setup/grafana_update.sh > ~/grafana_update.sh
+$GIT/setup/grafana_sutup.sh > ~/grafana_setup.sh
 $GIT/setup/check.sh > ~/check.sh
 $GIT/setup/tower.sh > ~/tower.sh
 $GIT/setup/vote_on.sh > ~/vote_on.sh
@@ -57,3 +56,4 @@ sudo systemctl daemon-reload
 sudo systemctl restart logrotate
 ~/grafana_sutup.sh 
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
+# # #
