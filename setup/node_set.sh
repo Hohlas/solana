@@ -9,7 +9,6 @@ else git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
 source $HOME/.bashrc
-~/sol_git/setup/vote_off.sh
 
 # update .bashrc, key links, grafana name
 cat ~/sol_git/$NODE/${NAME,,} >> $HOME/.bashrc
@@ -17,6 +16,7 @@ ln -sf ~/keys/*${NODE}_vote.json ~/solana/vote.json
 ln -sf ~/keys/*${NODE}_validator.json ~/solana/validator-keypair.json
 tmp="\"$NAME\""
 sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
+~/sol_git/setup/vote_off.sh
 
 # update services and network url
 if [[ $NODE == "main" ]]; then 
