@@ -9,6 +9,7 @@ else git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
 source $HOME/.bashrc
+~/sol_git/setup/vote_off.sh
 
 # update .bashrc, key links, grafana name
 cat ~/sol_git/$NODE/${NAME,,} >> $HOME/.bashrc
@@ -30,5 +31,4 @@ else
 echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
 fi
 systemctl daemon-reload
-~/sol_git/setup/vote_off.sh
 ~/sol_git/setup/check.sh
