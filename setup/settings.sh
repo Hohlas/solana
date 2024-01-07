@@ -27,7 +27,7 @@ echo 'alias vote_off=~/sol_git/setup/vote_off.sh' >> $HOME/.bashrc
 echo "alias logs='tail -f ~/solana/solana.log'" >> $HOME/.bashrc
 echo "alias catch='solana catchup ~/solana/validator_link.json --our-localhost --follow --log'" >> $HOME/.bashrc
 echo "alias monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
-echo 'alias next=~/next.sh' >> $HOME/.bashrc
+echo 'alias next=~/sol_git/setup/next.sh' >> $HOME/.bashrc
 echo "alias node_set='source ~/sol_git/setup/node_set.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
