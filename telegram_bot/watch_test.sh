@@ -5,14 +5,14 @@ SOLANA_PATH="$HOME/.local/share/solana/install/active_release/bin/solana" #По�
 #Cluster: m-mainnet-beta или t-testnet
 CLUSTER=t
 #если хочешь 1 ноду то в скобках указывается только один pub,vote,ip,TEXT и т.д. Добавить можно сколько угодно нод но каждый новый параметр через пробел!  
-PUB_KEY=(8HzsgkGhEFP2MKuuPDy5f8qvqR6hmwPqeq7UMY3X2Z6T mFJG277eG7EFS7Zu2UU5BkFZQW7PpAVfjMaFsTqXAUq CpFKK4LrfnCZ32gQPPW8hVMqFsMSe46k7cUjs8h77iQQ)
-VOTE=(CgXsXRodb3aTwqPEkyUwL3aPTmHxVdT8CVv5QeeMBAnG 2r71p3Gv2GhEbJWZp7ZZMvBzYMr3KjwvfV5oNTKXxTaX E64siUgPsM5GSCbdbrzQzf5FsB6XgrBpSPJhk2euTfQV)
-IP=(95.214.54.198 95.214.55.47 95.214.53.18)
+PUB_KEY=(mFJG277eG7EFS7Zu2UU5BkFZQW7PpAVfjMaFsTqXAUq 8HzsgkGhEFP2MKuuPDy5f8qvqR6hmwPqeq7UMY3X2Z6T CpFKK4LrfnCZ32gQPPW8hVMqFsMSe46k7cUjs8h77iQQ)
+VOTE=(2r71p3Gv2GhEbJWZp7ZZMvBzYMr3KjwvfV5oNTKXxTaX CgXsXRodb3aTwqPEkyUwL3aPTmHxVdT8CVv5QeeMBAnG E64siUgPsM5GSCbdbrzQzf5FsB6XgrBpSPJhk2euTfQV)
+IP=(149.50.96.50 185.225.191.203 185.16.39.22)
 # telegram bot token, chat id,text,alarm text...
 BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
 CHAT_ALARM=-1001611695684
 CHAT_INFO=-1001548522888
-NODE_NAME=("hohla" "buka" "valera")
+NODE_NAME=("buka" "hohla" "valera")
 BALANCEWARN=(1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
 date
