@@ -42,9 +42,10 @@ echo -e '\n\e[42m system config \e[0m\n'
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
+cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl restart logrotate
 systemctl daemon-reload
 chmod +x ~/sol_git/setup/*.sh
-./grafana_setup.sh 
+source ./grafana_setup.sh 
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
