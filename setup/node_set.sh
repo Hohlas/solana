@@ -8,10 +8,8 @@ git reset --hard origin/main # сбросить локальную ветку д
 else git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
-source $HOME/.bashrc
 
 # update .bashrc, key links, grafana name
-# cat ~/sol_git/$NODE/${NAME,,} >> $HOME/.bashrc
 ln -sf ~/keys/${NAME,,}_${NODE}_vote.json ~/solana/vote.json
 ln -sf ~/keys/${NAME,,}_${NODE}_validator.json ~/solana/validator-keypair.json
 echo '# --- #' >> $HOME/.bashrc
@@ -20,8 +18,6 @@ echo 'export NODE='$NODE >> $HOME/.bashrc
 echo 'export NAME='$NAME >> $HOME/.bashrc
 echo 'export validator_key='$(solana address -k ~/solana/validator-keypair.json) >> $HOME/.bashrc
 echo 'export vote_account='$(solana address -k ~/solana/vote.json) >> $HOME/.bashrc
-tmp="\"$NAME.$NODE\""
-sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
 ~/sol_git/setup/vote_off.sh
 
 # update services and network url
