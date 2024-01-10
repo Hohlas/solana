@@ -12,9 +12,9 @@ source $HOME/.bashrc
 
 # update .bashrc, key links, grafana name
 cat ~/sol_git/$NODE/${NAME,,} >> $HOME/.bashrc
-ln -sf ~/keys/*${NODE}_vote.json ~/solana/vote.json
-ln -sf ~/keys/*${NODE}_validator.json ~/solana/validator-keypair.json
-tmp="\"$NAME\""
+ln -sf ~/keys/${NAME,,}_${NODE}_vote.json ~/solana/vote.json
+ln -sf ~/keys/${NAME,,}_${NODE}_validator.json ~/solana/validator-keypair.json
+tmp="\"$NAME.$NODE\""
 sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
 ~/sol_git/setup/vote_off.sh
 
