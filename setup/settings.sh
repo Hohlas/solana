@@ -8,6 +8,12 @@ mkdir -p /mnt/ramdisk/accounts_hash_cache
 # create service link
 ln -sf ~/solana/solana.service /etc/systemd/system
 
+# add PATH
+if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
+    export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+    echo 'export PATH='$PATH >> ~/.bashrc
+fi
+
 # create alias #
 echo ' # SOLANA  ALIAS # ' >> $HOME/.bashrc
 echo "alias mount_keys='encfs ~/.crpt ~/keys'" >> $HOME/.bashrc
@@ -23,11 +29,6 @@ echo 'alias next=~/sol_git/setup/next.sh' >> $HOME/.bashrc
 echo 'alias node_set=~/sol_git/setup/node_set.sh' >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
-# add PATH
-if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
-    export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-    echo 'export PATH='$PATH >> ~/.bashrc
-fi
 # download settings and scripts
 echo -e '\n\e[42m system config \e[0m\n'
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
