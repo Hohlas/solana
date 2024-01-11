@@ -39,5 +39,5 @@ sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl restart logrotate
 systemctl daemon-reload
 chmod +x ~/sol_git/setup/*.sh
-~/sol_git/grafana_setup.sh 
+~/sol_git/setup/grafana_setup.sh 
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
