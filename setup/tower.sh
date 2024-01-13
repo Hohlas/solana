@@ -12,9 +12,6 @@ SERV=$2 # transfer server addr (root@xxx.xx.xx.xx)
 if [ -f ~/keys/*.ssh ]; then chmod 600 ~/keys/*.ssh
 else echo -e '\033[31m - WARNING !!! no any *.ssh files in ~/keys - \033[0m'
 fi 
-# ask ssh password once
-eval "$(ssh-agent -s)"  # Start ssh-agent in the background
-ssh-add ~/keys/test.ssh # Add SSH private key to the ssh-agent
 
 # wait for window
 solana-validator -l ~/solana/ledger wait-for-restart-window --min-idle-time 10 --skip-new-snapshot-check
