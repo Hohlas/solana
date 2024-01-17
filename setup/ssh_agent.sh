@@ -4,4 +4,4 @@
 # you won’t need to enter your passphrase every time.
 
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
-ssh-add ~/keys/test.ssh # Add SSH private key to the ssh-agent
+ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
