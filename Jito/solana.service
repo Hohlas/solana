@@ -25,18 +25,18 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --authorized-voter /root/solana/validator-keypair.json \
 --vote-account /root/solana/vote.json \
 --ledger /root/solana/ledger \
---accounts /mnt/disk3/accounts \
 --snapshots /root/solana/snapshots \
+--accounts /mnt/disk3/accounts \
 --accounts-hash-cache-path /mnt/ramdisk/accounts_hash_cache \
 --log /root/solana/solana.log \
 --limit-ledger-size 50000000 \
 --dynamic-port-range 8000-8020 \
---full-snapshot-interval-slots 25000 \
---incremental-snapshot-interval-slots 2500 \
+--full-snapshot-interval-slots 0 \
+--incremental-snapshot-interval-slots 0 \
 --maximum-full-snapshots-to-retain 1 \
 --maximum-incremental-snapshots-to-retain 4 \
 --maximum-local-snapshot-age 5000 \
---use-snapshot-archives-at-startup when-newest \
+--no-skip-initial-accounts-db-clean \
 --full-rpc-api \
 --private-rpc \
 --tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \
