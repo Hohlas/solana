@@ -37,7 +37,6 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-incremental-snapshots-to-retain 4 \
 --maximum-local-snapshot-age 5000 \
 --no-skip-initial-accounts-db-clean \
---use-snapshot-archives-at-startup when-newest \
 --full-rpc-api \
 --private-rpc \
 --tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \
