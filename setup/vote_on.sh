@@ -8,7 +8,7 @@ DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.valid
 if [[ $DELINQUEENT == false ]]; then 
 echo "WARNING! "
 echo -e $PUB_KEY"\033[31m is still voting, EXIT \033[0m"; 
-exit 1; 
+return; 
 fi
 
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; 
