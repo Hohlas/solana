@@ -7,7 +7,7 @@ PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
 if [[ $DELINQUEENT == false ]]; then 
 echo "WARNING! "
-echo -e $PUB_KEY"\033[31m is still voting, EXIT \033[0m"; 
+echo -e $PUB_KEY"\033[31m is still voting, can't vote_on \033[0m"; 
 return; 
 fi
 
