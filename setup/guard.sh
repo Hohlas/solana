@@ -1,18 +1,17 @@
 #!/bin/bash
 
-
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 SOL=/root/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 
-echo 'PUB_KEY: '$PUB_KEY
 SERV=$1
 if [ -z "$SERV" ]
 then
   SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 fi
-IP=$(echo "$SERV" | cut -d'@' -f2)
+IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
+echo 'PUB_KEY: '$PUB_KEY
 echo 'remote IP='$IP
 echo 'current IP='$CUR_IP
 if [ "$CUR_IP" == "$IP" ]; then
@@ -27,17 +26,22 @@ eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 ssh-add ~/keys/$NAME.ssh # Add SSH private key to the ssh-agent
 
 # create ssh alias for remote server
-sudo tee <<EOF >/dev/null ~/.ssh/config
+echo " 
 Host REMOTE
 HostName $IP
 User root
 Port 2010
-#IdentityFile /root/keys/$NAME.ssh
-IdentityFile /root/keys/*.ssh
-EOF
+IdentityFile /root/keys/$NAME.ssh
+" > ~/.ssh/config
 
-ssh REMOTE $SOL/solana --version # check ssh connection
+# check SSH connection
+ssh REMOTE $SOL/solana --version 
+if [ $? -ne 0 ]; then
+echo "SSH connection error!"
+exit 1
+fi
 
+# waitin remote server fail
 DELINQUEENT=false
 until [[ $DELINQUEENT == true ]]
 do
