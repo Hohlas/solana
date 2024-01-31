@@ -37,8 +37,10 @@ IdentityFile /root/keys/$NAME.ssh
 # check SSH connection
 ssh REMOTE $SOL/solana --version 
 if [ $? -ne 0 ]; then
-echo "SSH connection error!"
+echo -e "\033[31m SSH connection error! \033[0m"
 exit 1
+else 
+echo -e "\033[32m SSH connection succesful \033[0m"
 fi
 
 # waitin remote server fail
