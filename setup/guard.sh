@@ -75,5 +75,6 @@ sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
 echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 
+# ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
 
 #ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
