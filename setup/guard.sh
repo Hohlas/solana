@@ -45,7 +45,7 @@ fi
 
 # waitin remote server fail
 Delinquent=false
-until [[ $DELINQUEENT == true ]]
+until [[ $Delinquent == true ]]
 do
 JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 LastVote=$(echo "$JSON" | jq -r '.lastVote')
