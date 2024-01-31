@@ -25,12 +25,12 @@ validator=$(solana address -k ~/solana/validator-keypair.json)
 if [[ $DIR == 'from' ]]; then 
 echo -e "\033[31m get tower from\033[0m" $SERV; 
 read -p "are you ready? " RESP; if [ "$RESP" != "y" ]; then exit 1; fi
-scp -P 2010 -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$(solana-keygen pubkey ~/solana/validator-keypair.json).bin /root/solana/ledger
+scp -P 2010 -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$validator.bin /root/solana/ledger
 fi
 
 # send tower to Secondary server
 if [[ $DIR == 'to' ]]; then 
 echo -e "\033[32m send tower to\033[0m" $SERV; 
 read -p "are you ready? " RESP; if [ "$RESP" != "y" ]; then exit 1; fi
-scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-$(solana-keygen pubkey ~/solana/validator-keypair.json).bin $SERV:/root/solana/ledger
+scp -P 2010 -i /root/keys/*.ssh /root/solana/ledger/tower-1_9-$validator.bin $SERV:/root/solana/ledger
 fi
