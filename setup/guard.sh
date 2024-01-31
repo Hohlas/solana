@@ -1,16 +1,10 @@
 #!/bin/bash
-curl https://raw.githubusercontent.com/Hohlas/solana/main/$NODE/$NAME > ~/name
-# chmod +x ~/name; source ~/name 
-echo 
 
-# you won’t need to enter your passphrase every time.
-chmod 600 ~/keys/$NAME.ssh
-eval "$(ssh-agent -s)"  # Start ssh-agent in the background
-ssh-add ~/keys/$NAME.ssh # Add SSH private key to the ssh-agent
 
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 SOL=/root/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
+CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 
 echo 'PUB_KEY: '$PUB_KEY
 SERV=$1
@@ -20,6 +14,17 @@ then
 fi
 IP=$(echo "$SERV" | cut -d'@' -f2)
 echo 'remote IP='$IP
+echo 'current IP='$CUR_IP
+if [ "$CUR_IP" == "$IP" ]; then
+echo 'WARNING! solana voting on current server'	
+exit
+fi
+
+
+# you won’t need to enter your passphrase every time.
+chmod 600 ~/keys/$NAME.ssh
+eval "$(ssh-agent -s)"  # Start ssh-agent in the background
+ssh-add ~/keys/$NAME.ssh # Add SSH private key to the ssh-agent
 
 # create ssh alias for remote server
 sudo tee <<EOF >/dev/null ~/.ssh/config
