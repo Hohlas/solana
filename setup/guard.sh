@@ -42,12 +42,14 @@ exit 1
 fi
 
 # waitin remote server fail
-DELINQUEENT=false
+Delinquent=false
 until [[ $DELINQUEENT == true ]]
 do
-echo -ne "waiting "$PUB_KEY" stop voting...\r"
+JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+LastVote=$(echo "$JSON" | jq -r '.lastVote')
+Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+echo -ne "Looking for "$PUB_KEY". LastVote="$LastVote" \r"
 sleep 5
-DELINQUEENT=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
 done
 
 # STOP SOLANA on REMOTE server
