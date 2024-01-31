@@ -29,6 +29,7 @@ echo 'alias next=~/sol_git/setup/next.sh' >> $HOME/.bashrc
 echo 'alias node_set=~/sol_git/setup/node_set.sh' >> $HOME/.bashrc
 echo 'alias snap=~/sol_git/setup/snap.sh' >> $HOME/.bashrc
 echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
+echo 'alias guard=~/sol_git/setup/guard.sh' >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 # download settings and scripts
