@@ -1,9 +1,11 @@
 #!/bin/bash
 echo -e '\n\e[42m Run solana settings \e[0m\n'
 # create dirs
-mkdir -p ~/solana/ledger
 mkdir -p /mnt/disk3/accounts
-mkdir -p /mnt/ramdisk/accounts_hash_cache
+mkdir -p /mnt/disk3/snapshots
+mkdir -p /mnt/disk2/ledger
+mkdir -p /mnt/disk2/accounts_index
+mkdir -p /mnt/disk2/accounts_hash_cache
 
 # create service link
 ln -sf ~/solana/solana.service /etc/systemd/system
@@ -28,6 +30,7 @@ echo "alias monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOM
 echo 'alias next=~/sol_git/setup/next.sh' >> $HOME/.bashrc
 echo 'alias node_set=~/sol_git/setup/node_set.sh' >> $HOME/.bashrc
 echo 'alias snap=~/sol_git/setup/snap.sh' >> $HOME/.bashrc
+echo 'alias git_clone=~/sol_git/setup/git_clone.sh' >> $HOME/.bashrc
 echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
 echo 'alias guard=~/sol_git/setup/guard.sh' >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
