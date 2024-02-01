@@ -33,7 +33,9 @@ echo  -e "\033[31m validator=true\033[0m";
 fi
 
 DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${validator}"'" ) | .delinquent ')
-if [[ $DELINQUEENT == true ]]; then 
+if [[ -z $DELINQUEENT ]]; then
+echo "unknown voting status"
+elif [[ $DELINQUEENT == true ]]; then 
 echo -e "\033[32m vote OFF\033[0m";
 else
 echo -e "\033[31m vote ON\033[0m"; 
