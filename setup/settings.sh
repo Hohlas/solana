@@ -7,7 +7,7 @@ mkdir -p /mnt/disk1/snapshots
 mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk2/accounts_index;      mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk2/accounts_hash_cache; mkdir -p /mnt/disk3/accounts_hash_cache
-LEDGER='/mnt/disk2/ledger'
+ln -s /mnt/disk2/ledger ~/solana/ledger
 
 # create service link
 ln -sf ~/solana/solana.service /etc/systemd/system
@@ -28,7 +28,7 @@ echo "alias vote_on='source ~/sol_git/setup/vote_on.sh'" >> $HOME/.bashrc
 echo 'alias vote_off=~/sol_git/setup/vote_off.sh' >> $HOME/.bashrc
 echo "alias logs='tail -f ~/solana/solana.log'" >> $HOME/.bashrc
 echo "alias catch='solana catchup ~/solana/validator_link.json --our-localhost --follow --log'" >> $HOME/.bashrc
-echo "alias monitor='solana-validator --ledger $LEDGER monitor'" >> $HOME/.bashrc
+echo "alias monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
 echo 'alias next=~/sol_git/setup/next.sh' >> $HOME/.bashrc
 echo 'alias node_set=~/sol_git/setup/node_set.sh' >> $HOME/.bashrc
 echo 'alias snap=~/sol_git/setup/snap.sh' >> $HOME/.bashrc
