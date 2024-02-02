@@ -7,6 +7,7 @@ mkdir -p /mnt/disk1/snapshots
 mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk2/accounts_index;      mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk2/accounts_hash_cache; mkdir -p /mnt/disk3/accounts_hash_cache
+LEDGER='/mnt/disk2/ledger'
 
 # create service link
 ln -sf ~/solana/solana.service /etc/systemd/system
