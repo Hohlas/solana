@@ -1,8 +1,9 @@
 #!/bin/bash
 echo -e '\n\e[42m Run solana settings \e[0m\n'
 # create dirs
-mkdir -p /mnt/disk3/accounts
-mkdir -p /mnt/disk3/snapshots
+mkdir -p /mnt/disk1/accounts
+mkdir -p /mnt/disk1/snapshots
+mkdir -p /mnt/disk3/ledger
 mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk2/accounts_index
 mkdir -p /mnt/disk2/accounts_hash_cache
