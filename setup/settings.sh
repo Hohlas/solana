@@ -4,10 +4,9 @@ echo -e '\n\e[42m Run solana settings \e[0m\n'
 mkdir -p ~/solana
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk1/snapshots
-mkdir -p /mnt/disk3/ledger
 mkdir -p /mnt/disk2/ledger
-mkdir -p /mnt/disk2/accounts_index
-mkdir -p /mnt/disk2/accounts_hash_cache
+mkdir -p /mnt/disk2/accounts_index;      mkdir -p /mnt/disk3/accounts_index
+mkdir -p /mnt/disk2/accounts_hash_cache; mkdir -p /mnt/disk3/accounts_hash_cache
 
 # create service link
 ln -sf ~/solana/solana.service /etc/systemd/system
