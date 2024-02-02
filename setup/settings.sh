@@ -1,6 +1,7 @@
 #!/bin/bash
 echo -e '\n\e[42m Run solana settings \e[0m\n'
 # create dirs
+mkdir -p ~/solana
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk1/snapshots
 mkdir -p /mnt/disk3/ledger
