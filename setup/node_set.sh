@@ -21,11 +21,13 @@ echo 'export vote_account='$(solana address -k ~/solana/vote.json) >> $HOME/.bas
 ~/sol_git/setup/vote_off.sh
 
 # update services and network url
-if [[ $NODE == "main" ]]; then 
+if [[ $NODE == "main" ]]; then
+LEDGER='/mnt/disk2/ledger'
 solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
 cp ~/sol_git/Jito/solana.service ~/solana/solana.service
 echo -e "\033[31m set MAIN $NAME\033[0m"
 elif [[ $NODE == "test" ]]; then
+LEDGER='~/solana/ledger'
 solana config set --url https://api.testnet.solana.com --keypair ~/solana/validator-keypair.json
 cp ~/sol_git/test/solana.service ~/solana/solana.service
 echo -e "\033[34m set test $NAME\033[0m"
