@@ -6,8 +6,7 @@ rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 
 SERV=$1
-if [ -z "$SERV" ]
-then
+if [ -z "$SERV" ]; then
   SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 fi
 IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
@@ -15,8 +14,8 @@ echo 'PUB_KEY: '$PUB_KEY
 echo 'remote IP='$IP
 echo 'current IP='$CUR_IP
 if [ "$CUR_IP" == "$IP" ]; then
-echo 'WARNING! solana voting on current server'	
-exit
+  echo 'WARNING! solana voting on current server'	
+  exit
 fi
 
 
@@ -37,21 +36,20 @@ IdentityFile /root/keys/$NAME.ssh
 # check SSH connection
 ssh REMOTE $SOL/solana --version 
 if [ $? -ne 0 ]; then
-echo -e "\033[31m SSH connection error! \033[0m"
-exit 1
+  echo -e "\033[31m SSH connection error! \033[0m"
+  exit 1
 else 
-echo -e "\033[32m SSH connection succesful \033[0m"
+  echo -e "\033[32m SSH connection succesful \033[0m"
 fi
 
 # waitin remote server fail
 Delinquent=false
-until [[ $Delinquent == true ]]
-do
-JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
-LastVote=$(echo "$JSON" | jq -r '.lastVote')
-Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-echo -ne "Looking for "$PUB_KEY". LastVote="$LastVote" \r"
-sleep 5
+until [[ $Delinquent == true ]]; do
+  JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+  LastVote=$(echo "$JSON" | jq -r '.lastVote')
+  Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+  echo -ne "Looking for "$PUB_KEY". LastVote="$LastVote" \r"
+  sleep 5
 done
 
 # STOP SOLANA on REMOTE server
@@ -61,13 +59,12 @@ ssh REMOTE systemctl stop telegraf
 scp -P 2010 -i /root/keys/$NAME.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
 
 # START SOLANA on LOCAL server
-if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; 
-then 
-TOWER_STATUS=' with existing tower'
-solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json; 
+if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
+  TOWER_STATUS=' with existing tower'
+  solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json; 
 else
-TOWER_STATUS=' without tower'
-solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
+  TOWER_STATUS=' without tower'
+  solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
 fi
 ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 # update telegraf
