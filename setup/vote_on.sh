@@ -3,19 +3,15 @@
 source $HOME/.bashrc
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
-DELINQUEENT=false
 
-until [[ $DELINQUEENT == true ]]
-do
-echo -ne "waiting "$PUB_KEY" stop voting...\r"
+Delinquent=false
+until [[ $Delinquent == true ]]; do
+JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+LastVote=$(echo "$JSON" | jq -r '.lastVote')
+Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+echo -ne "Looking for "$PUB_KEY". LastVote="$LastVote" \r"
 sleep 3
-DELINQUEENT=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
 done
-#if [[ $DELINQUEENT == false ]]; then 
-#echo "WARNING! "
-#echo -e $PUB_KEY"\033[31m is still voting, can't vote_on \033[0m"; 
-#return; 
-#fi
 
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; 
 then 
