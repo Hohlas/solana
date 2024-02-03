@@ -5,7 +5,7 @@ SOL=/root/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 
-echo -e "\n\n  Secondary server"
+echo -e "\n\n  SECONDARY  SERVER"
 SERV=$1
 if [ -z "$SERV" ]; then
   SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
@@ -35,15 +35,13 @@ IdentityFile /root/keys/$NAME.ssh
 " > ~/.ssh/config
 
 # check SSH connection
-ssh REMOTE $SOL/solana --version 
-if [ $? -ne 0 ]; then
-  echo -e "\033[31m SSH connection error! \033[0m"
-  exit 1
-else 
-  echo -e "\033[32m SSH connection succesful \033[0m"
-fi
+ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh'
+scp -P 2010 -i /root/keys/$NAME.ssh $SERV:~/check_ssh ~/
+ssh REMOTE rm ~/check_ssh
+echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
+rm ~/check_ssh
 
-ssh REMOTE echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
+echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
 
 # waiting remote server fail
 Delinquent=false
