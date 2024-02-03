@@ -5,7 +5,7 @@ SOL=/root/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 
-echo -e "\n\n  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
+echo -e "\n\n  Secondary server"
 SERV=$1
 if [ -z "$SERV" ]; then
   SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
@@ -43,7 +43,7 @@ else
   echo -e "\033[32m SSH connection succesful \033[0m"
 fi
 
-ssh REMOTE echo "start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
+ssh REMOTE echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
 
 # waiting remote server fail
 Delinquent=false
@@ -51,7 +51,7 @@ until [[ $Delinquent == true ]]; do
   JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
   LastVote=$(echo "$JSON" | jq -r '.lastVote')
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-  echo -ne "Looking for $PUB_KEY. LastVote=$LastVote $(date +"%H:%M:%S") MSK \r"
+  echo -ne "Looking for $PUB_KEY. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
   sleep 5
 done
 
