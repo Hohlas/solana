@@ -2,15 +2,13 @@
 echo -e '\n\e[42m Run solana settings \e[0m\n'
 # create dirs
 mkdir -p ~/solana
-mkdir -p /mnt/disk1/accounts
-mkdir -p /mnt/disk1/snapshots
+mkdir -p /mnt/disk1
 mkdir -p /mnt/disk2/ledger
-mkdir -p /mnt/disk2/accounts_index;      mkdir -p /mnt/disk3/accounts_index
-mkdir -p /mnt/disk2/accounts_hash_cache; mkdir -p /mnt/disk3/accounts_hash_cache
-ln -s /mnt/disk2/ledger ~/solana/ledger
+mkdir -p /mnt/disk3
 
-# create service link
+# create links
 ln -sf ~/solana/solana.service /etc/systemd/system
+ln -s /mnt/disk2/ledger ~/solana/ledger
 
 # add PATH
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
