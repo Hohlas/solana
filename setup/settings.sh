@@ -9,6 +9,8 @@ mkdir -p /mnt/disk3
 # create links
 ln -sf ~/solana/solana.service /etc/systemd/system
 ln -s /mnt/disk2/ledger ~/solana/ledger
+ln -s /mnt/disk3/accounts_index /mnt/disk2/accounts_index # link from 2 to 3
+ln -s /mnt/disk3/accounts_hash_cache /mnt/disk2/accounts_hash_cache # link from 2 to 3
 
 # add PATH
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
