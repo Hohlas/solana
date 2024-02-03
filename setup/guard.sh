@@ -64,7 +64,7 @@ echo "  change validator link on REMOTE server "
 ssh REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
 echo "  stop telegraf"
 ssh REMOTE systemctl stop telegraf
-echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
+echo -e "\033[32m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
 ssh REMOTE systemctl restart solana
 echo "  move tower from REMOTE to LOCAL "
 scp -P 2010 -i /root/keys/$NAME.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
