@@ -66,8 +66,9 @@ echo "  stop telegraf"
 ssh REMOTE systemctl stop telegraf
 echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
 ssh REMOTE systemctl restart solana
-echo "  copy tower from REMOTE to LOCAL "
+echo "  move tower from REMOTE to LOCAL "
 scp -P 2010 -i /root/keys/$NAME.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
+ssh REMOTE rm /root/solana/ledger/tower-1_9-$PUB_KEY.bin
 
 # START SOLANA on LOCAL server
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
