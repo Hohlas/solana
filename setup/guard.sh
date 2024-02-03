@@ -5,6 +5,7 @@ SOL=/root/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 
+echo -e "\n\n  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
 SERV=$1
 if [ -z "$SERV" ]; then
   SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
@@ -42,20 +43,30 @@ else
   echo -e "\033[32m SSH connection succesful \033[0m"
 fi
 
-# waitin remote server fail
+ssh REMOTE echo "start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
+
+# waiting remote server fail
 Delinquent=false
 until [[ $Delinquent == true ]]; do
   JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
   LastVote=$(echo "$JSON" | jq -r '.lastVote')
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-  echo -ne "Looking for "$PUB_KEY". LastVote="$LastVote" \r"
+  echo -ne "Looking for $PUB_KEY. LastVote=$LastVote $(date +"%H:%M:%S") MSK \r"
   sleep 5
 done
 
+echo -e "\033[31m  REMOTE server fail $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
+
 # STOP SOLANA on REMOTE server
+echo "  set empty identity on REMOTE server "  
 ssh REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json
+echo "  change validator link on REMOTE server "  
 ssh REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
+echo "  stop telegraf"
 ssh REMOTE systemctl stop telegraf
+echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
+ssh REMOTE systemctl restart solana
+echo "  copy tower from REMOTE to LOCAL "
 scp -P 2010 -i /root/keys/$NAME.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
 
 # START SOLANA on LOCAL server
