@@ -5,7 +5,7 @@ rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 
 FORCE=$1
-if [ -z "$FORCE" ] # no 'force' flag, so waiting for 'delink' status
+if [ -z "$FORCE" ]; then # no 'force' flag, so waiting for 'delink' status
   Delinquent=false
   until [[ $Delinquent == true ]]; do
     JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
