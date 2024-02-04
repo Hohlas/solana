@@ -11,8 +11,8 @@ vote=$(solana address -k ~/solana/vote.json)
 echo '--'
 echo 'epmty_validator:   '$empty
 echo 'validator_link:    '$link
-echo 'current validator: '$validator
-echo 'validator-keypair: '$PUB_KEY
+echo 'current validator: '$validator' - set-identity'
+echo 'validator-keypair: '$PUB_KEY' - from file'
 echo 'vote account:      '$vote
 echo '--'
 
