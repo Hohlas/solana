@@ -9,11 +9,11 @@ validator=$(stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from keyfile 'validator-keypair.json'
 vote=$(solana address -k ~/solana/vote.json)
 echo '--'
-echo 'epmty_validator: '$empty
-echo 'validator_link: '$link
+echo 'epmty_validator:   '$empty
+echo 'validator_link:    '$link
 echo 'current validator: '$validator
 echo 'validator-keypair: '$PUB_KEY
-echo 'vote: '$vote
+echo 'vote account:      '$vote
 echo '--'
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
