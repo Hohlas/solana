@@ -61,9 +61,9 @@ echo "  change validator link on REMOTE server "
 ssh REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
 command_output=$(ssh REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
 command_exit_status=$?
-echo " try to set empty identity on REMOTE server: $command_output" 
+echo "  try to set empty identity on REMOTE server: $command_output" 
 if [ $command_exit_status -eq 0 ]; then
-   echo -e "\033[32m set empty identity on REMOTE server successful \033[0m" 
+   echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
 else
   echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
   ssh REMOTE systemctl restart solana
