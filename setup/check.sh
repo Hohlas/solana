@@ -5,12 +5,13 @@ version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 empty=$(solana address -k ~/solana/empty-validator.json)
 link=$(solana address -k ~/solana/validator_link.json)
-validator=$(solana address --url $rpcURL) #$(solana address -k ~/solana/validator-keypair.json)
+validator=$(stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}') # voting validator
+PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from keyfile 'validator-keypair.json'
 vote=$(solana address -k ~/solana/vote.json)
 echo '--'
 echo 'epmty_validator: '$empty
 echo 'validator_link: '$link
-echo 'validator: '$validator
+echo 'current validator: '$validator
 echo 'vote: '$vote
 echo '--'
 
@@ -32,7 +33,8 @@ echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it 
 echo  -e "\033[31m validator=true\033[0m"; 
 fi
 
-DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${validator}"'" ) | .delinquent ')
+
+DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
 if [[ -z $DELINQUEENT ]]; then
 echo "unknown voting status"
 elif [[ $DELINQUEENT == true ]]; then 
