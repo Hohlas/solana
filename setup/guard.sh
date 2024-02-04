@@ -53,10 +53,9 @@ until [[ $Delinquent == true ]]; do
   sleep 5
 done
 
-echo -e "\033[31m  REMOTE server fail $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
+echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
 
 # STOP SOLANA on REMOTE server
-
 echo "  change validator link on REMOTE server "  
 ssh REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
 command_output=$(ssh REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
