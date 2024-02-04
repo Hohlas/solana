@@ -56,18 +56,22 @@ done
 echo -e "\033[31m  REMOTE server fail $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
 
 # STOP SOLANA on REMOTE server
-echo "  set empty identity on REMOTE server "  
-ssh REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json
+
 echo "  change validator link on REMOTE server "  
 ssh REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
-echo "  stop solana and telegraf on REMOTE server"
-ssh REMOTE systemctl stop telegraf
-ssh REMOTE systemctl stop solana
+command_output=$(ssh REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
+command_exit_status=$?
+echo " try to set empty identity on REMOTE server: $command_output" 
+if [ $command_exit_status -eq 0 ]; then
+   echo -e "\033[32m set empty identity on REMOTE server successful \033[0m" 
+else
+  echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
+  ssh REMOTE systemctl restart solana
+fi
 echo "  move tower from REMOTE to LOCAL "
 scp -P 2010 -i /root/keys/$NAME.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
-# ssh REMOTE rm /root/solana/ledger/tower-1_9-$PUB_KEY.bin
-echo -e "\033[32m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
-ssh REMOTE systemctl start solana
+echo "  stop telegraf on REMOTE server"
+ssh REMOTE systemctl stop telegraf
 
 # START SOLANA on LOCAL server
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
