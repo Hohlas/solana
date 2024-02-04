@@ -13,6 +13,7 @@ echo 'epmty_validator: '$empty
 echo 'validator_link: '$link
 echo 'current validator: '$validator
 echo 'vote: '$vote
+echo 'PUB_KEY: '$PUB_KEY
 echo '--'
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
