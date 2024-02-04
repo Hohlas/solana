@@ -11,9 +11,9 @@ vote=$(solana address -k ~/solana/vote.json)
 echo '--'
 echo 'epmty_validator: '$empty
 echo 'validator_link: '$link
-echo 'current validator: '$validator
+echo 'current validator: '$validator' - really voting'
+echo 'PUB_KEY: '$PUB_KEY' - identity from validator-keypair.json'
 echo 'vote: '$vote
-echo 'PUB_KEY: '$PUB_KEY
 echo '--'
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
