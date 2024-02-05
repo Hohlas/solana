@@ -5,7 +5,7 @@ version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 empty=$(solana address -k ~/solana/empty-validator.json)
 link=$(solana address -k ~/solana/validator_link.json)
-validator=$(stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}') # voting validator
+validator=$(timeout 3 stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from keyfile 'validator-keypair.json'
 vote=$(solana address -k ~/solana/vote.json)
 echo '--'
