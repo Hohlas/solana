@@ -25,13 +25,14 @@ echo -e "\033[31m network=api.mainnet-beta \033[0m";
 fi	
 echo "v$version - $client"
 
-if [[ $link == $empty ]]; then 
+if [[ $validator == $empty ]]; then 
 echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'	
 echo -e "\033[32m validator=empty\033[0m"; 
-fi
-if [[ $link == $validator ]]; then 
+elif [[ $validator == $PUB_KEY ]]; then 
 echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
 echo  -e "\033[31m validator=true\033[0m"; 
+else
+echo -e "\033[31m validator=empty, unknown status \033[0m";
 fi
 
 
