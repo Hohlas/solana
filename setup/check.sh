@@ -20,24 +20,23 @@ echo "v$version - $client"
 
 if [[ $validator == $empty ]]; then 
 echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
-CLR="\033[90m"
-STATUS="EMPTY"	
-#echo -e "\033[90m empty validator $validator\033[0m"; 
+VAL_CLR="\033[90m"
 elif [[ $validator == $PUB_KEY ]]; then 
 echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
-CLR="\033[32m"
-STATUS="VOTING"
-#echo  -e "\033[32m voting validator $validator\033[0m"; 
+VAL_CLR="\033[32m"
 else
-STATUS="UNKNOWN"
 echo -e "\033[31m validator="$validator", unknown status \033[0m";
 fi
+if   [[ $link == $empty ]];   then LNK_CLR="\033[90m"
+else [[ $link == $PUB_KEY ]];      LNK_CLR="\033[32m"
+fi
+
 echo '--'
 echo ' vote account:      '$vote
 echo -e " epmty_keypair:     \033[90m"$empty"\033[0m"
 echo -e " validator-keypair: \033[32m"$PUB_KEY"\033[0m"
-echo -e " validator_link:    ${CLR}"$link"\033[0m"
-echo -e " current validator: ${CLR}"$validator"\033[0m"
+echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
+echo -e " current validator: ${VAL_CLR}"$validator"\033[0m"
 echo '--'
 DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
 if   [[ $DELINQUEENT == true ]];  then echo -e "\033[31m DELINK\033[0m";
