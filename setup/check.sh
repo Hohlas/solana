@@ -10,7 +10,7 @@ PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from ke
 vote=$(solana address -k ~/solana/vote.json)
 GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
-SERV=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+VAL_SERV=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
@@ -42,8 +42,9 @@ echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
 echo -e " current validator: ${VAL_CLR}"$validator"\033[0m"
 echo '--'
 
-if [[ $VAL_CLR == $GRAY && $LNK_CLR == $GRAY ]];  then echo 'gray'; STATUS=$GRAY" on "$SERV" \033[0m"; fi
-if [[ $VAL_CLR == $GREEN && $LNK_CLR == $GREEN ]]; then echo 'green'; STATUS=$GREEN" on current server \033[0m"; fi
+if [ "$CUR_IP" == "$VALSERV" ]; then STATUS=$GREEN" on current server \033[0m";
+else                                 STATUS=$GRAY" on "$VALSERV" \033[0m"; 
+fi
 
 DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
 if   [[ $DELINQUEENT == true ]];  then echo -e "\033[31m DELINK\033[0m"$STATUS;
