@@ -8,7 +8,7 @@ link=$(solana address -k ~/solana/validator_link.json)
 validator=$(timeout 3 stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from keyfile 'validator-keypair.json'
 vote=$(solana address -k ~/solana/vote.json)
-GRAY=$"\033[90m"; GREEN=$"\033[32m"; RED=$"\033[31m"
+GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SERV=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 
