@@ -27,12 +27,12 @@ echo "v$version - $client"
 
 if [[ $validator == $empty ]]; then 
 echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'	
-echo -e "\033[32m validator=empty\033[0m"; 
+echo -e "\033[32m empty validator\033[0m"; 
 elif [[ $validator == $PUB_KEY ]]; then 
 echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
-echo  -e "\033[31m validator=true\033[0m"; 
+echo  -e "\033[31m voting validator\033[0m"; 
 else
-echo -e "\033[31m validator=empty, unknown status \033[0m";
+echo -e "\033[31m validator="$validator", unknown status \033[0m";
 fi
 
 
@@ -40,7 +40,7 @@ DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.valid
 if [[ -z $DELINQUEENT ]]; then
 echo "unknown voting status"
 elif [[ $DELINQUEENT == true ]]; then 
-echo -e "\033[32m vote OFF\033[0m";
+echo -e "\033[32m DELINK\033[0m";
 else
-echo -e "\033[31m vote ON\033[0m"; 
+echo -e "\033[31m VOTING\033[0m"; 
 fi
