@@ -19,22 +19,22 @@ fi
 echo "v$version - $client"
 
 if [[ $validator == $empty ]]; then 
-echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
-VAL_CLR="\033[90m"
+echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on another server'
+VAL_CLR="\033[90m" # set gray color
 elif [[ $validator == $PUB_KEY ]]; then 
-echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
-VAL_CLR="\033[32m"
+echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on another server'
+VAL_CLR="\033[32m" # set green color
 else
 echo -e "\033[31m validator="$validator", unknown status \033[0m";
 fi
-if   [[ $link == $empty ]];   then LNK_CLR="\033[90m"
-else [[ $link == $PUB_KEY ]];      LNK_CLR="\033[32m"
+if   [[ $link == $empty ]];   then LNK_CLR="\033[90m" # set gray color
+else [[ $link == $PUB_KEY ]];      LNK_CLR="\033[32m" # set green color
 fi
 
 echo '--'
 echo ' vote account:      '$vote
-echo -e " epmty_keypair:     \033[90m"$empty"\033[0m"
-echo -e " validator-keypair: \033[32m"$PUB_KEY"\033[0m"
+echo -e " epmty_keypair:     \033[90m"$empty"\033[0m"   # gray color
+echo -e " validator-keypair: \033[32m"$PUB_KEY"\033[0m" # green color
 echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
 echo -e " current validator: ${VAL_CLR}"$validator"\033[0m"
 echo '--'
