@@ -29,7 +29,6 @@ CLR="\033[32m"
 STATUS="VOTING"
 #echo  -e "\033[32m voting validator $validator\033[0m"; 
 else
-CLR="\033[31m"
 STATUS="UNKNOWN"
 echo -e "\033[31m validator="$validator", unknown status \033[0m";
 fi
