@@ -8,13 +8,6 @@ link=$(solana address -k ~/solana/validator_link.json)
 validator=$(timeout 3 stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from keyfile 'validator-keypair.json'
 vote=$(solana address -k ~/solana/vote.json)
-echo '--'
-echo 'epmty_validator:   '$empty
-echo 'validator_link:    '$link
-echo 'current validator: '$validator' - set-identity'
-echo 'validator-keypair: '$PUB_KEY' - from file'
-echo 'vote account:      '$vote
-echo '--'
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
@@ -26,21 +19,29 @@ fi
 echo "v$version - $client"
 
 if [[ $validator == $empty ]]; then 
-echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'	
-echo -e "\033[32m empty validator\033[0m"; 
+echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
+CLR="\033[90m"
+STATUS="EMPTY"	
+#echo -e "\033[90m empty validator $validator\033[0m"; 
 elif [[ $validator == $PUB_KEY ]]; then 
 echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on Primary server'
-echo  -e "\033[31m voting validator\033[0m"; 
+CLR="\033[32m"
+STATUS="VOTING"
+#echo  -e "\033[32m voting validator $validator\033[0m"; 
 else
+CLR="\033[31m"
+STATUS="UNKNOWN"
 echo -e "\033[31m validator="$validator", unknown status \033[0m";
 fi
-
-
+echo '--'
+echo ' vote account:      '$vote
+echo -e " epmty_keypair:     \033[90m"$empty"\033[0m"
+echo -e " validator-keypair: \033[32m"$PUB_KEY"\033[0m"
+echo -e " validator_link:    ${CLR}"$link"\033[0m"
+echo -e " current validator: ${CLR}"$validator"\033[0m"
+echo '--'
 DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
-if [[ -z $DELINQUEENT ]]; then
-echo "unknown voting status"
-elif [[ $DELINQUEENT == true ]]; then 
-echo -e "\033[32m DELINK\033[0m";
-else
-echo -e "\033[31m VOTING\033[0m"; 
+if   [[ $DELINQUEENT == true ]];  then echo -e "\033[31m DELINK\033[0m";
+elif [[ $DELINQUEENT == false ]]; then echo -e "\033[32m VOTING\033[0m"; 
+else     echo -e "\033[31m unknown voting status $DELINQUEENT\033[0m";
 fi
