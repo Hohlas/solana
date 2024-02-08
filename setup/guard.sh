@@ -5,7 +5,7 @@ SOL=/root/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
-SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
+#SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
 CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
 
