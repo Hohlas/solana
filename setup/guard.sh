@@ -35,7 +35,7 @@ CHECK_CONNECTION() {
     if [ $DISCONNECT_COUNTER -ge 3 ]; then
         echo "CONNECTION LOSS"
         bash "$CONNECTION_LOSS_SCRIPT"
-        systemctl restart solana
+        systemctl restart solana && echo -e "\033[32m  restart solana \033[0m"
     fi
 }
 
