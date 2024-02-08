@@ -11,7 +11,7 @@ DISCONNECT_COUNTER=0
 
 
 echo ' SOLANA GUARD'
-CHECK_CONNECTION() {
+CHECK_CONNECTION() { # every 5 seconds
     connection=false
     sleep 5
     for site in "${SITES[@]}"; do
@@ -31,8 +31,8 @@ CHECK_CONNECTION() {
         DISCONNECT_COUNTER=0
     fi
 
-    # connection loss for 15 seconds (5sec * 3)
-    if [ $DISCONNECT_COUNTER -ge 3 ]; then
+    # connection loss for 20 seconds (5sec * 4)
+    if [ $DISCONNECT_COUNTER -ge 4 ]; then
         echo "CONNECTION LOSS"
         bash "$CONNECTION_LOSS_SCRIPT"
         systemctl restart solana && echo -e "\033[32m  restart solana \033[0m"
@@ -51,7 +51,7 @@ echo 'current IP='$CUR_IP
 if [ "$CUR_IP" == "$IP" ]; then
   echo -e "\n\n  solana voting on current PRIMARY  SERVER "
   # CHECK_CONNECTION_LOOP 
-  until [ $DISCONNECT_COUNTER -ge 3 ]; do
+  until [ $DISCONNECT_COUNTER -ge 4 ]; do
     CHECK_CONNECTION
   done
   exit
