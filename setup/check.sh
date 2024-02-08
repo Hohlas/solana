@@ -19,7 +19,7 @@ elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then
 echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[31m network=api.mainnet-beta \033[0m";
 fi	
-echo "v$version - $client"
+echo "v$version - $client, IP:$CUR_IP"
 
 if [[ $validator == $empty ]]; then 
 echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on another server'
