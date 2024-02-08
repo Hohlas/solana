@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
-SOL=/root/.local/share/solana/install/active_release/bin
+SOL=$HOME/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
