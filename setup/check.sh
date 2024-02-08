@@ -22,10 +22,10 @@ fi
 echo "v$version - $client, IP:$CUR_IP"
 
 if [[ $validator == $empty ]]; then 
-echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on another server'
+echo ' tower to '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)"$GRAY  # run it on another server"\033[0m"
 VAL_CLR=$GRAY # set gray color
 elif [[ $validator == $PUB_KEY ]]; then 
-echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)'  # run it on another server'
+echo ' tower from '`whoami`'@'$(wget -q -4 -O- http://icanhazip.com)"$GRAY  # run it on another server"\033[0m"
 VAL_CLR=$GREEN # set green color
 else
 echo -e "\033[31m validator="$validator", unknown status \033[0m";
