@@ -4,22 +4,59 @@ PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 SOL=/root/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
+SITES=("www.google.com" "www.bing.com")
+SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
+CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/check.sh"
+DISCONNECT_COUNTER=0
 
-echo -e "\n\n  SECONDARY  SERVER"
+
+echo ' SOLANA GUARD'
+CHECK_CONNECTION() {
+    connection=false
+    sleep 5
+    for site in "${SITES[@]}"; do
+        ping -c1 $site &> /dev/null # ping every site once
+        if [ $? -eq 0 ]; then
+            connection=true # good connection
+            echo -ne "\033[32m check server connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r \033[0m"
+            break
+        fi
+    done
+
+    # connection losses counter
+    if [ "$connection" = false ]; then
+        let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
+        echo "connection failed, attempt "$DISCONNECT_COUNTER
+    else
+        DISCONNECT_COUNTER=0
+    fi
+
+    # connection loss for 15 seconds (5sec * 3)
+    if [ $DISCONNECT_COUNTER -ge 3 ]; then
+        echo "CONNECTION LOSS"
+        bash "$CONNECTION_LOSS_SCRIPT"
+    fi
+}
+
+
 SERV=$1
 if [ -z "$SERV" ]; then
   SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 fi
 IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 echo 'PUB_KEY: '$PUB_KEY
-echo 'remote IP='$IP
+echo 'voting IP='$IP
 echo 'current IP='$CUR_IP
 if [ "$CUR_IP" == "$IP" ]; then
-  echo 'WARNING! solana voting on current server'	
+  echo -e "\n\n  solana voting on current PRIMARY  SERVER "
+  # CHECK_CONNECTION_LOOP 
+  until [ $DISCONNECT_COUNTER -ge 3 ]; do
+    CHECK_CONNECTION
+  done
   exit
 fi
 
-
+echo -e "\n\n  SECONDARY  SERVER"
 # you won’t need to enter your passphrase every time.
 chmod 600 ~/keys/$NAME.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
