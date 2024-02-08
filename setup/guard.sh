@@ -10,7 +10,7 @@ CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
 
 
-echo ' SOLANA GUARD'
+echo ' == SOLANA GUARD =='
 CHECK_CONNECTION() { # every 5 seconds
     connection=false
     sleep 5
@@ -49,7 +49,7 @@ echo 'PUB_KEY: '$PUB_KEY
 echo 'voting IP='$IP
 echo 'current IP='$CUR_IP
 if [ "$CUR_IP" == "$IP" ]; then
-  echo -e "\n\n  solana voting on current PRIMARY  SERVER "
+  echo -e "\n solana voting on current PRIMARY  SERVER "
   # CHECK_CONNECTION_LOOP 
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
     CHECK_CONNECTION
@@ -57,7 +57,7 @@ if [ "$CUR_IP" == "$IP" ]; then
   exit
 fi
 
-echo -e "\n\n  SECONDARY  SERVER"
+echo -e "\n = SECONDARY  SERVER ="
 # you won’t need to enter your passphrase every time.
 chmod 600 ~/keys/$NAME.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
