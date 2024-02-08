@@ -6,7 +6,7 @@ rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
 SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
-CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/check.sh"
+CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
 
 
@@ -35,6 +35,7 @@ CHECK_CONNECTION() {
     if [ $DISCONNECT_COUNTER -ge 3 ]; then
         echo "CONNECTION LOSS"
         bash "$CONNECTION_LOSS_SCRIPT"
+        systemctl restart solana
     fi
 }
 
