@@ -10,7 +10,7 @@ PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from ke
 vote=$(solana address -k ~/solana/vote.json)
 GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
-VAL_SERV=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+SERV=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
@@ -42,7 +42,7 @@ echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
 echo -e " current validator: ${VAL_CLR}"$validator"\033[0m"
 echo '--'
 
-if [ "$CUR_IP" == "$VAL_SERV" ]; then STATUS=$GREEN" on current server \033[0m";
+if [ "$CUR_IP" == "$SERV" ]; then STATUS=$GREEN" on current server \033[0m";
 else                                  STATUS=$GRAY" on "$VAL_SERV" \033[0m"; 
 fi
 
