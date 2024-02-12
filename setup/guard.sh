@@ -1,8 +1,11 @@
 #!/bin/bash
 
+PORT='2010'
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 SOL=$HOME/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
+version=$(solana --version | awk '{print $2}')
+client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
 #SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
@@ -11,6 +14,15 @@ DISCONNECT_COUNTER=0
 
 
 echo ' == SOLANA GUARD =='
+if [ $rpcURL = https://api.testnet.solana.com ]; then 
+echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
+echo -e "\033[34m network=api.testnet  v$version \033[0m";
+elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
+echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
+echo -e "\033[31m network=api.mainnet-beta  v$version \033[0m";
+fi	
+#echo " v$version - $client, IP:$CUR_IP"
+
 CHECK_CONNECTION() { # every 5 seconds
     connection=false
     sleep 5
@@ -59,22 +71,22 @@ fi
 
 echo -e "\n = SECONDARY  SERVER ="
 # you won’t need to enter your passphrase every time.
-chmod 600 ~/keys/$NAME.ssh
+chmod 600 ~/keys/*.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
-ssh-add ~/keys/$NAME.ssh # Add SSH private key to the ssh-agent
+ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
 
 # create ssh alias for remote server
 echo " 
 Host REMOTE
 HostName $IP
 User root
-Port 2010
-IdentityFile /root/keys/$NAME.ssh
+Port $PORT
+IdentityFile /root/keys/*.ssh
 " > ~/.ssh/config
 
 # check SSH connection
 ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh'
-scp -P 2010 -i /root/keys/$NAME.ssh $SERV:~/check_ssh ~/
+scp -P $PORT -i /root/keys/*.ssh $SERV:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
@@ -106,7 +118,7 @@ else
   ssh REMOTE systemctl restart solana
 fi
 echo "  move tower from REMOTE to LOCAL "
-scp -P 2010 -i /root/keys/$NAME.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
+scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
 echo "  stop telegraf on REMOTE server"
 ssh REMOTE systemctl stop telegraf
 
