@@ -11,16 +11,21 @@ SITES=("www.google.com" "www.bing.com")
 #SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
 CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
+SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 
 
 echo ' == SOLANA GUARD =='
-if [ $rpcURL = https://api.testnet.solana.com ]; then 
-echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
-echo -e "\033[34m network=api.testnet  v$version \033[0m";
-elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
-echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
-echo -e "\033[31m network=api.mainnet-beta  v$version \033[0m";
-fi	
+source ~/sol_git/setup/check.sh
+echo 'voting IP='$IP
+echo 'current IP='$CUR_IP
+#if [ $rpcURL = https://api.testnet.solana.com ]; then 
+#echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
+#echo -e "\033[34m network=api.testnet  v$version \033[0m";
+#elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
+#echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
+#echo -e "\033[31m network=api.mainnet-beta  v$version \033[0m";
+#fi	
 #echo " v$version - $client, IP:$CUR_IP"
 
 CHECK_CONNECTION() { # every 5 seconds
@@ -52,14 +57,7 @@ CHECK_CONNECTION() { # every 5 seconds
 }
 
 
-SERV=$1
-if [ -z "$SERV" ]; then
-  SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
-fi
-IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
-echo 'PUB_KEY: '$PUB_KEY
-echo 'voting IP='$IP
-echo 'current IP='$CUR_IP
+
 if [ "$CUR_IP" == "$IP" ]; then
   echo -e "\n solana voting on current PRIMARY  SERVER "
   # CHECK_CONNECTION_LOOP 
