@@ -16,8 +16,8 @@ IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 
 
 echo ' == SOLANA GUARD =='
-source ~/sol_git/setup/check.sh
-echo 'voting IP='$IP
+#source ~/sol_git/setup/check.sh
+echo 'voting  IP='$IP
 echo 'current IP='$CUR_IP
 #if [ $rpcURL = https://api.testnet.solana.com ]; then 
 #echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
