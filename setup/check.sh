@@ -28,7 +28,7 @@ elif [[ $validator == $PUB_KEY ]]; then
 echo -e ' tower from '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
 VAL_CLR=$GREEN # set green color
 else
-echo -e "\033[31m validator="$validator"  unknown status, IP:$CUR_IP\033[0m";
+echo -e "\033[31m validator="$validator"  unknown status, CUR_IP:$CUR_IP\033[0m";
 fi
 if   [[ $link == $empty ]];   then LNK_CLR=$GRAY   # set gray color
 else [[ $link == $PUB_KEY ]];      LNK_CLR=$GREEN  # set green color
