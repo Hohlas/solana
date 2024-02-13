@@ -14,10 +14,10 @@ VOTE_IP=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
-echo -e "\033[34m network=api.testnet v$version - $client\033[0m";
+echo -e "\033[34m network=api.testnet \033[0m v$version - $client";
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
 echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
-echo -e "\033[31m network=api.mainnet-beta v$version - $client\033[0m";
+echo -e "\033[31m network=api.mainnet-beta \033[0m v$version - $client";
 fi	
 # echo "v$version - $client, IP:$CUR_IP"
 
