@@ -43,7 +43,7 @@ echo -e " current validator: ${VAL_CLR}"$validator"\033[0m"
 echo '--'
 
 if [ "$CUR_IP" == "$SERV" ]; then STATUS=$GREEN" on current server \033[0m";
-else                                  STATUS=$GRAY" on "$VAL_SERV" \033[0m"; 
+else                              STATUS=$GRAY" on "$SERV" \033[0m"; 
 fi
 
 DELINQUEENT=$(solana validators --url $rpcURL --output json-compact | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" ) | .delinquent ')
