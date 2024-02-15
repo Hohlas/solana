@@ -128,7 +128,7 @@ else
   TOWER_STATUS=' without tower'
   solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
 fi
-ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
+# ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 # update telegraf
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
