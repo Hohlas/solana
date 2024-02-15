@@ -29,7 +29,7 @@ then echo -e "\033[32m set validator-keypair successful \033[0m"
 else echo -e "\033[31m can not set validator-keypair \033[0m"
 fi
 
-ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
+# ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 # update telegraf
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
