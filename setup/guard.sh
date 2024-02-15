@@ -99,7 +99,7 @@ until [[ $Delinquent == true ]]; do
   JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
   LastVote=$(echo "$JSON" | jq -r '.lastVote')
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-  echo -ne "\n Looking for $PUB_KEY. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
+  echo -e "\n\n"; echo -ne "Looking for $PUB_KEY. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
   sleep 5
 done
 
