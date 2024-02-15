@@ -19,14 +19,14 @@ echo ' == SOLANA GUARD =='
 #source ~/sol_git/setup/check.sh
 echo 'voting  IP='$IP
 echo 'current IP='$CUR_IP
-#if [ $rpcURL = https://api.testnet.solana.com ]; then 
-#echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
-#echo -e "\033[34m network=api.testnet  v$version \033[0m";
-#elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
-#echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
-#echo -e "\033[31m network=api.mainnet-beta  v$version \033[0m";
-#fi	
-#echo " v$version - $client, IP:$CUR_IP"
+if [ $rpcURL = https://api.testnet.solana.com ]; then 
+echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
+echo -e "\033[34m network=api.testnet  v$version \033[0m";
+elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
+echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
+echo -e "\033[31m network=api.mainnet-beta  v$version \033[0m";
+fi	
+echo " v$version - $client, IP:$CUR_IP"
 
 CHECK_CONNECTION() { # every 5 seconds
     connection=false
