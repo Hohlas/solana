@@ -93,7 +93,7 @@ rm ~/check_ssh
 
 echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
 ALARM=$(printf "Start monitoring \n%s ${NODE}.${NAME}")
-curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$ALARM"
+curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$ALARM" > /dev/null
 # waiting remote server fail
 Delinquent=false
 until [[ $Delinquent == true ]]; do
@@ -146,7 +146,7 @@ sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
 echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 ALARM=$(printf "$ALARM \n%s VOTE ON$TOWER_STATUS")
-curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM"
+curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM" > /dev/null
 solana-validator --ledger ~/solana/ledger monitor
 # ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
 #ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
