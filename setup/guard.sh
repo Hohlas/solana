@@ -92,7 +92,7 @@ echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
 
 echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
-
+curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="Start monitoring ${NODE}.${NAME}"
 # waiting remote server fail
 Delinquent=false
 until [[ $Delinquent == true ]]; do
@@ -151,7 +151,7 @@ echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 solana-validator --ledger ~/solana/ledger monitor
 
 ALARM="$ALARM\nRESTART COMPLETE"
-curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$ALARM"
+curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM"
 # ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
 
 #ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
