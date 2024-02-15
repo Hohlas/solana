@@ -104,8 +104,14 @@ done
 echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
 
 # STOP SOLANA on REMOTE server
-echo "  change validator link on REMOTE server "  
-ssh REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
+  
+command_output=$(ssh REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
+command_exit_status=$?
+echo "  try to change validator link on REMOTE server: $command_output" 
+if [ $command_exit_status -eq 0 ]; then
+   echo -e "\033[32m  change validator link on REMOTE server successful \033[0m" 
+fi
+
 command_output=$(ssh REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
 command_exit_status=$?
 echo "  try to set empty identity on REMOTE server: $command_output" 
