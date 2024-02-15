@@ -132,26 +132,20 @@ echo "  stop telegraf on REMOTE server"
 ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
 
 # START SOLANA on LOCAL server
-ALARM="$ALARM\nSTART LOCAL:"
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
   TOWER_STATUS=' with existing tower'
-  solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json; 
-  ALARM="$ALARM\nset-identity with tower"
+  solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
 else
   TOWER_STATUS=' without tower'
   solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
-  ALARM="$ALARM\nset-identity without tower"
 fi
 # ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 # update telegraf
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
 echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
-
-solana-validator --ledger ~/solana/ledger monitor
-
-ALARM="$ALARM\nRESTART COMPLETE"
+ALARM="$ALARM\nVOTE ON$TOWER_STATUS"
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM"
+solana-validator --ledger ~/solana/ledger monitor
 # ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
-
 #ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
