@@ -92,27 +92,27 @@ echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
 
 echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
-curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="Start monitoring<br>${NODE}.${NAME}" -d parse_mode="HTML"
+curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="Start monitoring \\n${NODE}.${NAME}" -d parse_mode="Markdown"
 # waiting remote server fail
 Delinquent=false
 until [[ $Delinquent == true ]]; do
   JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
   LastVote=$(echo "$JSON" | jq -r '.lastVote')
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-  echo -e "\n"; echo -ne "Looking for $PUB_KEY. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
+  echo -ne "\n Looking for $PUB_KEY. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
   sleep 5
 done
 
 echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
 
 # STOP SOLANA on REMOTE server
-ALARM="${NODE}.${NAME} RESTART ${IP}<br>STOP REMOTE SERVER:"
+ALARM="${NODE}.${NAME} RESTART ${IP}\\nSTOP REMOTE SERVER:"
 command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
 command_exit_status=$?
 echo "  try to change validator link on REMOTE server: $command_output" 
 if [ $command_exit_status -eq 0 ]; then
    echo -e "\033[32m  change validator link on REMOTE server successful \033[0m" 
-   ALARM="$ALARM<br>change validator link"
+   ALARM="$ALARM\\nchange validator link"
 fi
 
 command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
@@ -120,11 +120,11 @@ command_exit_status=$?
 echo "  try to set empty identity on REMOTE server: $command_output" 
 if [ $command_exit_status -eq 0 ]; then
    echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
-   ALARM="$ALARM<br>set empty identity"
+   ALARM="$ALARM\\nset empty identity"
 else
   echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
   ssh -o ConnectTimeout=5 REMOTE systemctl restart solana
-  ALARM="$ALARM<br>restart solana"
+  ALARM="$ALARM\\nrestart solana"
 fi
 echo "  move tower from REMOTE to LOCAL "
 timeout 5 scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
@@ -144,8 +144,8 @@ fi
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
 echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
-ALARM="$ALARM<br>VOTE ON$TOWER_STATUS"
-curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM" -d parse_mode="HTML"
+ALARM="$ALARM\\nVOTE ON$TOWER_STATUS"
+curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM" -d parse_mode="Markdown"
 solana-validator --ledger ~/solana/ledger monitor
 # ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
 #ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
