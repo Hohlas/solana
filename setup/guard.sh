@@ -30,9 +30,30 @@ echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[31m network=api.mainnet-beta \033[0m v$version - $client";
 fi	
 
-CHECK_CONNECTION() { # every 5 seconds
+health_warning=0
+SELF_CHECK() { # check health and connection every 5 seconds
     connection=false
     sleep 5
+    
+    # CHECK HEALTH 
+    HEALTH=$(curl -s http://localhost:8899/health)
+    if [[ $HEALTH == "ok" ]]; then
+      health_warning=0
+    elif [[ $HEALTH == "behind" ]]; then
+      let health_warning=health_warning+1
+      if [ $health_warning -ge 10 ]; then
+        health_warning=0
+        curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} behind" > /dev/null
+      fi
+    else
+      if [ ${health_warning:-0} -eq 0 ]; then # send Alarm once
+         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} Warning: $HEALTH" > /dev/null
+      fi
+      let health_warning=health_warning+1
+      if [ $health_warning -ge 60 ]; then health_warning=0; fi # then send Alarm every 300sec (5min)
+    fi
+
+    # CHECK CONNECTION
     for site in "${SITES[@]}"; do
         ping -c1 $site &> /dev/null # ping every site once
         if [ $? -eq 0 ]; then
@@ -41,7 +62,6 @@ CHECK_CONNECTION() { # every 5 seconds
             break
         fi
     done
-
     # connection losses counter
     if [ "$connection" = false ]; then
         let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
@@ -49,7 +69,6 @@ CHECK_CONNECTION() { # every 5 seconds
     else
         DISCONNECT_COUNTER=0
     fi
-
     # connection loss for 20 seconds (5sec * 4)
     if [ $DISCONNECT_COUNTER -ge 4 ]; then
         echo "CONNECTION LOSS"
@@ -64,7 +83,7 @@ if [ "$CUR_IP" == "$IP" ]; then
   echo -e "\n solana voting on current PRIMARY  SERVER "
   # CHECK_CONNECTION_LOOP 
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
-    CHECK_CONNECTION
+    SELF_CHECK
   done
   exit
 fi
