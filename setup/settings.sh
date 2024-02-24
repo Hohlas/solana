@@ -44,6 +44,7 @@ cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.co
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
 cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
+cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl restart logrotate
 systemctl daemon-reload
