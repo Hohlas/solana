@@ -12,6 +12,9 @@ chmod +x ~/sol_git/setup/*.sh
 # update .bashrc, key links, grafana name
 ln -sf ~/keys/${NAME,,}_${NODE}_vote.json ~/solana/vote.json
 ln -sf ~/keys/${NAME,,}_${NODE}_validator.json ~/solana/validator-keypair.json
+ln -sf ~/keys/${NAME,,}_private.pem ~/solana/private.pem
+ln -sf ~/keys/${NAME,,}_public.pem ~/solana/public.pem
+ln -sf ~/keys/${NAME,,}_relayer-keypair.json ~/solana/relayer-keypair.json
 echo '# --- #' >> $HOME/.bashrc
 echo 'export TAG='$TAG >> $HOME/.bashrc
 echo 'export NODE='$NODE >> $HOME/.bashrc
