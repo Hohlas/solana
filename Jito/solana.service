@@ -46,8 +46,8 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \
 --tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
 --merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
---commission-bps 800 \
---relayer-url http://amsterdam.mainnet.relayer.jito.wtf:8100 \
+--commission-bps 700 \
+--relayer-url http://127.0.0.1:11226 \
 --block-engine-url https://amsterdam.mainnet.block-engine.jito.wtf \
 --shred-receiver-address 74.118.140.240:1002 \
 # RELAYER #
