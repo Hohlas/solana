@@ -9,7 +9,8 @@ mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache
 
 # create links
-ln -sf ~/solana/solana.service /etc/systemd/system
+ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
+ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
 ln -s /mnt/disk2/ledger ~/solana/ledger
 
 # add PATH
