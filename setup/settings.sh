@@ -8,6 +8,13 @@ mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache
 
+# download settings and scripts
+cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
+cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
+cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
+cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
+cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
+cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
 # create links
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
@@ -38,16 +45,10 @@ echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
 echo 'alias guard=~/sol_git/setup/guard.sh' >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
-# download settings and scripts
-echo -e '\n\e[42m system config \e[0m\n'
-cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
-cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
-cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
-cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
-cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
+apt install chrony -y
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
-systemctl restart logrotate
 systemctl daemon-reload
-chmod +x ~/sol_git/setup/*.sh
+systemctl restart logrotate
+systemctl restart chronyd.service
 ~/sol_git/setup/grafana_setup.sh 
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
