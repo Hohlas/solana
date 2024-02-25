@@ -25,7 +25,6 @@ echo 'export vote_account='$(solana address -k ~/solana/vote.json) >> $HOME/.bas
 
 # update services and network url
 if [[ $NODE == "main" ]]; then
-echo 'export LEDGER=/mnt/disk2/ledger' >> $HOME/.bashrc
 solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
 cp ~/sol_git/Jito/solana.service ~/solana/solana.service
 sed -i "/^--allowed-validators /c\--allowed-validators $validator_key" ~/solana/jito-relayer.service
@@ -33,7 +32,6 @@ systemctl daemon-reload
 systemctl restart jito-relayer.service
 echo -e "\033[31m set MAIN $NAME\033[0m"
 elif [[ $NODE == "test" ]]; then
-echo 'export LEDGER=~/solana/ledger' >> $HOME/.bashrc
 solana config set --url https://api.testnet.solana.com --keypair ~/solana/validator-keypair.json
 cp ~/sol_git/test/solana.service ~/solana/solana.service
 systemctl daemon-reload
