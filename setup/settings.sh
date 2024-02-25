@@ -45,7 +45,7 @@ echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
 echo 'alias guard=~/sol_git/setup/guard.sh' >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
-apt install chrony -y
+apt install curl nano rsync cron logrotate chrony -y
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl daemon-reload
 systemctl restart logrotate
