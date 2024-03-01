@@ -41,6 +41,8 @@ echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
 echo -e " validator-keypair: "$GREEN$PUB_KEY"\033[0m" # green color
 echo -e " current validator: ${VAL_CLR}"$validator"\033[0m"
 echo '--'
+echo 'current_validator='$validator >> $HOME/.bashrc
+
 
 if [ "$CUR_IP" == "$VOTE_IP" ]; then STATUS=$GREEN" on current server \033[0m";
 else                              STATUS=$GRAY" on "$VOTE_IP" \033[0m"; 
