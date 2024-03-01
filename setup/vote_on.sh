@@ -33,4 +33,5 @@ fi
 # update telegraf
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
+systemctl start jito-relayer.service
 echo -e "\033[32m vote ON\033[0m"$TOWER_STATUS
