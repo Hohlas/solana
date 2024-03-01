@@ -74,6 +74,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
         echo "CONNECTION LOSS"
         bash "$CONNECTION_LOSS_SCRIPT"
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
+        systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
     fi
 }
 
@@ -150,6 +151,8 @@ echo "  move tower from REMOTE to LOCAL "
 timeout 5 scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
 echo "  stop telegraf on REMOTE server"
 ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
+echo "  stop jito-relayer on REMOTE server"
+ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
 
 # START SOLANA on LOCAL server
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
@@ -163,6 +166,7 @@ fi
 # update telegraf
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 systemctl start telegraf
+systemctl start jito-relayer.service
 echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 ALARM=$(printf "$ALARM \n%s VOTE ON$TOWER_STATUS")
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM" > /dev/null
