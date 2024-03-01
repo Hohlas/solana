@@ -5,7 +5,7 @@ version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 empty=$(solana address -k ~/solana/empty-validator.json)
 link=$(solana address -k ~/solana/validator_link.json)
-validator=$(timeout 3 stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+current_validator=$(timeout 3 stdbuf -oL solana-validator --ledger ~/solana/ledger monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from keyfile 'validator-keypair.json'
 vote=$(solana address -k ~/solana/vote.json)
 GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
@@ -21,14 +21,14 @@ echo -e "\033[31m network=api.mainnet-beta \033[0m v$version - $client";
 fi	
 # echo "v$version - $client, IP:$CUR_IP"
 
-if [[ $validator == $empty ]]; then 
+if [[ $current_validator == $empty ]]; then 
 echo -e ' tower to '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
 VAL_CLR=$GRAY # set gray color
-elif [[ $validator == $PUB_KEY ]]; then 
+elif [[ $current_validator == $PUB_KEY ]]; then 
 echo -e ' tower from '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
 VAL_CLR=$GREEN # set green color
 else
-echo -e "\033[31m validator="$validator"  unknown status, CUR_IP:$CUR_IP\033[0m";
+echo -e "\033[31m current_validator="$current_validator"  unknown status, CUR_IP:$CUR_IP\033[0m";
 fi
 if   [[ $link == $empty ]];   then LNK_CLR=$GRAY   # set gray color
 else [[ $link == $PUB_KEY ]];      LNK_CLR=$GREEN  # set green color
@@ -39,7 +39,7 @@ echo ' vote account:      '$vote
 echo -e " epmty_keypair:     "$GRAY$empty"\033[0m"   # gray color
 echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
 echo -e " validator-keypair: "$GREEN$PUB_KEY"\033[0m" # green color
-echo -e " current validator: ${VAL_CLR}"$validator"\033[0m"
+echo -e " current validator: ${VAL_CLR}"$current_validator"\033[0m"
 echo '--'
 
 if [ "$CUR_IP" == "$VOTE_IP" ]; then STATUS=$GREEN" on current server \033[0m";
