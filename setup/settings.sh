@@ -43,6 +43,7 @@ echo 'alias snap=~/sol_git/setup/snap.sh' >> $HOME/.bashrc
 echo 'alias git_clone=~/sol_git/setup/git_clone.sh' >> $HOME/.bashrc
 echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
 echo 'alias guard=~/sol_git/setup/guard.sh' >> $HOME/.bashrc
+echo "alias shred_keys='find /root/keys -type f -exec shred -u {} \;'" >> $HOME/.bashrc	
 echo ' # --- # ' >> $HOME/.bashrc
 
 apt install curl nano rsync cron logrotate chrony -y
