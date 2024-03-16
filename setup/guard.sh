@@ -44,6 +44,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
       date +"health_warning=$health_warning  Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
       if [ $health_warning -ge 10 ]; then
         health_warning=0
+        date +"Node behind, Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} behind" > /dev/null
       fi
     else
@@ -86,6 +87,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
 
 if [ "$CUR_IP" == "$IP" ]; then
   echo -e "\n solana voting on current PRIMARY  SERVER "
+  date +"SELF_CHECK start  %b %e %H:%M:%S" >> ~/guard.log
   # CHECK_CONNECTION_LOOP 
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
     SELF_CHECK
