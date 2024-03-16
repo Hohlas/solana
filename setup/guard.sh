@@ -60,7 +60,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
         ping -c1 $site &> /dev/null # ping every site once
         if [ $? -eq 0 ]; then
             connection=true # good connection
-            echo -ne "\033[32m check server connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r \033[0m"
+            echo -ne "\033[32m check server connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK, Health: $HEALTH \r \033[0m"
             break
         fi
     done
