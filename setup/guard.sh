@@ -41,6 +41,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
       health_warning=0
     elif [[ $HEALTH == "behind" ]]; then
       let health_warning=health_warning+1
+      date +"health_warning=$health_warning  Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
       if [ $health_warning -ge 10 ]; then
         health_warning=0
         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} behind" > /dev/null
@@ -48,6 +49,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
     else
       if [ ${health_warning:-0} -eq 0 ]; then # send Alarm once
          curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} Warning: $HEALTH" > /dev/null
+         date +"Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
       fi
       let health_warning=health_warning+1
       if [ $health_warning -ge 60 ]; then health_warning=0; fi # then send Alarm every 300sec (5min)
@@ -65,6 +67,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
     # connection losses counter
     if [ "$connection" = false ]; then
         let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
+        date +"connection failed, attempt $DISCONNECT_COUNTER  %b %e %H:%M:%S" >> ~/guard.log
         echo "connection failed, attempt "$DISCONNECT_COUNTER
     else
         DISCONNECT_COUNTER=0
@@ -73,6 +76,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
     if [ $DISCONNECT_COUNTER -ge 4 ]; then
         echo "CONNECTION LOSS"
         bash "$CONNECTION_LOSS_SCRIPT"
+        date +"restart solana  %b %e %H:%M:%S" >> ~/guard.log
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
     fi
@@ -170,6 +174,7 @@ systemctl start jito-relayer.service
 echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 ALARM=$(printf "$ALARM \n%s VOTE ON$TOWER_STATUS")
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$ALARM" > /dev/null
-solana-validator --ledger ~/solana/ledger monitor
+date +"$ALARM  %b %e %H:%M:%S" >> ~/guard.log
+# solana-validator --ledger ~/solana/ledger monitor
 # ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
 #ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
