@@ -118,6 +118,7 @@ rm ~/check_ssh
 echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
 ALARM=$(printf "Start monitoring \n%s ${NODE}.${NAME}")
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$ALARM" > /dev/null
+date +"$ALARM  %b %e %H:%M:%S" >> ~/guard.log
 # waiting remote server fail
 Delinquent=false
 until [[ $Delinquent == true ]]; do
