@@ -1,6 +1,7 @@
 #!/bin/bash
 ulimit -n 1000000
 
+echo -e '\n\e[42m download GPG keys \e[0m\n'
 # Загрузка и добавление ключа
 gpg --keyserver keyserver.ubuntu.com --recv-keys D8FF8E1F7DF8B07E
 gpg --export --armor D8FF8E1F7DF8B07E | sudo gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/D8FF8E1F7DF8B07E.gpg --import
