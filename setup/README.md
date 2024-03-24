@@ -39,7 +39,13 @@ export NODE=main
 export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
 ```
 ```
+# TEST #
+export TAG=1.18.7
+export NODE=test  # test or main
+export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
+```
 
+```
 curl https://raw.githubusercontent.com/Hohlas/solana/main/setup/solana_setup.sh > ~/solana_setup.sh
 chmod +x ~/solana_setup.sh
 ~/solana_setup.sh
