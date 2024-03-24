@@ -1,6 +1,17 @@
 #!/bin/bash
 ulimit -n 1000000
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D8FF8E1F7DF8B07E
+
+# Загрузка и добавление ключа
+gpg --keyserver keyserver.ubuntu.com --recv-keys D8FF8E1F7DF8B07E
+gpg --export --armor D8FF8E1F7DF8B07E | sudo gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/D8FF8E1F7DF8B07E.gpg --import
+# права пользователю _apt:
+sudo chown _apt /etc/apt/trusted.gpg.d/D8FF8E1F7DF8B07E.gpg
+
+# Загрузка и добавление ключа
+curl -sL https://repos.influxdata.com/influxdb.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdb.gpg >/dev/null
+# права пользователю _apt:
+sudo chown _apt /etc/apt/trusted.gpg.d/influxdb.gpg
+
 
 echo -e '\n\e[42m install telegraf \e[0m\n'
 cd
@@ -8,7 +19,7 @@ apt install gnupg -y # gnupg2 gnupg1 -y
 cat <<EOF | sudo tee /etc/apt/sources.list.d/influxdata.list
 deb https://repos.influxdata.com/ubuntu focal stable
 EOF
-sudo curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+
 sudo apt-get update && sudo apt -y install telegraf git jq bc -y
 sudo systemctl enable telegraf
 
