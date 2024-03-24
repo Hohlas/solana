@@ -30,7 +30,9 @@ fail2ban-client status
 mkdir -p ~/.crpt ~/keys
 encfs ~/.crpt ~/keys # 
 ```
-
+---
+copy validator.json, vote.json to ~/keys
+---
 ## Install Solana Node
 ```
 # MAIN #
