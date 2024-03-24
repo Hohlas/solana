@@ -30,6 +30,17 @@ ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
 ln -s /mnt/disk2/ledger ~/solana/ledger
 
+# install solana
+apt install curl nano rsync cron logrotate chrony -y
+if [[ $NODE == "main" ]]; then
+sh -c "$(curl -sSfL https://release.jito.wtf/v$TAG-jito/install)"
+else 
+sh -c "$(curl -sSfL https://release.solana.com/v$TAG/install)"  
+fi 
+
+
+
+
 # add PATH
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
     export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
@@ -57,7 +68,6 @@ echo 'alias guard=~/sol_git/setup/guard.sh' >> $HOME/.bashrc
 echo "alias shred_keys='find /root/keys -type f -exec shred -u {} \;'" >> $HOME/.bashrc	
 echo ' # --- # ' >> $HOME/.bashrc
 
-apt install curl nano rsync cron logrotate chrony -y
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl daemon-reload
 systemctl restart logrotate
