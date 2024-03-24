@@ -39,6 +39,7 @@ echo "alias catch='solana catchup \$current_validator --our-localhost --follow -
 echo "alias monitor='solana-validator --ledger ~/solana/ledger monitor'" >> $HOME/.bashrc
 echo 'alias next=~/sol_git/setup/next.sh' >> $HOME/.bashrc
 echo 'alias node_set=~/sol_git/setup/node_set.sh' >> $HOME/.bashrc
+echo 'alias node_reset=~/sol_git/setup/node_reset.sh' >> $HOME/.bashrc
 echo 'alias snap=~/sol_git/setup/snap.sh' >> $HOME/.bashrc
 echo 'alias git_clone=~/sol_git/setup/git_clone.sh' >> $HOME/.bashrc
 echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
