@@ -8,6 +8,16 @@ mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache
 
+# git clone
+if [ -d ~/sol_git ]; then 
+cd ~/sol_git; 
+git fetch origin; # get last updates from git
+git reset --hard origin/main # сбросить локальную ветку до последнего коммита из git
+else 
+cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
+fi
+chmod +x ~/sol_git/setup/*.sh
+
 # download settings and scripts
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
