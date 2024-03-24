@@ -38,8 +38,8 @@ else
 sh -c "$(curl -sSfL https://release.solana.com/v$TAG/install)"  
 fi 
 
-~/sol_git/node_set.sh
-~/sol_git/jito_relayer_setup.sh
+~/sol_git/setup/node_set.sh
+~/sol_git/Jito/jito_relayer_setup.sh
 # add PATH
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
     export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
