@@ -53,8 +53,8 @@ sh -c "$(curl -sSfL https://release.jito.wtf/v$TAG-jito/install)"
 else 
 sh -c "$(curl -sSfL https://release.solana.com/v$TAG/install)"  
 fi 
+export PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
 solana --version
-source ~/sol_git/setup/node_set.sh
 
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
@@ -82,6 +82,9 @@ echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
 echo 'alias guard=~/sol_git/setup/guard.sh' >> $HOME/.bashrc
 echo "alias shred_keys='find /root/keys -type f -exec shred -u {} \;'" >> $HOME/.bashrc	
 echo ' # --- # ' >> $HOME/.bashrc
+
+source $HOME/.bashrc
+source ~/sol_git/setup/node_set.sh
 
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl daemon-reload
