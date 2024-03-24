@@ -8,6 +8,8 @@ mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache
 
+
+if [ ! -e /swapfile2 ]; then
 echo -e '\n\e[42m make SWAP \e[0m\n'
 sudo fallocate -l 300G /swapfile2
 sudo chmod 600 /swapfile2
@@ -17,6 +19,9 @@ echo "
 # add SWAP
 /swapfile2 none swap sw 0 0
 " | sudo tee -a /etc/fstab
+else
+echo -e '\n\e[42m SWAP already exist \e[0m\n'
+fi
 
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sudo sysctl vm.swappiness=10  # change current SWAPPINESS
