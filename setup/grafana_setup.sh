@@ -33,8 +33,7 @@ then curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/locale > /
 echo "Download locale file to /etc/default"; 
 fi # файл locale иногда отсутствует, из-за этого появляется ошибка
 
-echo -e '\n\e[42m dowload telegraf.conf \e[0m\n'
-# cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
+cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
 tmp="\"$NAME\""
 sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
 sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
