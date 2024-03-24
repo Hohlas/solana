@@ -28,7 +28,7 @@ cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
 # create links
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
-ln -s /mnt/disk2/ledger ~/solana/ledger
+ln -sf /mnt/disk2/ledger ~/solana
 
 # install solana
 apt install curl nano rsync cron logrotate chrony -y
