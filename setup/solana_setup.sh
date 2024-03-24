@@ -8,7 +8,7 @@ mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache
 
-# git clone
+echo -e '\n\e[42m GIT clone \e[0m\n'
 if [ -d ~/sol_git ]; then 
 cd ~/sol_git; 
 git fetch origin; # get last updates from git
@@ -18,7 +18,7 @@ cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
 
-# download settings and scripts
+echo -e '\n\e[42m copy files \e[0m\n'
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
@@ -30,7 +30,7 @@ ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
 ln -sf /mnt/disk2/ledger ~/solana
 
-# install solana
+echo -e '\n\e[42m Install Solana \e[0m\n'
 apt install curl nano rsync cron logrotate chrony -y
 if [[ $NODE == "main" ]]; then
 sh -c "$(curl -sSfL https://release.jito.wtf/v$TAG-jito/install)"
@@ -38,9 +38,10 @@ sh -c "$(curl -sSfL https://release.jito.wtf/v$TAG-jito/install)"
 else 
 sh -c "$(curl -sSfL https://release.solana.com/v$TAG/install)"  
 fi 
-
+solana --version
 ~/sol_git/setup/node_set.sh
-# add PATH
+
+echo -e '\n\e[42m edit bashrc file \e[0m\n'
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
     export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
     echo 'export PATH='$PATH >> ~/.bashrc
