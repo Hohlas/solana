@@ -34,12 +34,10 @@ ln -s /mnt/disk2/ledger ~/solana/ledger
 apt install curl nano rsync cron logrotate chrony -y
 if [[ $NODE == "main" ]]; then
 sh -c "$(curl -sSfL https://release.jito.wtf/v$TAG-jito/install)"
+~/sol_git/jito_relayer_setup.sh
 else 
 sh -c "$(curl -sSfL https://release.solana.com/v$TAG/install)"  
 fi 
-
-
-
 
 # add PATH
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
