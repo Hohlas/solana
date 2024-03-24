@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e '\n\e[42m Run solana settings \e[0m\n'
+echo -e '\n\e[42m Install Solana Node \e[0m\n'
 # create dirs
 mkdir -p ~/solana
 mkdir -p /mnt/disk1/snapshots
@@ -7,6 +7,21 @@ mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache
+
+echo -e '\n\e[42m make SWAP \e[0m\n'
+sudo fallocate -l 300G /swapfile2
+sudo chmod 600 /swapfile2
+sudo mkswap /swapfile2
+sudo swapon /swapfile2 
+echo "
+# add SWAP
+/swapfile2 none swap sw 0 0
+" | sudo tee -a /etc/fstab
+
+echo -e '\n\e[42m change swappiness \e[0m\n'
+sudo sysctl vm.swappiness=10  # change current SWAPPINESS
+echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf # change after reboot SWAPPINESS
+sudo sysctl -f # обновить параметры из файла настроек
 
 echo -e '\n\e[42m GIT clone \e[0m\n'
 if [ -d ~/sol_git ]; then 
