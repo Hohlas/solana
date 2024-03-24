@@ -1,5 +1,5 @@
 #!/bin/bash
-# # #   set MAIN/TEST settings
+echo -e '\n\e[42m Node Set \e[0m\n'
 # update from git
 if [ -d ~/sol_git ]; then 
 cd ~/sol_git; 
