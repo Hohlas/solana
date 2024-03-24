@@ -57,10 +57,13 @@ source $HOME/.bashrc
 systemctl restart solana  # sudo systemctl restart solana
 systemctl status solana
 ```
+terminal commands
 ```
-node_set # set TEST/MAIN settings
-check #
-next # next slot time
-monitor # node monitor
-catch # catchup
+node_set | node_reset
+check 
+logs
+next 
+monitor | catch
+guard | vote_on | vote_off
+mount_keys | umount_keys | shred_keys
 ```
