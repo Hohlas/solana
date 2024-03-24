@@ -39,7 +39,7 @@ else
 sh -c "$(curl -sSfL https://release.solana.com/v$TAG/install)"  
 fi 
 solana --version
-~/sol_git/setup/node_set.sh
+source ~/sol_git/setup/node_set.sh
 
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
@@ -72,5 +72,5 @@ sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl daemon-reload
 systemctl restart logrotate
 systemctl restart chronyd.service
-~/sol_git/setup/grafana_setup.sh 
+source ~/sol_git/setup/grafana_setup.sh 
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
