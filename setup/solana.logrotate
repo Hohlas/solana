@@ -1,5 +1,4 @@
 /root/solana/solana.log {
-  su $USER $USER
   rotate 1
   daily
   dateext  
