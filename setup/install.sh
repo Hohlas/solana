@@ -3,6 +3,7 @@
 if [[ "$1" == *"jito"* ]]; then
   echo -e '\n\e[42m Install Jito-Solana \e[0m\n'
   sh -c "$(curl -sSfL https://release.jito.wtf/$TAG/install)"
+  chmod +x ~/sol_git/Jito/jito_relayer_setup.sh
   ~/sol_git/Jito/jito_relayer_setup.sh
 else
   echo -e '\n\e[42m Install Solana Testnet \e[0m\n'
