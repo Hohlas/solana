@@ -33,30 +33,30 @@ encfs ~/.crpt ~/keys #
 
 ## Install Solana Node
 {+ copy validator.json, vote.json to ~/keys +}
-```
+```bash
 # MAIN #
 export TAG=v1.17.28-jito
 export NODE=main
 export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
 ```
-```
+```bash
 # TEST #
 export TAG=v1.18.8
 export NODE=test  # test or main
 export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
 ```
 
-```
+```bash
 curl https://raw.githubusercontent.com/Hohlas/solana/main/setup/solana_setup.sh > ~/node_setup.sh
 chmod +x ~/node_setup.sh; ~/node_setup.sh
 source $HOME/.bashrc
 ```
-```
+```bash
 systemctl restart solana  # sudo systemctl restart solana
 systemctl status solana
 ```
 terminal commands
-```
+```bash
 node_set | node_reset
 check 
 logs
@@ -66,7 +66,7 @@ guard | vote_on | vote_off
 mount_keys | umount_keys | shred_keys
 ```
 install/update commands
-```
+```bash
 get_tag
 solana-install init $TAG
 node_install
