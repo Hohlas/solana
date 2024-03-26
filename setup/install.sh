@@ -1,13 +1,19 @@
 #!/bin/bash
 
-if [[ "$1" == *"jito"* ]]; then
+if [ -z "$1" ]; then
+	NEW_TAG=$TAG
+else
+	NEW_TAG=$1
+fi
+
+if [[ "$NEW_TAG" == *"jito"* ]]; then
   echo -e '\n\e[42m Install Jito-Solana \e[0m\n'
-  sh -c "$(curl -sSfL https://release.jito.wtf/$1/install)"
+  sh -c "$(curl -sSfL https://release.jito.wtf/$NEW_TAG/install)"
   chmod +x ~/sol_git/Jito/jito_relayer_setup.sh
   ~/sol_git/Jito/jito_relayer_setup.sh
 else
   echo -e '\n\e[42m Install Solana Testnet \e[0m\n'
-  sh -c "$(curl -sSfL https://release.solana.com/$1/install)" 
+  sh -c "$(curl -sSfL https://release.solana.com/$NEW_TAG/install)" 
 fi
 solana --version
 
