@@ -3,15 +3,15 @@
 ```bash
 sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux htop curl nano fail2ban smartmontools mc man rsync cron logrotate rsyslog encfs jq -y
 ```
-```
+```bash
 export NEWHOSTNAME="hohla"
 ```
-```
+```bash
 sudo hostname $NEWHOSTNAME # сменить до перезагрузки
 sudo hostnamectl set-hostname $NEWHOSTNAME
 ```
 
-```
+```bash
 # config SSH
 mkdir -p ~/.ssh
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
