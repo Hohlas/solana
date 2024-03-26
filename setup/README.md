@@ -66,3 +66,9 @@ monitor | catch
 guard | vote_on | vote_off
 mount_keys | umount_keys | shred_keys
 ```
+install/update commands
+```
+get_tag
+solana-install init $TAG
+node_install
+```
