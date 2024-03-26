@@ -51,7 +51,7 @@ ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
 ln -sf /mnt/disk2/ledger ~/solana
 
 source ~/sol_git/setup/get_tag.sh $NODE
-source ~/sol_git/setup/install.sh $NODE
+source ~/sol_git/setup/install.sh $TAG
 
 # create alias #
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
