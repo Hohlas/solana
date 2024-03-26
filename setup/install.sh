@@ -1,15 +1,12 @@
 #!/bin/bash
 
-if [ "$1" == "main" ]; then
+if [[ "$1" == *"jito"* ]]; then
   echo -e '\n\e[42m Install Jito-Solana \e[0m\n'
   sh -c "$(curl -sSfL https://release.jito.wtf/$TAG/install)"
   ~/sol_git/Jito/jito_relayer_setup.sh
-elif [ "$1" == "test" ]; then
+else
   echo -e '\n\e[42m Install Solana Testnet \e[0m\n'
   sh -c "$(curl -sSfL https://release.solana.com/$TAG/install)" 
-else
-    echo "Usage: $0 [test|main]"
-    exit 1
 fi
 solana --version
 
