@@ -48,9 +48,8 @@ export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
 ```
 
 ```
-curl https://raw.githubusercontent.com/Hohlas/solana/main/setup/solana_setup.sh > ~/solana_setup.sh
-chmod +x ~/solana_setup.sh
-~/solana_setup.sh
+curl https://raw.githubusercontent.com/Hohlas/solana/main/setup/solana_setup.sh > ~/node_setup.sh
+chmod +x ~/node_setup.sh; ~/node_setup.sh
 source $HOME/.bashrc
 ```
 ```
