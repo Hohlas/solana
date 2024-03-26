@@ -8,7 +8,6 @@ elif [ "$1" == "test" ]; then
     TAG=$(curl -sSL "$REPO_URL" | jq -r '.[] | select(.name | startswith("Testnet")) | .tag_name' | head -n 1)
 else
     echo "Usage: $0 [test|main]"
-    exit 1
 fi
 
 echo "$TAG"
