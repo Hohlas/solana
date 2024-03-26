@@ -50,24 +50,11 @@ ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
 ln -sf /mnt/disk2/ledger ~/solana
 
-echo -e '\n\e[42m Install Solana \e[0m\n'
-apt install curl nano rsync cron logrotate chrony -y
-if [[ $NODE == "main" ]]; then
-sh -c "$(curl -sSfL https://release.jito.wtf/v$TAG-jito/install)"
-~/sol_git/Jito/jito_relayer_setup.sh
-else 
-sh -c "$(curl -sSfL https://release.solana.com/v$TAG/install)"  
-fi 
-export PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
-solana --version
-
-echo -e '\n\e[42m edit bashrc file \e[0m\n'
-if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
-    export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-    echo 'export PATH='$PATH >> ~/.bashrc
-fi
+source ~/sol_git/setup/get_tag.sh $NODE
+source ~/sol_git/setup/install.sh $NODE
 
 # create alias #
+echo -e '\n\e[42m edit bashrc file \e[0m\n'
 echo ' # SOLANA  ALIAS # ' >> $HOME/.bashrc
 echo "alias mount_keys='encfs ~/.crpt ~/keys'" >> $HOME/.bashrc
 echo "alias umount_keys='fusermount -u ~/keys'" >> $HOME/.bashrc
