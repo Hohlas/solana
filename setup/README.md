@@ -36,13 +36,13 @@ copy validator.json, vote.json to ~/keys
 ## Install Solana Node
 ```
 # MAIN #
-export TAG=1.17.27
+export TAG=v1.17.28-jito
 export NODE=main
 export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
 ```
 ```
 # TEST #
-export TAG=1.18.7
+export TAG=v1.18.8
 export NODE=test  # test or main
 export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
 ```
