@@ -16,4 +16,4 @@ else
     echo "NODE variable unknown $CUR_NODE"
 fi
 
-echo "$TAG"
+echo " TAG=$TAG"
