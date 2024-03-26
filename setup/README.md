@@ -32,7 +32,7 @@ encfs ~/.crpt ~/keys #
 ```
 
 ## Install Solana Node
-```diff copy validator.json, vote.json to ~/keys```
+```   copy validator.json, vote.json to ~/keys   ```
 ```bash
 # MAIN #
 export TAG=v1.17.28-jito
