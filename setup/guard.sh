@@ -31,18 +31,14 @@ echo -e "\033[31m network=api.mainnet-beta \033[0m v$version - $client";
 fi	
 
 health_warning=0
-SELF_CHECK() { # check health and connection every 5 seconds
-    connection=false
-    sleep 5
-    
-    # CHECK HEALTH 
+CHECK_HEALTH() { # self check health every 5 seconds
     HEALTH=$(curl -s http://localhost:8899/health)
     if [[ $HEALTH == "ok" ]]; then
       health_warning=0
     elif [[ $HEALTH == "behind" ]]; then
       let health_warning=health_warning+1
       date +"health_warning=$health_warning  Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
-      if [ $health_warning -ge 10 ]; then
+      if [ $health_warning -ge 4 ]; then
         health_warning=0
         date +"Node behind, Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} behind" > /dev/null
@@ -55,13 +51,15 @@ SELF_CHECK() { # check health and connection every 5 seconds
       let health_warning=health_warning+1
       if [ $health_warning -ge 60 ]; then health_warning=0; fi # then send Alarm every 300sec (5min)
     fi
+  }
 
-    # CHECK CONNECTION
+
+CHECK_CONNECTION() { # self check connection every 5 seconds
+    connection=false
     for site in "${SITES[@]}"; do
         ping -c1 $site &> /dev/null # ping every site once
         if [ $? -eq 0 ]; then
             connection=true # good connection
-            echo -ne "\033[32m check server connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK, Health: $HEALTH \r \033[0m"
             break
         fi
     done
@@ -81,7 +79,7 @@ SELF_CHECK() { # check health and connection every 5 seconds
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
     fi
-}
+  }
 
 
 
@@ -90,13 +88,15 @@ if [ "$CUR_IP" == "$IP" ]; then
   date +"SELF_CHECK start  %b %e %H:%M:%S" >> ~/guard.log
   # CHECK_CONNECTION_LOOP 
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
-    SELF_CHECK
+    sleep 5
+    CHECK_CONNECTION
+    CHECK_HEALTH
+    echo -ne "\033[32m check server connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK, Health: $HEALTH \r \033[0m"
   done
   exit
 fi
 
 echo -e "\n = SECONDARY  SERVER ="
-# you won’t need to enter your passphrase every time.
 chmod 600 ~/keys/*.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
@@ -129,6 +129,7 @@ until [[ $Delinquent == true ]]; do
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
   echo -ne "Looking for $PUB_KEY. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
   sleep 5
+  CHECK_HEALTH # self check reserve node health
 done
 
 echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
