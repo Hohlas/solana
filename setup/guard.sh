@@ -12,7 +12,7 @@ SITES=("www.google.com" "www.bing.com")
 CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
 SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
-SERV_TYPE='Slave'
+SERV_TYPE='SECONDARY'
 IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 #===
 BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
@@ -87,7 +87,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
 if [ "$CUR_IP" == "$IP" ]; then
   echo -e "\n solana voting on current PRIMARY  SERVER "
   date +"SELF_CHECK start  %b %e %H:%M:%S" >> ~/guard.log
-  SERV_TYPE='Master'
+  SERV_TYPE='PRIMARY'
   # CHECK_CONNECTION_LOOP 
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
     sleep 5
