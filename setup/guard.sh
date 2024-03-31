@@ -110,7 +110,7 @@ Port $PORT
 IdentityFile /root/keys/*.ssh
 " > ~/.ssh/config
 
-# check SSH connection
+# check SSH connection with primary node server
 ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh'
 scp -P $PORT -i /root/keys/*.ssh $SERV:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
@@ -129,7 +129,7 @@ until [[ $Delinquent == true ]]; do
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
   echo -ne "Looking for $PUB_KEY. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
   sleep 5
-  CHECK_HEALTH # self check reserve node health
+  CHECK_HEALTH #  check primary node health
 done
 
 echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
