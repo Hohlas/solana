@@ -12,6 +12,7 @@ SITES=("www.google.com" "www.bing.com")
 CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
 SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+SERV_TYPE='Slave'
 IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 #===
 BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
@@ -41,11 +42,11 @@ CHECK_HEALTH() { # self check health every 5 seconds
       if [ $health_warning -ge 4 ]; then
         health_warning=0
         date +"Node behind, Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
-        curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} behind" > /dev/null
+        curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="SERV_TYPE ${NODE}.${NAME}: behind" > /dev/null
       fi
     else
       if [ ${health_warning:-0} -eq 0 ]; then # send Alarm once
-         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="${NODE}.${NAME} Warning: $HEALTH" > /dev/null
+         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="SERV_TYPE ${NODE}.${NAME}: Warning $HEALTH" > /dev/null
          date +"Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
       fi
       let health_warning=health_warning+1
@@ -86,6 +87,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
 if [ "$CUR_IP" == "$IP" ]; then
   echo -e "\n solana voting on current PRIMARY  SERVER "
   date +"SELF_CHECK start  %b %e %H:%M:%S" >> ~/guard.log
+  SERV_TYPE='Master'
   # CHECK_CONNECTION_LOOP 
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
     sleep 5
