@@ -48,5 +48,5 @@ fi # файл locale иногда отсутствует, из-за этого �
 cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
 tmp="\"$NAME\""
 sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
-sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
+# sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
 
