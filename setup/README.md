@@ -18,8 +18,12 @@ cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/sshd_config > /etc/ssh/sshd_config
 sudo ufw allow 2010  # добавить порт в правила файрвола
 sudo systemctl restart ssh  # перезапустить службу ssh
+touch ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
+nano ~/.ssh/authorized_keys
+```
 
+```bash
 # config file2ban
 echo "backend = systemd" >> /etc/fail2ban/jail.d/defaults-debian.conf
 echo "authpriv.*      /var/log/auth.log" >> /etc/rsyslog.conf
