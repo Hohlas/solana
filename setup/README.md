@@ -9,6 +9,7 @@ export NEWHOSTNAME="hohla"
 ```bash
 sudo hostname $NEWHOSTNAME # сменить до перезагрузки
 sudo hostnamectl set-hostname $NEWHOSTNAME
+sudo nano /etc/hosts
 ```
 
 ```bash
