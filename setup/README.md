@@ -58,6 +58,7 @@ systemctl status solana
 terminal commands
 ```bash
 node_set | node_reset
+get_tag | node_install | node_update
 check 
 logs
 next 
