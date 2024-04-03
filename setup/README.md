@@ -3,6 +3,27 @@
 ```bash
 sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux htop curl nano fail2ban smartmontools mc man rsync cron logrotate rsyslog encfs jq -y
 ```
+
+### create and mount partitions   
+```bash
+mkdir -p /mnt/disk1
+mkdir -p /mnt/disk2
+mkdir -p /mnt/disk3
+lsblk # смотрим разделы
+fdisk /dev/nvme1n1 # additional not mounted disk
+mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
+```
+```bash
+mount /dev/nvme1n1p1 /mnt/disk1
+echo '/dev/nvme1n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount /dev/nvme2n1p1 /mnt/disk2
+echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount /dev/nvme3n1p1 /mnt/disk3
+echo '/dev/nvme3n1p1 /mnt/disk3 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount -a
+```
+
+### SSH settings
 ```bash
 export NEWHOSTNAME="hohla"
 ```
