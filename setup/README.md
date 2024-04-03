@@ -98,3 +98,9 @@ get_tag
 solana-install init $TAG
 node_install
 ```
+## Jito-Relayer setup
+```bash
+curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/jito_relayer_setup.sh > ~/jito_relayer_setup.sh
+chmod +x ~/jito_relayer_setup.sh
+~/jito_relayer_setup.sh
+```
