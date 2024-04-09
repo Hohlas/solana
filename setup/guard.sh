@@ -38,7 +38,7 @@ CHECK_HEALTH() { # self check health every 5 seconds
       health_warning=0
     elif [[ $HEALTH == "behind" ]]; then
       let health_warning=health_warning+1
-      date + "Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
+      date + "Warning: behind  %b %e %H:%M:%S" >> ~/guard.log
       if [ $health_warning -ge 6 ]; then
         health_warning=0
         # date +"Node behind, Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
@@ -46,8 +46,9 @@ CHECK_HEALTH() { # self check health every 5 seconds
       fi
     else # unknown status
       if [ ${health_warning:-0} -eq 0 ]; then # send Alarm every 300sec (5min)
-         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Warning $HEALTH" > /dev/null
-         date +"Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
+         WARN_MSG="Warning: $HEALTH"
+         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: $WARN_MSG" > /dev/null
+         date +"$WARN_MSG  %b %e %H:%M:%S" >> ~/guard.log
       fi
       let health_warning=health_warning+1
       if [ $health_warning -ge 60 ]; then health_warning=0; fi # then send Alarm every 300sec (5min)
