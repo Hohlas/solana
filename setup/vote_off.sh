@@ -15,5 +15,5 @@ else                                      echo -e "\033[31m can not set empty id
 fi
 
 systemctl stop telegraf
-systemctl stop jito-relayer.service
+#systemctl stop jito-relayer.service
 echo -e "\033[31m vote OFF\033[0m"
