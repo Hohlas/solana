@@ -134,7 +134,7 @@ until [[ $Delinquent == true ]]; do
     else
 	  CLR=$RED
 	fi
-    echo -ne "${CLR} Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
+    echo -ne "${CLR} Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK   \r \033[0m"
   sleep 5
   CHECK_HEALTH #  check primary node health
 done
