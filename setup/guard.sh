@@ -18,6 +18,7 @@ IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
 CHAT_ALARM=-1001611695684
 CHAT_INFO=-1001548522888
+GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 
 echo ' == SOLANA GUARD =='
 #source ~/sol_git/setup/check.sh
@@ -87,7 +88,12 @@ if [ "$CUR_IP" == "$IP" ]; then
     sleep 5
     CHECK_CONNECTION
     CHECK_HEALTH
-    echo -ne "\033[32m check server connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK, Health: $HEALTH \r \033[0m"
+    if [[ $HEALTH == "ok" ]]; then
+      CLR=$GREEN
+    else
+	  CLR=$RED
+	fi
+    echo -ne "${CLR} Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, Health: $HEALTH \r \033[0m"
   done
   exit
 fi
