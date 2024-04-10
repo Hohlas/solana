@@ -91,9 +91,9 @@ if [ "$CUR_IP" == "$IP" ]; then
     if [[ $HEALTH == "ok" ]]; then
       CLR=$GREEN
     else
-	  CLR=$RED
-	fi
-    echo -ne "${CLR} Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, Health: $HEALTH   \r \033[0m"
+      CLR=$RED
+    fi
+    echo -ne " Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, ${CLR}Health: $HEALTH   \r \033[0m"
   done
   exit
 fi
@@ -131,10 +131,10 @@ until [[ $Delinquent == true ]]; do
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
   if [[ $HEALTH == "ok" ]]; then
       CLR=$GREEN
-    else
-	  CLR=$RED
-	fi
-    echo -ne "${CLR} Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK   \r \033[0m"
+  else
+     CLR=$RED
+  fi
+  echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK  ${CLR}Health: $HEALTH   \r \033[0m"
   sleep 5
   CHECK_HEALTH #  check primary node health
 done
