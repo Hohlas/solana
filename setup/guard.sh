@@ -129,7 +129,12 @@ until [[ $Delinquent == true ]]; do
   JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
   LastVote=$(echo "$JSON" | jq -r '.lastVote')
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-  echo -ne "$GREEN  Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
+  if [[ $HEALTH == "ok" ]]; then
+      CLR=$GREEN
+    else
+	  CLR=$RED
+	fi
+    echo -ne "${CLR} Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK \r"
   sleep 5
   CHECK_HEALTH #  check primary node health
 done
