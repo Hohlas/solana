@@ -36,22 +36,13 @@ CHECK_HEALTH() { # self check health every 5 seconds
     HEALTH=$(curl -s http://localhost:8899/health)
     if [[ $HEALTH == "ok" ]]; then
       health_warning=0
-    elif [[ $HEALTH == "behind" ]]; then
+    else
       let health_warning=health_warning+1
-      date + "Warning: behind  %b %e %H:%M:%S" >> ~/guard.log
+      echo "Health: $HEALTH $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
       if [ $health_warning -ge 6 ]; then
         health_warning=0
-        # date +"Node behind, Health: $HEALTH  %b %e %H:%M:%S" >> ~/guard.log
-        curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: behind" > /dev/null
+        curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Health $HEALTH" > /dev/null
       fi
-    else # unknown status
-      if [ ${health_warning:-0} -eq 0 ]; then # send Alarm every 300sec (5min)
-         WARN_MSG="Warning: $HEALTH"
-         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: $WARN_MSG" > /dev/null
-         date +"$WARN_MSG  %b %e %H:%M:%S" >> ~/guard.log
-      fi
-      let health_warning=health_warning+1
-      if [ $health_warning -ge 60 ]; then health_warning=0; fi # then send Alarm every 300sec (5min)
     fi
   }
 
@@ -77,7 +68,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
     if [ $DISCONNECT_COUNTER -ge 4 ]; then
         echo "CONNECTION LOSS"
         bash "$CONNECTION_LOSS_SCRIPT"
-        date +"restart solana  %b %e %H:%M:%S" >> ~/guard.log
+        echo "RESTART SOLANA $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
     fi
@@ -122,7 +113,7 @@ ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
 
-echo "  Start monitoring $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK"
+echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
 MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
 date +"$MSG  %b %e %H:%M:%S" >> ~/guard.log
