@@ -42,9 +42,9 @@ CHECK_HEALTH() { # self check health every 5 seconds
       health_warning=0
     else
       let health_warning=health_warning+1
-      echo "Health: $HEALTH $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
-      if [ $health_warning -ge 6 ]; then
-        health_warning=0
+      echo "Health: $HEALTH $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every unhealth message
+      if [ $health_warning -ge 6 ]; then # first tg missage after 6*5 seconds of unhealth
+        health_warning=-54 # next tg messages every (54+6)*5 seconds (5min)
         curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Health $HEALTH" > /dev/null
       fi
     fi
