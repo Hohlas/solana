@@ -35,6 +35,9 @@ fi
 health_warning=0
 CHECK_HEALTH() { # self check health every 5 seconds
     HEALTH=$(curl -s http://localhost:8899/health)
+	if [[ -z $HEALTH ]]; then
+	  HEALTH="Warning!"
+	fi
     if [[ $HEALTH == "ok" ]]; then
       health_warning=0
     else
@@ -78,7 +81,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
 
 
 if [ "$CUR_IP" == "$IP" ]; then
-  echo -e "\n solana voting on current PRIMARY  SERVER "
+  echo -e "\n = PRIMARY  SERVER ="
   MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
   curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
   echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
@@ -93,7 +96,7 @@ if [ "$CUR_IP" == "$IP" ]; then
     else
       CLR=$RED
     fi
-    echo -ne "${CLR} Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, Health $HEALTH   \r \033[0m"
+    echo -ne " Check connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
   done
   exit
 fi
@@ -134,7 +137,7 @@ until [[ $Delinquent == true ]]; do
   else
      CLR=$RED
   fi
-  echo -ne "${CLR} Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,  Health $HEALTH     \r \033[0m"
+  echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
   sleep 5
   CHECK_HEALTH #  check primary node health
 done
