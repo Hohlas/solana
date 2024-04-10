@@ -93,7 +93,7 @@ if [ "$CUR_IP" == "$IP" ]; then
     else
       CLR=$RED
     fi
-    echo -ne " Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, ${CLR}Health: $HEALTH   \r \033[0m"
+    echo -ne " Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, ${CLR}Health $HEALTH   \r \033[0m"
   done
   exit
 fi
@@ -134,7 +134,7 @@ until [[ $Delinquent == true ]]; do
   else
      CLR=$RED
   fi
-  echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK  ${CLR}Health: $HEALTH   \r \033[0m"
+  echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK  ${CLR}Health $HEALTH   \r \033[0m"
   sleep 5
   CHECK_HEALTH #  check primary node health
 done
