@@ -60,7 +60,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
     # connection losses counter
     if [ "$connection" = false ]; then
         let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
-        date +"connection failed, attempt $DISCONNECT_COUNTER  %b %e %H:%M:%S" >> ~/guard.log
+        echo "connection failed, attempt $DISCONNECT_COUNTER $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
         echo "connection failed, attempt "$DISCONNECT_COUNTER
     else
         DISCONNECT_COUNTER=0
@@ -81,7 +81,7 @@ if [ "$CUR_IP" == "$IP" ]; then
   echo -e "\n solana voting on current PRIMARY  SERVER "
   MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
   curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-  date +"$MSG  %b %e %H:%M:%S" >> ~/guard.log
+  echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
   SERV_TYPE='Primary'
   # CHECK_CONNECTION_LOOP 
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
@@ -122,7 +122,7 @@ rm ~/check_ssh
 echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
 MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-date +"$MSG  %b %e %H:%M:%S" >> ~/guard.log
+echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
 # waiting remote server fail
 Delinquent=false
 until [[ $Delinquent == true ]]; do
@@ -185,7 +185,7 @@ systemctl start telegraf
 echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
-date +"$MSG  %b %e %H:%M:%S" >> ~/guard.log
+echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
 # solana-validator --ledger ~/solana/ledger monitor
 # ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
 #ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
