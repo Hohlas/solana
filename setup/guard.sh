@@ -132,14 +132,14 @@ until [[ $Delinquent == true ]]; do
   JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
   LastVote=$(echo "$JSON" | jq -r '.lastVote')
   Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+  sleep 5
+  CHECK_HEALTH #  check primary node health
   if [[ $HEALTH == "ok" ]]; then
       CLR=$GREEN
   else
      CLR=$RED
   fi
   echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
-  sleep 5
-  CHECK_HEALTH #  check primary node health
 done
 
 echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
