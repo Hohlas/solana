@@ -93,7 +93,7 @@ if [ "$CUR_IP" == "$IP" ]; then
     else
 	  CLR=$RED
 	fi
-    echo -ne "${CLR} Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, Health: $HEALTH \r \033[0m"
+    echo -ne "${CLR} Check connection $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK, Health: $HEALTH   \r \033[0m"
   done
   exit
 fi
@@ -134,7 +134,7 @@ until [[ $Delinquent == true ]]; do
   CHECK_HEALTH #  check primary node health
 done
 
-echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%Y-%m-%d %H:%M:%S") MSK \033[0m"
+echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
 
 # STOP SOLANA on REMOTE server
 MSG=$(printf "${NODE}.${NAME} RESTART ${IP} \n%s STOP REMOTE SERVER:")
