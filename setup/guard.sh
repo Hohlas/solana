@@ -123,7 +123,14 @@ IdentityFile /root/keys/*.ssh
 " > ~/.ssh/config
 
 # check SSH connection with primary node server
-ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh'
+command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh'  2>&1)
+command_exit_status=$?
+if [ $command_exit_status -eq 0 ]; then
+  echo "ok"
+else
+  echo -e "$RED SSH connection can not be established  \033[0m"
+  exit
+fi
 scp -P $PORT -i /root/keys/*.ssh $SERV:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
