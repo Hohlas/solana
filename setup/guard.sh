@@ -123,7 +123,7 @@ IdentityFile /root/keys/*.ssh
 " > ~/.ssh/config
 
 # check SSH connection with primary node server
-command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh'  2>&1)
+command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh')
 command_exit_status=$?
 if [ $command_exit_status -eq 0 ]; then
   echo "ok"
