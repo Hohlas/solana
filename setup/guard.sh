@@ -90,6 +90,13 @@ if [ "$CUR_IP" == "$IP" ]; then
   until [ $DISCONNECT_COUNTER -ge 4 ]; do
     CHECK_CONNECTION
     CHECK_HEALTH
+    SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+    IP=$(echo "$SERV" | cut -d'@' -f2) # cu
+    if [ "$CUR_IP" != "$IP" ]; then
+	echo -e "$RED STOP VOTING  \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
+	echo "STOP VOTING $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
+	exit
+    fi
     if [[ $HEALTH == "ok" ]]; then
       CLR=$GREEN
     else
