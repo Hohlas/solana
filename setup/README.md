@@ -98,9 +98,31 @@ get_tag
 solana-install init $TAG
 node_install
 ```
-## Jito-Relayer setup
+## Jito-Relayer Setup
 ```bash
 curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/jito_relayer_setup.sh > ~/jito_relayer_setup.sh
 chmod +x ~/jito_relayer_setup.sh
 ~/jito_relayer_setup.sh
+```
+## Grafana Setup
+```bash
+source ~/sol_git/setup/grafana_setup.sh
+```
+### update config file
+```bash
+git_clone
+cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
+source ~/.bashrc
+tmp="\"$NAME\""
+sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
+systemctl restart telegraf
+journalctl -u telegraf -f
+```
+```bash
+nano /etc/telegraf/telegraf.conf  # add config
+```
+### price service
+```bash
+sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
+systemctl restart telegraf
 ```
