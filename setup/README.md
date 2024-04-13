@@ -118,3 +118,46 @@ nano /etc/telegraf/telegraf.conf  # add config
 sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
 systemctl restart telegraf
 ```
+## Snapshot Finder
+### setup snapshot finder
+```bash
+cd 
+ulimit -n 1000000
+rm -rf ~/solana-snapshot-finder
+sudo apt update
+sudo apt install python3-venv git -y
+# git clone https://github.com/c29r3/solana-snapshot-finder.git
+git clone https://github.com/Hohlas/solana-snapshot-finder.git
+cd ~/solana-snapshot-finder
+python3 -m venv venv
+source ./venv/bin/activate
+pip3 install -r requirements.txt
+```
+### init snapshot finder
+```bash
+source ~/.bashrc; 
+cd ~/solana-snapshot-finder \
+&& python3 -m venv venv \
+&& source ./venv/bin/activate
+```
+### MainNet snapshot finder
+```bash
+systemctl stop solana
+rm -rf ~/solana/ledger/*
+#rm -rf /mnt/disk1/snapshots/* 
+rm -rf /mnt/disk1/accounts/*
+rm -rf /mnt/disk2/ledger/*
+rm -rf /mnt/disk3/accounts_index/*
+rm -rf /mnt/disk3/accounts_hash_cache/*
+#
+python3 snapshot-finder.py --snapshot_path /mnt/disk1/snapshots --num_of_retries 10 --measurement_time 10 --min_download_speed 40 --max_snapshot_age 500 --max_latency 500 --with_private_rpc --sort_order latency -r https://api.mainnet-beta.solana.com
+systemctl daemon-reload && systemctl restart solana
+tail -f ~/solana/solana.log
+```
+### TestNet snapshot finder
+```bash
+systemctl stop solana && rm -rf ~/solana/ledger/*
+python3 snapshot-finder.py --snapshot_path $HOME/solana/ledger --num_of_retries 10 --measurement_time 10 --min_download_speed 50 --max_snapshot_age 500 --with_private_rpc --sort_order latency -r https://api.testnet.solana.com && \
+systemctl daemon-reload && systemctl restart solana
+tail -f ~/solana/solana.log
+```
