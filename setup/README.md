@@ -81,22 +81,14 @@ source $HOME/.bashrc
 systemctl restart solana  # sudo systemctl restart solana
 systemctl status solana
 ```
-terminal commands
+### alias
 ```bash
+git_clone
 node_set | node_reset
 get_tag | node_install | node_update
-check 
-logs
-next 
-monitor | catch
-guard | vote_on | vote_off
+check | logs | next | monitor | catch
+guard | vote_on | vote_off | ssh_agent
 mount_keys | umount_keys | shred_keys
-```
-install/update commands
-```bash
-get_tag
-solana-install init $TAG
-node_install
 ```
 ## Jito-Relayer Setup
 ```bash
