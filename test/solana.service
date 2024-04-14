@@ -33,6 +33,8 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-full-snapshots-to-retain 1 \
 --maximum-incremental-snapshots-to-retain 2 \
 --maximum-local-snapshot-age 4000 \
+--accounts-hash-interval-slots 5000 \
+--no-skip-initial-accounts-db-clean \
 --full-rpc-api \
 --private-rpc \
 --rpc-bind-address 127.0.0.1 \
