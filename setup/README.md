@@ -81,6 +81,10 @@ source $HOME/.bashrc
 systemctl restart solana  # sudo systemctl restart solana
 systemctl status solana
 ```
+```bash
+ulimit -n 1000000  # set ulimit
+ulimit -n # check ulimit
+```
 ### alias
 ```bash
 git_clone
