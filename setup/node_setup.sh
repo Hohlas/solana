@@ -11,7 +11,7 @@ mkdir -p /mnt/disk3/accounts_hash_cache
 
 if [ ! -e /swapfile2 ]; then
 echo -e '\n\e[42m make SWAP \e[0m\n'
-sudo fallocate -l 300G /swapfile2
+sudo fallocate -l 200G /swapfile2
 sudo chmod 600 /swapfile2
 sudo mkswap /swapfile2
 sudo swapon /swapfile2 
