@@ -93,8 +93,8 @@ if [ "$CUR_IP" == "$IP" ]; then
     SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
     IP=$(echo "$SERV" | cut -d'@' -f2) # cu
     if [ "$CUR_IP" != "$IP" ]; then
-	echo -e "$RED STOP VOTING  \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
-	echo "STOP VOTING $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
+	echo -e "$RED VOTING IP change to $IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
+	echo "VOTING IP change to $IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
 	exit
     fi
     if [[ $HEALTH == "ok" ]]; then
