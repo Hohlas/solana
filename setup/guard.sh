@@ -36,9 +36,9 @@ health_warning=0
 behind_warning=0
 last_missage=12
 CHECK_HEALTH() { # self check health every 5 seconds
-	WARN_MSG="" # set warning_message empty
  	# check behind slots
- 	RPC_SLOT=$(solana slot -u $rpcURL)
+ 	WARN_MSG="" # set warning_message empty
+  RPC_SLOT=$(solana slot -u $rpcURL)
 	LOCAL_SLOT=$(solana slot -u localhost)
   BEHIND=$((RPC_SLOT - LOCAL_SLOT))
   if [[ $BEHIND -gt 1 ]]; then
