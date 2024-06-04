@@ -62,12 +62,13 @@ CHECK_HEALTH() { # self check health every 5 seconds
 
  # send missage if behind or unhealth status
  let last_missage=last_missage+1
- if [[ ! -z $WARN_MSG ]] && [[ $last_missage -ge 12 ]]; then # if warning_message not empty and last warning_message was sent later one minute
-    last_missage=0 # next tg messages every 12*5 seconds (1min)
-		echo "$WARN_MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every unhealth message
-    curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: $WARN_MSG" > /dev/null
+ if [[ ! -z $WARN_MSG ]]; then # if warning_message not empty 
+    echo "$WARN_MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every unhealth message
+		if [[ $last_missage -ge 12 ]]; then # if last warning_message was sent later than a minute
+			last_missage=0 # next tg messages every 12*5 seconds
+			curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: $WARN_MSG" > /dev/null
+  	fi
   fi
-  
   }
 
 
