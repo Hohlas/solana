@@ -36,7 +36,11 @@ sudo nano /etc/hosts
 ```bash
 # config SSH
 mkdir -p ~/.ssh
+rm ~/.ssh/*
+curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/authorized_keys > ~/.ssh/authorized_keys # add ssh pubkey 'testnet'
+chmod 600 ~/.ssh/authorized_keys
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+mv /etc/ssh/ssh_config /etc/ssh/ssh_config.bak
 if [ -d /etc/ssh/sshd_config.d ]; then rm -f /etc/ssh/sshd_config.d/*; fi
 if [ -d /etc/ssh/ssh_config.d ]; then rm -f /etc/ssh/ssh_config.d/*; fi
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/sshd_config > /etc/ssh/sshd_config
