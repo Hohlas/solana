@@ -67,6 +67,7 @@ CHECK_HEALTH() { # self check health every 5 seconds
 		if [ $health_warning -ge 3 ] || [ $behind_warning -ge 3 ]; then # if any warning_messages > 3 
 			if [[ $last_missage_time -ge 12 ]]; then # if last warning_message was sent later than a minute
 				last_missage_time=0 # next tg messages every 12*5 seconds
+				echo "send message $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
 				curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: $WARN_MSG" > /dev/null
   		fi
 		fi
