@@ -42,8 +42,8 @@ CHECK_HEALTH() { # self check health every 5 seconds
 	LOCAL_SLOT=$(solana slot -u localhost)
   BEHIND=$((RPC_SLOT - LOCAL_SLOT))
   if [[ $BEHIND -gt 1 ]]; then
-  	let behind_warning=behind_warning+1
-	 	WARN_MSG="Behind=$BEHIND"
+		let behind_warning=behind_warning+1
+		WARN_MSG="Behind=$BEHIND"
   else
 		behind_warning=0
 	fi
@@ -64,10 +64,12 @@ CHECK_HEALTH() { # self check health every 5 seconds
  let last_missage=last_missage+1
  if [[ ! -z $WARN_MSG ]]; then # if warning_message not empty 
     echo "$WARN_MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every unhealth message
-		if [[ $last_missage -ge 12 ]]; then # if last warning_message was sent later than a minute
-			last_missage=0 # next tg messages every 12*5 seconds
-			curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: $WARN_MSG" > /dev/null
-  	fi
+		if [ $health_warning -ge 3 ] || [ $behind_warning -ge 3 ]; then # if any warning_message repeated more than 3 times
+			if [[ $last_missage -ge 12 ]]; then # if last warning_message was sent later than a minute
+				last_missage=0 # next tg messages every 12*5 seconds
+				curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: $WARN_MSG" > /dev/null
+  		fi
+		fi
   fi
   }
 
