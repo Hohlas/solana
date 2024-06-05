@@ -45,7 +45,8 @@ CHECK_HEALTH() { # self check health every 5 seconds
     let behind_warning=behind_warning+1
 		echo "Behind=$BEHIND $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
 		if [[ $behind_warning -ge 3 ]]; then # 
-			curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND" > /dev/null
+			behind_warning=-12 # sent next message after  12*5 seconds
+	 		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND" > /dev/null
 		fi
 	fi
  
@@ -60,7 +61,8 @@ CHECK_HEALTH() { # self check health every 5 seconds
   	let health_warning=health_warning+1
 		echo "Health: $HEALTH $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
-			curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH" > /dev/null
+			health_warning=-12
+	 		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH" > /dev/null
   	fi
 	fi  
   }
