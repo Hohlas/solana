@@ -88,7 +88,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
     # connection loss for 15 seconds (5sec * 3)
     if [ $DISCONNECT_COUNTER -ge 3 ]; then
         echo "CONNECTION LOSS"
-        bash "$CONNECTION_LOSS_SCRIPT"
+        # bash "$CONNECTION_LOSS_SCRIPT" # no need to vote_off in offline
         echo "RESTART SOLANA $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
