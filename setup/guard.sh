@@ -44,7 +44,7 @@ CHECK_HEALTH() { # self check health every 5 seconds
   else
     let behind_warning=behind_warning+1
 		echo "Behind=$BEHIND $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
-		if [[ $behind_warning -ge 3 ]]; then # 
+		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
 			behind_warning=-12 # sent next message after  12*5 seconds
 	 		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND" > /dev/null
 		fi
@@ -85,8 +85,8 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
     else
         DISCONNECT_COUNTER=0
     fi
-    # connection loss for 20 seconds (5sec * 4)
-    if [ $DISCONNECT_COUNTER -ge 4 ]; then
+    # connection loss for 15 seconds (5sec * 3)
+    if [ $DISCONNECT_COUNTER -ge 3 ]; then
         echo "CONNECTION LOSS"
         bash "$CONNECTION_LOSS_SCRIPT"
         echo "RESTART SOLANA $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
