@@ -2,7 +2,7 @@
 # # #   Start Voting   # # # # # # # # # # # # # # # # # # # # #
 source $HOME/.bashrc
 
-source ~/sol_git/setup/get_identity.sh
+source ~/sol_git/setup/get_identity.sh &
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 

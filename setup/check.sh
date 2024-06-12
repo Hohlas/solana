@@ -21,9 +21,9 @@ fi
 # echo "v$version - $client, IP:$CUR_IP"
 
 
-source ~/sol_git/setup/get_identity.sh
+source ~/sol_git/setup/get_identity.sh &
 link=$(solana address -k ~/solana/validator_link.json)
-shred -u ~/keys/validator.json
+PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) # validator from keyfile 'validator-keypair.json'
 
 if [[ $current_validator == $empty ]]; then 
 echo -e ' tower to '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"

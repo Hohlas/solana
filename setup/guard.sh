@@ -207,7 +207,7 @@ echo "  stop jito-relayer on REMOTE server"
 # ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
 
 # START SOLANA on LOCAL server
-source ~/sol_git/setup/get_identity.sh 
+source ~/sol_git/setup/get_identity.sh &
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
   TOWER_STATUS=' with existing tower'
   solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
