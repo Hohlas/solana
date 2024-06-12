@@ -1,6 +1,8 @@
 #!/bin/bash
 # # #   Start Voting   # # # # # # # # # # # # # # # # # # # # #
 source $HOME/.bashrc
+
+source ~/sol_git/setup/get_identity.sh
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
 
@@ -28,7 +30,7 @@ if [ $command_exit_status -eq 0 ];
 then echo -e "\033[32m set validator-keypair successful \033[0m" 
 else echo -e "\033[31m can not set validator-keypair \033[0m"
 fi
-
+shred -u ~/keys/validator.json
 # ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 # update telegraf
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf

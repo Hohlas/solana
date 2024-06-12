@@ -1,7 +1,9 @@
 #!/bin/bash
 
-PORT='2010'
+source ~/sol_git/setup/get_identity.sh
 PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
+shred -u ~/keys/validator.json
+PORT='2010'
 SOL=$HOME/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
@@ -31,6 +33,7 @@ elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then
 echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[31m network=api.mainnet-beta \033[0m v$version - $client";
 fi	
+
 
 health_warning=0
 behind_warning=0
@@ -112,7 +115,7 @@ if [ "$CUR_IP" == "$IP" ]; then
     if [ "$CUR_IP" != "$IP" ]; then
 	echo -e "$RED VOTING IP change to $IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
 	echo "VOTING IP change to $IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
-	# exit
+	exit
     fi
     if [[ $HEALTH == "ok" ]]; then
       CLR=$GREEN
@@ -204,6 +207,7 @@ echo "  stop jito-relayer on REMOTE server"
 # ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
 
 # START SOLANA on LOCAL server
+source ~/sol_git/setup/get_identity.sh 
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
   TOWER_STATUS=' with existing tower'
   solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
@@ -211,6 +215,7 @@ else
   TOWER_STATUS=' without tower'
   solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
 fi
+shred -u ~/keys/validator.json
 # ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 # update telegraf
 sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
