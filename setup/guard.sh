@@ -132,16 +132,20 @@ SECONDARY_SERVER(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
 	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
 	# waiting remote server fail
-	Delinquent=false
-	until [[ $Delinquent == true ]]; do
-	  JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
-	  LastVote=$(echo "$JSON" | jq -r '.lastVote')
-	  Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-	  CHECK_HEALTH #  check primary node health
-	  echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
-	  sleep 5
+	Delink_counter=0 # чтоб не срабатывало с первого раза
+	until [[ Delink_counter -lt 3 ]]; do
+		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+		LastVote=$(echo "$JSON" | jq -r '.lastVote')
+		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+		if [[ $Delinquent == true ]]; then
+			let Delink_counter=Delink_counter+1
+		else 
+			Delink_counter=0
+		fi
+		CHECK_HEALTH #  check primary node health
+		echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
+		sleep 5
 	done
-
 	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
 
 	# STOP SOLANA on REMOTE server
@@ -150,20 +154,20 @@ SECONDARY_SERVER(){
 	command_exit_status=$?
 	echo "  try to change validator link on REMOTE server: $command_output" 
 	if [ $command_exit_status -eq 0 ]; then
-	   echo -e "\033[32m  change validator link on REMOTE server successful \033[0m" 
-	   MSG=$(printf "$MSG \n%s change validator link")
+		echo -e "\033[32m  change validator link on REMOTE server successful \033[0m" 
+		MSG=$(printf "$MSG \n%s change validator link")
 	fi
 
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
 	command_exit_status=$?
 	echo "  try to set empty identity on REMOTE server: $command_output" 
 	if [ $command_exit_status -eq 0 ]; then
-	   echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
-	   MSG=$(printf "$MSG \n%s set empty identity")
+		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
+		MSG=$(printf "$MSG \n%s set empty identity")
 	else
-	  echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
-	  ssh -o ConnectTimeout=5 REMOTE systemctl restart solana
-	  MSG=$(printf "$MSG \n%s restart solana")
+		echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
+		ssh -o ConnectTimeout=5 REMOTE systemctl restart solana
+		MSG=$(printf "$MSG \n%s restart solana")
 	fi
 	echo "  move tower from REMOTE to LOCAL "
 	timeout 5 scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
@@ -174,11 +178,11 @@ SECONDARY_SERVER(){
 
 	# START SOLANA on LOCAL server
 	if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
-	  TOWER_STATUS=' with existing tower'
-	  solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
+		TOWER_STATUS=' with existing tower'
+		solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
 	else
-	  TOWER_STATUS=' without tower'
-	  solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
+		TOWER_STATUS=' without tower'
+		solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
 	fi
 	# ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 	# update telegraf
