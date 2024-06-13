@@ -118,7 +118,7 @@ PRIMARY_SERVER(){ ##############################################################
 			IP_change=0
 		fi	
 		
-		echo -ne "PRIMARY ${NODE}.${NAME}. $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
+		echo -ne " PRIMARY ${NODE}.${NAME}. $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
 		sleep 5
 	done
 	echo -e "$RED VOTING IP change to $IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
@@ -206,16 +206,14 @@ ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
 
 SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 IP=$(echo "$SERV" | cut -d'@' -f2) # cu
-if [ "$CUR_IP" == "$IP" ]; then
-	IP=$(cat ~/keys/ip.txt)
+if [ "$CUR_IP" == "$IP" ]; then # primary server start
+	if [ -f ~/keys/ip.txt ]; then IP=$(cat ~/keys/ip.txt)
+	else IP=''; fi
 	if [[ -z $IP ]]; then # if $IP is empty
-		echo "run guard on secondary server first to get it's IP"
+		echo -e "Warning! run guard on secondary server first to get it's IP"
 		exit
 		fi
 	fi
-
-
-
 
 # create ssh alias for remote server
 echo " 
@@ -231,11 +229,12 @@ command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh')
 command_exit_status=$?
 if [ $command_exit_status -eq 0 ]; then
   echo "ok"
+  ssh REMOTE 'echo $CUR_IP > ~/keys/ip.txt'
 else
   echo -e "$RED SSH connection can not be established  \033[0m"
   exit
 fi
-scp -P $PORT -i /root/keys/*.ssh $SERV:~/check_ssh ~/
+scp -P $PORT -i /root/keys/*.ssh root@$IP:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
@@ -243,7 +242,7 @@ rm ~/check_ssh
 
 while true  ###  main cicle   #################################################
 do
-	echo -ne "Waiting ${NODE}.${NAME} validating $(TZ=Europe/Moscow date +"%H:%M:%S") MSK    \r \033[0m"
+	echo -ne " Waiting ${NODE}.${NAME} validating $(TZ=Europe/Moscow date +"%H:%M:%S") MSK    \r \033[0m"
 	JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 	Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 	if [[ $Delinquent == false ]]; then
