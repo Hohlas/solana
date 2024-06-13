@@ -11,18 +11,32 @@ SITES=("www.google.com" "www.bing.com")
 #SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
 CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
-SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 SERV_TYPE='Secondary'
-IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 #===
 BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
 CHAT_ALARM=-1001611695684
 CHAT_INFO=-1001548522888
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 
+GET_VOTING_IP(){
+	SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
+	}
+
+SEND_INFO(){
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
+	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+	}
+SEND_ALARM(){
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
+	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+	}
+
+
 echo ' == SOLANA GUARD =='
 #source ~/sol_git/setup/check.sh
-echo 'voting  IP='$IP
+GET_VOTING_IP
+echo 'voting  IP='$VOTING_IP
 echo 'current IP='$CUR_IP
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
@@ -46,7 +60,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		echo "Behind=$BEHIND $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
 			behind_warning=-12 # sent next message after  12*5 seconds
-	 		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND" > /dev/null
+	 		MSG="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
+			SEND_INFO
 		fi
 	fi
  
@@ -64,7 +79,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		echo "Health: $HEALTH $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
 			health_warning=-12
-	 		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH" > /dev/null
+			MSG="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
+			SEND_ALARM
 		fi
 	fi  
 	}
@@ -94,7 +110,8 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
         echo "RESTART SOLANA $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
-		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Restart solana" > /dev/null
+		MSG="$SERV_TYPE ${NODE}.${NAME}: Restart solana"
+		SEND_ALARM
 		exit
 	fi
   }
@@ -102,17 +119,15 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 PRIMARY_SERVER(){ #######################################################################
 	echo -e "\n = PRIMARY  SERVER ="
 	MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
-	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+	SEND_INFO
 	SERV_TYPE='Primary'
 	IP_change=0
 	# CHECK_CONNECTION_LOOP 
 	until [ $IP_change -ge 3 ]; do
 		CHECK_CONNECTION
 		CHECK_HEALTH
-		SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
-		IP=$(echo "$SERV" | cut -d'@' -f2) # cu
-		if [ "$CUR_IP" != "$IP" ]; then
+		GET_VOTING_IP
+		if [ "$CUR_IP" != "$VOTING_IP" ]; then
 			let IP_change+=1
 		else
 			IP_change=0
@@ -121,16 +136,15 @@ PRIMARY_SERVER(){ ##############################################################
 		echo -ne " PRIMARY ${NODE}.${NAME}. $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
 		sleep 5
 	done
-	echo -e "$RED VOTING IP change to $IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
-	echo "VOTING IP change to $IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
+	echo -e "$RED VOTING IP change to $VOTING_IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
+	echo "VOTING IP change to $VOTING_IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
 	echo -e "\n = SECONDARY  SERVER ="
 	echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
 	MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
-	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+	SEND_INFO
 	# waiting remote server fail
 	Delink_counter=0 # чтоб не срабатывало с первого раза
 	until [[ $Delink_counter -lt 3 ]]; do
@@ -149,7 +163,7 @@ SECONDARY_SERVER(){ ############################################################
 	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
 
 	# STOP SOLANA on REMOTE server
-	MSG=$(printf "${NODE}.${NAME} RESTART ${IP} \n%s STOP REMOTE SERVER:")
+	MSG=$(printf "${NODE}.${NAME} RESTART ${VOTING_IP} \n%s STOP REMOTE SERVER:")
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
 	command_exit_status=$?
 	echo "  try to change validator link on REMOTE server: $command_output" 
@@ -191,8 +205,7 @@ SECONDARY_SERVER(){ ############################################################
 	# systemctl start jito-relayer.service
 	echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
-	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
-	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+	SEND_ALARM
 	# solana-validator --ledger ~/solana/ledger monitor
 	# ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
 	#ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
@@ -204,12 +217,11 @@ chmod 600 ~/keys/*.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
 
-SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
-IP=$(echo "$SERV" | cut -d'@' -f2) # cu
-if [ "$CUR_IP" == "$IP" ]; then # primary server start
-	if [ -f ~/keys/ip.txt ]; then IP=$(cat ~/keys/ip.txt)
+GET_VOTING_IP
+if [ "$CUR_IP" == "$VOTING_IP" ]; then # primary server start
+	if [ -f ~/keys/ip.txt ]; then VOTING_IP=$(cat ~/keys/ip.txt)
 	else IP=''; fi
-	if [[ -z $IP ]]; then # if $IP is empty
+	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP is empty
 		echo -e "Warning! run guard on secondary server first to get it's IP"
 		exit
 		fi
@@ -218,7 +230,7 @@ if [ "$CUR_IP" == "$IP" ]; then # primary server start
 # create ssh alias for remote server
 echo " 
 Host REMOTE
-HostName $IP
+HostName $VOTING_IP
 User root
 Port $PORT
 IdentityFile /root/keys/*.ssh
@@ -234,21 +246,20 @@ else
   echo -e "$RED SSH connection can not be established  \033[0m"
   exit
 fi
-scp -P $PORT -i /root/keys/*.ssh root@$IP:~/check_ssh ~/
+scp -P $PORT -i /root/keys/*.ssh root@$VOTING_IP:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
 
 
-while true  ###  main cicle   #################################################
+while true  ###  main circle   #################################################
 do
 	echo -ne " Waiting ${NODE}.${NAME} validating $(TZ=Europe/Moscow date +"%H:%M:%S") MSK    \r \033[0m"
 	JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 	Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 	if [[ $Delinquent == false ]]; then
-		SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
-		IP=$(echo "$SERV" | cut -d'@' -f2) # cu
-		if [ "$CUR_IP" == "$IP" ]; then
+		GET_VOTING_IP
+		if [ "$CUR_IP" == "$VOTING_IP" ]; then
 			PRIMARY_SERVER
 		else
 			SECONDARY_SERVER
