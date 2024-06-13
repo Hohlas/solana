@@ -34,7 +34,7 @@ fi
 
 health_warning=0
 behind_warning=0
-CHECK_HEALTH() { # self check health every 5 seconds
+CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	RPC_SLOT=$(solana slot -u $rpcURL)
 	LOCAL_SLOT=$(solana slot -u localhost)
@@ -70,7 +70,7 @@ CHECK_HEALTH() { # self check health every 5 seconds
 	}
 
 
-CHECK_CONNECTION() { # self check connection every 5 seconds
+CHECK_CONNECTION() { # self check connection every 5 seconds ####################################
     connection=false
     for site in "${SITES[@]}"; do
         ping -c1 $site &> /dev/null # ping every site once
@@ -99,7 +99,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
 	fi
   }
 
-PRIMARY_SERVER(){
+PRIMARY_SERVER(){ #######################################################################
 	echo -e "\n = PRIMARY  SERVER ="
 	MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
@@ -107,25 +107,25 @@ PRIMARY_SERVER(){
 	SERV_TYPE='Primary'
 	IP_change=0
 	# CHECK_CONNECTION_LOOP 
-	until [ IP_change -lt 3 ]; do
+	until [ $IP_change -ge 3 ]; do
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 		IP=$(echo "$SERV" | cut -d'@' -f2) # cu
 		if [ "$CUR_IP" != "$IP" ]; then
-			let IP_change=IP_change+1
+			let IP_change+=1
 		else
 			IP_change=0
 		fi	
 		
-		echo -ne " Check connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
+		echo -ne "PRIMARY ${NODE}.${NAME}. $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
 		sleep 5
 	done
 	echo -e "$RED VOTING IP change to $IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
 	echo "VOTING IP change to $IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
 	}
 	
-SECONDARY_SERVER(){
+SECONDARY_SERVER(){ ##################################################################
 	echo -e "\n = SECONDARY  SERVER ="
 	echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
 	MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
@@ -133,7 +133,7 @@ SECONDARY_SERVER(){
 	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
 	# waiting remote server fail
 	Delink_counter=0 # чтоб не срабатывало с первого раза
-	until [[ Delink_counter -lt 3 ]]; do
+	until [[ $Delink_counter -lt 3 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
@@ -143,7 +143,7 @@ SECONDARY_SERVER(){
 			Delink_counter=0
 		fi
 		CHECK_HEALTH #  check primary node health
-		echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
+		echo -ne "SECONDARY ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
 	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
@@ -199,17 +199,23 @@ SECONDARY_SERVER(){
 	}
 
 
-
-
-
-
-
-
-
-
+### script start - check ssh connection ###########################################
 chmod 600 ~/keys/*.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
+
+SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+IP=$(echo "$SERV" | cut -d'@' -f2) # cu
+if [ "$CUR_IP" == "$IP" ]; then
+	IP=$(cat ~/keys/ip.txt)
+	if [[ -z $IP ]]; then # if $IP is empty
+		echo "run guard on secondary server first to get it's IP"
+		exit
+		fi
+	fi
+
+
+
 
 # create ssh alias for remote server
 echo " 
@@ -234,23 +240,20 @@ ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
 
-while true
+
+while true  ###  main cicle   #################################################
 do
-	if [ "$CUR_IP" == "$IP" ]; then
-		PRIMARY_SERVER()
-	else
-		SECONDARY_SERVER()
+	echo -ne "Waiting ${NODE}.${NAME} validating $(TZ=Europe/Moscow date +"%H:%M:%S") MSK    \r \033[0m"
+	JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+	Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+	if [[ $Delinquent == false ]]; then
+		SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+		IP=$(echo "$SERV" | cut -d'@' -f2) # cu
+		if [ "$CUR_IP" == "$IP" ]; then
+			PRIMARY_SERVER
+		else
+			SECONDARY_SERVER
+		fi	
 	fi
-
+	sleep 10
 done
-
-
-
-
-
-
-
-
-
-
-
