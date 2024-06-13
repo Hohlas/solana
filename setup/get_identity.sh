@@ -12,7 +12,7 @@ else
 fi
 # check validator-keypair.json address
 if [ "$Identity_Addr" = "$validator_key" ]; then
-    echo -e " set private_key $GREEN $NAME \033[0m"
+    echo -e " set private_key $GREEN $NODE.$NAME \033[0m"
     KEY_CLR=$GREEN  
 else
     echo -e "WARNING ! Wrong private_key=${private_key:0:9}...${private_key: -9}, run node_set "
