@@ -112,7 +112,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
 		MSG="$SERV_TYPE ${NODE}.${NAME}: Restart solana"
 		SEND_ALARM
-		exit
+		# exit
 	fi
   }
 
