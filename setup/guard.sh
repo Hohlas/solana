@@ -147,7 +147,7 @@ SECONDARY_SERVER(){ ############################################################
 	SEND_INFO
 	# waiting remote server fail
 	Delink_counter=0 # чтоб не срабатывало с первого раза
-	until [[ $Delink_counter -lt 3 ]]; do
+	until [[ $Delink_counter -ge 3 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
