@@ -146,15 +146,9 @@ SECONDARY_SERVER(){ ############################################################
 	MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
 	SERV_TYPE='Secondary'
-	# selfcheck before guarding
-	until [[ $HEALTH == "ok" && $BEHIND -lt 1 ]]; do
-		CHECK_HEALTH
-		echo -ne " Waiting, selfcheck OK $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH, Behind $BEHIND   \r \033[0m"
-		sleep 5
-	done
-	# waiting remote server fail
+	# waiting remote server fail and selfcheck health
 	Delink_counter=0 # чтоб не срабатывало с первого раза
-	until [[ $Delink_counter -ge 3 ]]; do
+	until [[ $HEALTH == "ok" && $Delink_counter -ge 3 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
