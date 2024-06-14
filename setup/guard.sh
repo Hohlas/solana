@@ -218,19 +218,24 @@ eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
 
 GET_VOTING_IP
-if [ "$CUR_IP" == "$VOTING_IP" ]; then # primary server start
-	if [ -f ~/keys/ip.txt ]; then VOTING_IP=$(cat ~/keys/ip.txt)
-	else IP=''; fi
-	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP is empty
-		echo -e "Warning! run guard on secondary server first to get it's IP"
-		exit
-		fi
+REMOTE_IP=$VOTING_IP # it's true for SECONDARY
+if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
+	if [ -f ~/keys/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
+		REMOTE_IP=$(cat ~/keys/remote_ip)
 	fi
-
+	if [[ -z $REMOTE_IP ]]; then # if $REMOTE_IP empty
+		echo -e "Warning! Run guard on SECONDARY server to get it's IP"
+		exit
+	fi
+else # 
+	echo $CUR_IP > ~/cur_ip
+	scp -P $PORT -i /root/keys/*.ssh ~/cur_ip root@$REMOTE_IP:~/keys/remote_ip
+	#ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
+fi
 # create ssh alias for remote server
 echo " 
 Host REMOTE
-HostName $VOTING_IP
+HostName $REMOTE_IP
 User root
 Port $PORT
 IdentityFile /root/keys/*.ssh
@@ -239,14 +244,11 @@ IdentityFile /root/keys/*.ssh
 # check SSH connection with primary node server
 command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh')
 command_exit_status=$?
-if [ $command_exit_status -eq 0 ]; then
-  echo "ok"
-  ssh REMOTE 'echo $CUR_IP > ~/keys/ip.txt'
-else
+if [ $command_exit_status -ne  0 ]; then
   echo -e "$RED SSH connection can not be established  \033[0m"
   exit
 fi
-scp -P $PORT -i /root/keys/*.ssh root@$VOTING_IP:~/check_ssh ~/
+scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
