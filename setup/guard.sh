@@ -268,16 +268,11 @@ rm ~/check_ssh
 
 while true  ###  main circle   #################################################
 do
-	echo -ne " Waiting ${NODE}.${NAME} validating $(TZ=Europe/Moscow date +"%H:%M:%S") MSK    \r \033[0m"
-	JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
-	Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-	if [[ $Delinquent == false ]]; then
-		GET_VOTING_IP
-		if [ "$CUR_IP" == "$VOTING_IP" ]; then
-			PRIMARY_SERVER
-		else
-			SECONDARY_SERVER
-		fi	
-	fi
+	GET_VOTING_IP
+	if [ "$CUR_IP" == "$VOTING_IP" ]; then
+		PRIMARY_SERVER
+	else
+		SECONDARY_SERVER
+	fi	
 	sleep 10
 done
