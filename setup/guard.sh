@@ -145,6 +145,13 @@ SECONDARY_SERVER(){ ############################################################
 	echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
 	MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
+	SERV_TYPE='Secondary'
+	# selfcheck before guarding
+	until [[ $HEALTH == "ok" && $BEHIND -lt 1 ]]; do
+		CHECK_HEALTH
+		echo -ne " Waiting, selfcheck OK $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH, Behind $BEHIND   \r \033[0m"
+		sleep 5
+	done
 	# waiting remote server fail
 	Delink_counter=0 # чтоб не срабатывало с первого раза
 	until [[ $Delink_counter -ge 3 ]]; do
@@ -157,7 +164,7 @@ SECONDARY_SERVER(){ ############################################################
 			Delink_counter=0
 		fi
 		CHECK_HEALTH #  check primary node health
-		echo -ne "SECONDARY ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
+		echo -ne " SECONDARY ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
 	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
@@ -221,6 +228,7 @@ GET_VOTING_IP
 if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [ -f ~/keys/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
 		REMOTE_IP=$(cat ~/keys/remote_ip)
+		echo "get REMOTE_IP of SECONDARY_SERVER from ~/keys/remote_ip: $REMOTE_IP"
 	else 
 		REMOTE_IP=''	
 	fi
@@ -232,7 +240,9 @@ else #
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
 	echo $CUR_IP > ~/cur_ip
 	scp -P $PORT -i /root/keys/*.ssh ~/cur_ip root@$REMOTE_IP:~/keys/remote_ip
-	#ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
+	# ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
+	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/keys/remote_ip ~/remote_ip_check 
+	echo "send CUR_IP to PRIMARY_SERVER $(cat ~/remote_ip_check)"
 fi
 # create ssh alias for remote server
 echo " 
@@ -247,7 +257,7 @@ IdentityFile /root/keys/*.ssh
 command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh')
 command_exit_status=$?
 if [ $command_exit_status -ne  0 ]; then
-  echo -e "$RED SSH connection can not be established  \033[0m"
+  echo -e "$RED SSH connection not available  \033[0m"
   exit
 fi
 scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/check_ssh ~/
