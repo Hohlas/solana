@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PORT='2010'
-PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
+PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) 
 SOL=$HOME/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
@@ -116,6 +116,18 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 	fi
   }
 
+RETURN_PRIMARY_TO_MASTER_SERVER(){
+	if [[ -f ~/keys/master ]]; then # server has master flag file (priority server) 
+		current_slot=$(solana slot)
+		my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$current_slot '$1>=var' | head -n1 | cut -d ' ' -f3)
+		slots_remaining=$((my_slot-current_slot))
+		minutes_remaining=$((($slots_remaining * 459) / 60000))
+		if [[ $BEHIND -lt 1 && minutes_remaining -ge 2 ]]; then # BEHIND==0 && 
+			Become_primary=5 # set flag to become primary server
+		fi
+	fi	
+}
+
 PRIMARY_SERVER(){ #######################################################################
 	echo -e "\n = PRIMARY  SERVER ="
 	MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
@@ -147,17 +159,18 @@ SECONDARY_SERVER(){ ############################################################
 	SEND_INFO
 	SERV_TYPE='Secondary'
 	# waiting remote server fail and selfcheck health
-	Delink_counter=0 # чтоб не срабатывало с первого раза
-	until [[ $HEALTH == "ok" && $Delink_counter -ge 3 ]]; do
+	Become_primary=0 # чтоб не срабатывало с первого раза
+	until [[ $HEALTH == "ok" && $Become_primary -ge 3 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
-			let Delink_counter=Delink_counter+1
+			let Become_primary=Become_primary+1
 		else 
-			Delink_counter=0
+			Become_primary=0
 		fi
 		CHECK_HEALTH #  check primary node health
+		RETURN_PRIMARY_TO_MASTER_SERVER
 		echo -ne " SECONDARY ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
