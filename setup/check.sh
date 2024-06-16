@@ -38,7 +38,8 @@ current_slot=$(solana slot)
 my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$current_slot '$1>=var' | head -n1 | cut -d ' ' -f3)
 slots_remaining=$((my_slot-current_slot))
 minutes_remaining=$((($slots_remaining * 459) / 60000))
-echo -e " next vote: $GREEN$minutes_remaining\033[0m minutes"
+score=$(solana validators --sort=credits -r -n | grep $PUB_KEY | awk '{print $1}'); 
+echo -e " next vote: $GREEN$minutes_remaining\033[0m minutes,  score=$score"
 
 echo '--'
 echo ' vote account:      '$vote
