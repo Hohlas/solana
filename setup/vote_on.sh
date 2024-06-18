@@ -59,22 +59,21 @@ else # any symbols after 'vote_on'
 	
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
 	command_exit_status=$?
-	echo "  change validator link on REMOTE server: $command_output" 
 	if [ $command_exit_status -eq 0 ]; then
 		echo -e " change validator link on REMOTE server $GREEN successful \033[0m" 
-		MSG=$(printf "$MSG \n%s change validator link")
   	else
    		echo -e "$RED can't change validator link on REMOTE server \033[0m"
+     		echo $command_output
 		return
 	fi
 	
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
-	command_exit_status=$?
-	echo "  set empty identity on REMOTE server: $command_output" 
+	command_exit_status=$? 
 	if [ $command_exit_status -eq 0 ]; then
 		echo -e " set empty identity on REMOTE server $GREEN successful \033[0m" 
 	else
-		echo -e "$RED  can't restart solana on REMOTE server in NO_VOTING mode \033[0m"
+		echo -e "$RED  can't set empty identity on REMOTE server \033[0m"
+  		echo $command_output
 		return
 	fi
  
