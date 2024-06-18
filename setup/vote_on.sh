@@ -12,15 +12,20 @@ VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 
 FORCE=$1
 if [ -z "$FORCE" ]; then # no 'force' flag, so waiting for 'delink' status
-  Delinquent=false
-  until [[ $Delinquent == true ]]; do
-    JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
-    LastVote=$(echo "$JSON" | jq -r '.lastVote')
-    Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-    echo -ne "Looking for "$PUB_KEY". LastVote="$LastVote" \r"
-    sleep 3
-  done
-else
+	Become_primary=0 # чтоб не срабатывало с первого раза
+	until [[ $Become_primary -ge 3 ]]; do
+		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+		LastVote=$(echo "$JSON" | jq -r '.lastVote')
+		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+		if [[ $Delinquent == true ]]; then
+			let Become_primary=Become_primary+1
+		else 
+			Become_primary=0
+		fi
+		echo -ne " waiating node delink $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}    \r \033[0m"
+		sleep 5
+	done
+else # any symbols after 'vote_on' 
 	if [ "$CUR_IP" == "$VOTING_IP" ]; then # 
 		echo -e "$RED  node voiting on current server  \033[0m"
 		return
