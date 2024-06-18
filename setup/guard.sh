@@ -14,14 +14,9 @@ DISCONNECT_COUNTER=0
 SERV_TYPE='Secondary'
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 #===
-source ~/keys/tg_bot_token
-if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN empty
-	echo -e "Warning! write BOT_TOKEN to /root/keys/tg_bot_token"
-	exit
-else 
-	echo "load telegram bot token: $BOT_TOKEN"
- 	source ~/keys/tg_bot_token
-fi
+BOT_TOKEN="5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU"
+CHAT_ALARM=-1001611695684
+CHAT_INFO=-1001548522888
 
 
 GET_VOTING_IP(){
