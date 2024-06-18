@@ -1,5 +1,5 @@
 #!/bin/bash
-# # #    # # # # # # # # # # # # # # # # # # # # #
+# # #   Start Voting   # # # # # # # # # # # # # # # # # # # # #
 source $HOME/.bashrc
 PORT='2010'
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) 
@@ -9,13 +9,6 @@ CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
-
-if [ "$CUR_IP" == "$VOTING_IP" ]; then # 
-	echo -e "\033[31m  node voiting on current server  \033[0m"
-	return
-fi	
-
-
 
 FORCE=$1
 if [ -z "$FORCE" ]; then # no 'force' flag, so waiting for 'delink' status
@@ -28,6 +21,10 @@ if [ -z "$FORCE" ]; then # no 'force' flag, so waiting for 'delink' status
     sleep 3
   done
 else
+	if [ "$CUR_IP" == "$VOTING_IP" ]; then # 
+		echo -e "$RED  node voiting on current server  \033[0m"
+		return
+	fi	
 	chmod 600 ~/keys/*.ssh
 	eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 	ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
@@ -52,39 +49,37 @@ else
 	fi
 	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/check_ssh ~/
 	ssh REMOTE rm ~/check_ssh
-	echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
+	echo -e "$GREEN$(cat ~/check_ssh)\033[0m"
 	rm ~/check_ssh
-
-	echo "${NODE}.${NAME} RESTART ${VOTING_IP} \n%s STOP REMOTE SERVER:"
 	
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
 	command_exit_status=$?
-	echo "  try to change validator link on REMOTE server: $command_output" 
+	echo "  change validator link on REMOTE server: $command_output" 
 	if [ $command_exit_status -eq 0 ]; then
-		echo -e "\033[32m  change validator link on REMOTE server successful \033[0m" 
+		echo -e " change validator link on REMOTE server $GREEN successful \033[0m" 
 		MSG=$(printf "$MSG \n%s change validator link")
+  	else
+   		echo -e "$RED can't change validator link on REMOTE server \033[0m"
+		return
 	fi
 	
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
 	command_exit_status=$?
-	echo "  try to set empty identity on REMOTE server: $command_output" 
+	echo "  set empty identity on REMOTE server: $command_output" 
 	if [ $command_exit_status -eq 0 ]; then
-		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
+		echo -e " set empty identity on REMOTE server $GREEN successful \033[0m" 
 	else
-		echo -e "\033[31m  can't restart solana on REMOTE server in NO_VOTING mode \033[0m"
+		echo -e "$RED  can't restart solana on REMOTE server in NO_VOTING mode \033[0m"
 		return
 	fi
-	
+ 
 	echo "  move tower from REMOTE to LOCAL "
 	timeout 5 scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
 	echo "  stop telegraf on REMOTE server"
 	ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
-	echo "  stop jito-relayer on REMOTE server"
+	# echo "  stop jito-relayer on REMOTE server"
 	
 fi
-
-
-
 
 if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then  
 	TOWER_STATUS=' with existing tower'; TOWER_FLAG="--require-tower"
@@ -95,8 +90,8 @@ command_output=$(solana-validator -l ~/solana/ledger set-identity $TOWER_FLAG ~/
 command_exit_status=$?
 echo $command_output 
 if [ $command_exit_status -eq 0 ]; 
-then echo -e "\033[32m set validator-keypair successful \033[0m" 
-else echo -e "\033[31m can not set validator-keypair \033[0m"
+then echo -e "$GREEN set validator-keypair successful \033[0m" 
+else echo -e "$RED can't set validator-keypair \033[0m"
 fi
 
 # ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
