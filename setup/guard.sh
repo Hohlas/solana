@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PORT='2010'
-PUB_KEY=$(solana-keygen pubkey ~/solana/validator-keypair.json)
+PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) 
 SOL=$HOME/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
@@ -11,18 +11,37 @@ SITES=("www.google.com" "www.bing.com")
 #SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
 CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
-SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 SERV_TYPE='Secondary'
-IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
-#===
-BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
-CHAT_ALARM=-1001611695684
-CHAT_INFO=-1001548522888
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
+#===
+source ~/keys/tg_bot_token
+if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN empty
+	echo -e "Warning! write BOT_TOKEN to /root/keys/tg_bot_token"
+	exit
+else 
+	echo "load telegram bot token: $BOT_TOKEN"
+fi
+
+
+GET_VOTING_IP(){
+	SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
+	}
+
+SEND_INFO(){
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
+	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+	}
+SEND_ALARM(){
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
+	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+	}
+
 
 echo ' == SOLANA GUARD =='
 #source ~/sol_git/setup/check.sh
-echo 'voting  IP='$IP
+GET_VOTING_IP
+echo 'voting  IP='$VOTING_IP
 echo 'current IP='$CUR_IP
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
@@ -34,19 +53,20 @@ fi
 
 health_warning=0
 behind_warning=0
-CHECK_HEALTH() { # self check health every 5 seconds
+CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	RPC_SLOT=$(solana slot -u $rpcURL)
 	LOCAL_SLOT=$(solana slot -u localhost)
-  BEHIND=$((RPC_SLOT - LOCAL_SLOT))
-  if [[ $BEHIND -lt 1 ]]; then # if BEHIND<1 
+	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
+	if [[ $BEHIND -lt 1 ]]; then # if BEHIND<1 
 		behind_warning=0
-  else
-    let behind_warning=behind_warning+1
+	else
+		let behind_warning=behind_warning+1
 		echo "Behind=$BEHIND $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
 			behind_warning=-12 # sent next message after  12*5 seconds
-	 		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND" > /dev/null
+	 		MSG="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
+			SEND_INFO
 		fi
 	fi
  
@@ -55,20 +75,23 @@ CHECK_HEALTH() { # self check health every 5 seconds
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
 		HEALTH="Warning!"
 	fi
-  if [[ $HEALTH == "ok" ]]; then
-  	health_warning=0
-  else
-  	let health_warning=health_warning+1
+	if [[ $HEALTH == "ok" ]]; then
+		health_warning=0
+		CLR=$GREEN
+	else
+		CLR=$RED
+		let health_warning=health_warning+1
 		echo "Health: $HEALTH $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
 			health_warning=-12
-	 		curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH" > /dev/null
-  	fi
+			MSG="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
+			SEND_ALARM
+		fi
 	fi  
-  }
+	}
 
 
-CHECK_CONNECTION() { # self check connection every 5 seconds
+CHECK_CONNECTION() { # self check connection every 5 seconds ####################################
     connection=false
     for site in "${SITES[@]}"; do
         ping -c1 $site &> /dev/null # ping every site once
@@ -92,48 +115,151 @@ CHECK_CONNECTION() { # self check connection every 5 seconds
         echo "RESTART SOLANA $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
-    fi
+		MSG="$SERV_TYPE ${NODE}.${NAME}: Restart solana"
+		SEND_ALARM
+		# exit
+	fi
   }
 
+RETURN_PRIMARY_TO_MASTER_SERVER(){
+	if [[ -f ~/keys/master ]]; then # server has master flag file (priority server) 
+		current_slot=$(solana slot)
+		my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$current_slot '$1>=var' | head -n1 | cut -d ' ' -f3)
+		slots_remaining=$((my_slot-current_slot))
+		minutes_remaining=$((($slots_remaining * 459) / 60000))
+		if [[ $BEHIND -lt 1 && minutes_remaining -ge 2 ]]; then # BEHIND==0 && 
+			Become_primary=5 # set flag to become primary server
+		fi
+	fi	
+}
+
+PRIMARY_SERVER(){ #######################################################################
+	echo -e "\n = PRIMARY  SERVER ="
+	MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+	SEND_INFO
+	SERV_TYPE='Primary'
+	IP_change=0
+	# CHECK_CONNECTION_LOOP 
+	until [ $IP_change -ge 3 ]; do
+		CHECK_CONNECTION
+		CHECK_HEALTH
+		GET_VOTING_IP
+		if [ "$CUR_IP" != "$VOTING_IP" ]; then
+			let IP_change+=1
+		else
+			IP_change=0
+		fi	
+		
+		echo -ne " PRIMARY ${NODE}.${NAME}. $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
+		sleep 5
+	done
+	echo -e "$RED VOTING IP change to $VOTING_IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
+	echo "VOTING IP change to $VOTING_IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
+	}
+	
+SECONDARY_SERVER(){ ##################################################################
+	echo -e "\n = SECONDARY  SERVER ="
+	echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
+	MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+	SEND_INFO
+	SERV_TYPE='Secondary'
+	# waiting remote server fail and selfcheck health
+	Become_primary=0 # чтоб не срабатывало с первого раза
+	until [[ $HEALTH == "ok" && $Become_primary -ge 3 ]]; do
+		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+		LastVote=$(echo "$JSON" | jq -r '.lastVote')
+		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+		if [[ $Delinquent == true ]]; then
+			let Become_primary=Become_primary+1
+		else 
+			Become_primary=0
+		fi
+		CHECK_HEALTH #  self check node health
+		RETURN_PRIMARY_TO_MASTER_SERVER
+		echo -ne " SECONDARY ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
+		sleep 5
+	done
+	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
+
+	# STOP SOLANA on REMOTE server
+	MSG=$(printf "${NODE}.${NAME} RESTART ${VOTING_IP} \n%s STOP REMOTE SERVER:")
+	command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
+	command_exit_status=$?
+	echo "  try to change validator link on REMOTE server: $command_output" 
+	if [ $command_exit_status -eq 0 ]; then
+		echo -e "\033[32m  change validator link on REMOTE server successful \033[0m" 
+		MSG=$(printf "$MSG \n%s change validator link")
+	fi
+
+	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
+	command_exit_status=$?
+	echo "  try to set empty identity on REMOTE server: $command_output" 
+	if [ $command_exit_status -eq 0 ]; then
+		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
+		MSG=$(printf "$MSG \n%s set empty identity")
+	else
+		echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
+		ssh -o ConnectTimeout=5 REMOTE systemctl restart solana
+		MSG=$(printf "$MSG \n%s restart solana")
+	fi
+	echo "  move tower from REMOTE to LOCAL "
+	timeout 5 scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
+	echo "  stop telegraf on REMOTE server"
+	ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
+	echo "  stop jito-relayer on REMOTE server"
+	# ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
+
+	# START SOLANA on LOCAL server
+	if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
+		TOWER_STATUS=' with existing tower'
+		solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
+	else
+		TOWER_STATUS=' without tower'
+		solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
+	fi
+	# ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
+	# update telegraf
+	sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
+	systemctl start telegraf
+	# systemctl start jito-relayer.service
+	echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
+	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
+	SEND_ALARM
+	# solana-validator --ledger ~/solana/ledger monitor
+	# ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
+	#ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
+	}
 
 
-if [ "$CUR_IP" == "$IP" ]; then
-  echo -e "\n = PRIMARY  SERVER ="
-  MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
-  curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-  echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
-  SERV_TYPE='Primary'
-  # CHECK_CONNECTION_LOOP 
-  until [ $DISCONNECT_COUNTER -ge 4 ]; do
-    CHECK_CONNECTION
-    CHECK_HEALTH
-    SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
-    IP=$(echo "$SERV" | cut -d'@' -f2) # cu
-    if [ "$CUR_IP" != "$IP" ]; then
-	echo -e "$RED VOTING IP change to $IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
-	echo "VOTING IP change to $IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
-	# exit
-    fi
-    if [[ $HEALTH == "ok" ]]; then
-      CLR=$GREEN
-    else
-      CLR=$RED
-    fi
-    echo -ne " Check connection $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
-    sleep 5
-  done
-  exit
-fi
-
-echo -e "\n = SECONDARY  SERVER ="
+### script start - check ssh connection ###########################################
 chmod 600 ~/keys/*.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
 
+GET_VOTING_IP
+if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
+	if [ -f ~/keys/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
+		REMOTE_IP=$(cat ~/keys/remote_ip)
+		echo "get REMOTE_IP of SECONDARY_SERVER from ~/keys/remote_ip: $REMOTE_IP"
+	else 
+		REMOTE_IP=''	
+	fi
+	if [[ -z $REMOTE_IP ]]; then # if $REMOTE_IP empty
+		echo -e "Warning! Run guard on SECONDARY server to get it's IP"
+		exit
+	fi
+else # 
+	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
+	echo $CUR_IP > ~/cur_ip
+	scp -P $PORT -i /root/keys/*.ssh ~/cur_ip root@$REMOTE_IP:~/keys/remote_ip
+	# ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
+	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/keys/remote_ip ~/remote_ip_check 
+	echo "send CUR_IP to PRIMARY_SERVER $(cat ~/remote_ip_check)"
+fi
 # create ssh alias for remote server
 echo " 
 Host REMOTE
-HostName $IP
+HostName $REMOTE_IP
 User root
 Port $PORT
 IdentityFile /root/keys/*.ssh
@@ -142,84 +268,23 @@ IdentityFile /root/keys/*.ssh
 # check SSH connection with primary node server
 command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh')
 command_exit_status=$?
-if [ $command_exit_status -eq 0 ]; then
-  echo "ok"
-else
-  echo -e "$RED SSH connection can not be established  \033[0m"
+if [ $command_exit_status -ne  0 ]; then
+  echo -e "$RED SSH connection not available  \033[0m"
   exit
 fi
-scp -P $PORT -i /root/keys/*.ssh $SERV:~/check_ssh ~/
+scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
 echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
 rm ~/check_ssh
 
-echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
-MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
-curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
-# waiting remote server fail
-Delinquent=false
-until [[ $Delinquent == true ]]; do
-  JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
-  LastVote=$(echo "$JSON" | jq -r '.lastVote')
-  Delinquent=$(echo "$JSON" | jq -r '.delinquent')
-  CHECK_HEALTH #  check primary node health
-  if [[ $HEALTH == "ok" ]]; then
-      CLR=$GREEN
-  else
-     CLR=$RED
-  fi
-  echo -ne " Looking for ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
-  sleep 5
+
+while true  ###  main circle   #################################################
+do
+	GET_VOTING_IP
+	if [ "$CUR_IP" == "$VOTING_IP" ]; then
+		PRIMARY_SERVER
+	else
+		SECONDARY_SERVER
+	fi	
+	sleep 10
 done
-
-echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
-
-# STOP SOLANA on REMOTE server
-MSG=$(printf "${NODE}.${NAME} RESTART ${IP} \n%s STOP REMOTE SERVER:")
-command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
-command_exit_status=$?
-echo "  try to change validator link on REMOTE server: $command_output" 
-if [ $command_exit_status -eq 0 ]; then
-   echo -e "\033[32m  change validator link on REMOTE server successful \033[0m" 
-   MSG=$(printf "$MSG \n%s change validator link")
-fi
-
-command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
-command_exit_status=$?
-echo "  try to set empty identity on REMOTE server: $command_output" 
-if [ $command_exit_status -eq 0 ]; then
-   echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
-   MSG=$(printf "$MSG \n%s set empty identity")
-else
-  echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
-  ssh -o ConnectTimeout=5 REMOTE systemctl restart solana
-  MSG=$(printf "$MSG \n%s restart solana")
-fi
-echo "  move tower from REMOTE to LOCAL "
-timeout 5 scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
-echo "  stop telegraf on REMOTE server"
-ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
-echo "  stop jito-relayer on REMOTE server"
-# ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
-
-# START SOLANA on LOCAL server
-if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
-  TOWER_STATUS=' with existing tower'
-  solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
-else
-  TOWER_STATUS=' without tower'
-  solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
-fi
-# ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
-# update telegraf
-sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
-systemctl start telegraf
-# systemctl start jito-relayer.service
-echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
-MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
-curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
-echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
-# solana-validator --ledger ~/solana/ledger monitor
-# ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
-#ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
