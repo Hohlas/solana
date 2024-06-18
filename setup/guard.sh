@@ -58,6 +58,9 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	RPC_SLOT=$(solana slot -u $rpcURL)
 	LOCAL_SLOT=$(solana slot -u localhost)
 	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
+	my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
+	slots_remaining=$((my_slot-RPC_SLOT))
+	next_slot_time=$((($slots_remaining * 459) / 60000))
 	if [[ $BEHIND -lt 1 ]]; then # if BEHIND<1 
 		behind_warning=0
 	else
@@ -123,12 +126,10 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 
 RETURN_PRIMARY_TO_MASTER_SERVER(){
 	if [[ -f ~/keys/master ]]; then # server has master flag file (priority server) 
-		current_slot=$(solana slot)
-		my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$current_slot '$1>=var' | head -n1 | cut -d ' ' -f3)
-		slots_remaining=$((my_slot-current_slot))
-		minutes_remaining=$((($slots_remaining * 459) / 60000))
-		if [[ $BEHIND -lt 1 && minutes_remaining -ge 2 ]]; then # BEHIND==0 && 
+		if [[ $BEHIND -lt 1 && next_slot_time -ge 2 ]]; then # BEHIND==0 && 
 			Become_primary=5 # set flag to become primary server
+			MSG=$(printf "become primary server \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+			SEND_INFO
 		fi
 	fi	
 }
@@ -150,7 +151,7 @@ PRIMARY_SERVER(){ ##############################################################
 			IP_change=0
 		fi	
 		
-		echo -ne " PRIMARY ${NODE}.${NAME}. $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
+		echo -ne " PRIMARY ${NODE}.${NAME}. NEXT=$next_slot_time $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
 		sleep 5
 	done
 	echo -e "$RED VOTING IP change to $VOTING_IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
@@ -176,7 +177,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi
 		CHECK_HEALTH #  self check node health
 		RETURN_PRIMARY_TO_MASTER_SERVER
-		echo -ne " SECONDARY ${NODE}.${NAME}. LastVote=$LastVote $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
+		echo -ne " SECONDARY ${NODE}.${NAME}. NEXT=$next_slot_time $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
 	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
