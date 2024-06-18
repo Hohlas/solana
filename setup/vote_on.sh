@@ -1,10 +1,21 @@
 #!/bin/bash
-# # #   Start Voting   # # # # # # # # # # # # # # # # # # # # #
+# # #    # # # # # # # # # # # # # # # # # # # # #
 source $HOME/.bashrc
 PORT='2010'
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) 
+SOL=$HOME/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
+CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
+SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
+
+if [ "$CUR_IP" == "$VOTING_IP" ]; then # 
+	echo -e "\033[31m  node voiting on current server  \033[0m"
+	return
+fi	
+
+
 
 FORCE=$1
 if [ -z "$FORCE" ]; then # no 'force' flag, so waiting for 'delink' status
@@ -37,7 +48,7 @@ else
 	command_exit_status=$?
 	if [ $command_exit_status -ne  0 ]; then
 		echo -e "$RED SSH connection not available  \033[0m"
-		exit
+		return
 	fi
 	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/check_ssh ~/
 	ssh REMOTE rm ~/check_ssh
@@ -59,11 +70,9 @@ else
 	echo "  try to set empty identity on REMOTE server: $command_output" 
 	if [ $command_exit_status -eq 0 ]; then
 		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
-		MSG=$(printf "$MSG \n%s set empty identity")
 	else
-		echo -e "\033[31m  restart solana on REMOTE server in NO_VOTING mode \033[0m"
-		ssh -o ConnectTimeout=5 REMOTE systemctl restart solana
-		MSG=$(printf "$MSG \n%s restart solana")
+		echo -e "\033[31m  can't restart solana on REMOTE server in NO_VOTING mode \033[0m"
+		return
 	fi
 	
 	echo "  move tower from REMOTE to LOCAL "
