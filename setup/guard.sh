@@ -20,6 +20,7 @@ if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN empty
 	exit
 else 
 	echo "load telegram bot token: $BOT_TOKEN"
+ 	source ~/keys/tg_bot_token
 fi
 
 
@@ -265,7 +266,7 @@ else #
 	scp -P $PORT -i /root/keys/*.ssh ~/cur_ip root@$REMOTE_IP:~/keys/remote_ip
 	# ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
 	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/keys/remote_ip ~/remote_ip_check 
-	echo "send CUR_IP to PRIMARY_SERVER $(cat ~/remote_ip_check)"
+	echo "send CUR_IP $(cat ~/remote_ip_check) to PRIMARY_SERVER $REMOTE_IP"
 fi
 # create ssh alias for remote server
 echo " 
