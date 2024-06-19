@@ -148,7 +148,6 @@ PRIMARY_SERVER(){ ##############################################################
 		else
 			IP_change=0
 		fi	
-		
 		echo -ne " PRIMARY ${NODE}.${NAME}, next_slot $GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
 		sleep 5
 	done
@@ -162,7 +161,7 @@ SECONDARY_SERVER(){ ############################################################
 	SERV_TYPE='Secondary'
 	# waiting remote server fail and selfcheck health
 	Become_primary=0 # чтоб не срабатывало с первого раза
-	until [[ $HEALTH == "ok" && $Become_primary -ge 3 ]]; do
+	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $Become_primary -ge 3 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
