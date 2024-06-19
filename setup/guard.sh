@@ -27,7 +27,7 @@ GET_VOTING_IP(){
 SEND_INFO(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
 	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
- 	echo -e "$GREEN $MSG \033[0m"
+ 	echo -e "$MSG \033[0m"
 	}
 SEND_ALARM(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
@@ -149,7 +149,7 @@ PRIMARY_SERVER(){ ##############################################################
 			IP_change=0
 		fi	
 		
-		echo -ne " PRIMARY ${NODE}.${NAME}, next $GREEN$next_slot_time\033[0m $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
+		echo -ne " PRIMARY ${NODE}.${NAME}, next_slot $GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
 		sleep 5
 	done
 	echo -e "$RED VOTING IP change to $VOTING_IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
@@ -175,7 +175,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi
 		CHECK_HEALTH #  self check node health
 		RETURN_PRIMARY_TO_MASTER_SERVER
-		echo -ne " SECONDARY ${NODE}.${NAME}, next $GREEN$next_slot_time\033[0m $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
+		echo -ne " SECONDARY ${NODE}.${NAME}, next_slot $GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
 	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
