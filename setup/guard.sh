@@ -172,6 +172,10 @@ SECONDARY_SERVER(){ ############################################################
 		fi
 		CHECK_HEALTH #  self check node health
 		RETURN_PRIMARY_TO_MASTER_SERVER
+  		GET_VOTING_IP
+  		if [ "$CUR_IP" == "$VOTING_IP" ]; then
+    			return
+       		fi
 		echo -ne " SECONDARY ${NODE}.${NAME}, next_slot $GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
