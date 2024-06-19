@@ -27,12 +27,12 @@ GET_VOTING_IP(){
 SEND_INFO(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
 	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
- 	echo -e $GREEN $MSG \033[0m
+ 	echo -e "$GREEN $MSG \033[0m"
 	}
 SEND_ALARM(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
 	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
- 	echo -e $RED $MSG \033[0m
+ 	echo -e "$RED $MSG \033[0m"
 	}
 
 
