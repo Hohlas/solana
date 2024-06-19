@@ -133,8 +133,8 @@ RETURN_PRIMARY_TO_MASTER_SERVER(){
 }
 
 PRIMARY_SERVER(){ #######################################################################
-	echo -e "\n = PRIMARY  SERVER ="
-	MSG=$(printf "Primary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+	#echo -e "\n = PRIMARY  SERVER ="
+	MSG=$(printf "PRIMARY SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
 	SERV_TYPE='Primary'
 	IP_change=0
@@ -157,9 +157,7 @@ PRIMARY_SERVER(){ ##############################################################
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
-	echo -e "\n = SECONDARY  SERVER ="
-	echo "  Start monitoring $(TZ=Europe/Moscow date +"%b %e %H:%M:%S") MSK"
-	MSG=$(printf "Secondary server start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+	MSG=$(printf "SECONDARY  SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
 	SERV_TYPE='Secondary'
 	# waiting remote server fail and selfcheck health
