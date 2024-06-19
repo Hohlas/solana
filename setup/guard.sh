@@ -175,10 +175,8 @@ SECONDARY_SERVER(){ ############################################################
 		echo -ne " SECONDARY ${NODE}.${NAME}, next_slot $GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
-	echo -e "\033[31m  REMOTE server fail at $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK          \033[0m"
-
-	# STOP SOLANA on REMOTE server
-	MSG=$(printf "${NODE}.${NAME} RESTART ${VOTING_IP} \n%s STOP REMOTE SERVER:")
+		# STOP SOLANA on REMOTE server
+	MSG=$(printf "${NODE}.${NAME} change voting server ${VOTING_IP} ") # \n%s vote_off remote server
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
 	command_exit_status=$?
 	if [ $command_exit_status -eq 0 ]; then
