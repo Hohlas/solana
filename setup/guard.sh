@@ -161,14 +161,12 @@ SECONDARY_SERVER(){ ############################################################
 	SERV_TYPE='Secondary'
 	# waiting remote server fail and selfcheck health
 	Become_primary=0 # чтоб не срабатывало с первого раза
-	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $Become_primary -ge 3 ]]; do
+	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $Become_primary -ge 1 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
-			let Become_primary=Become_primary+1
-		else 
-			Become_primary=0
+			Become_primary=2
 		fi
 		CHECK_HEALTH #  self check node health
 		RETURN_PRIMARY_TO_MASTER_SERVER
