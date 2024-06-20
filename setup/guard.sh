@@ -280,7 +280,12 @@ if [ $command_exit_status -ne  0 ]; then
 fi
 scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
-echo -e "\033[32m$(cat ~/check_ssh)\033[0m"
+if [[ $(cat ~/check_ssh) == "SSH connection succesful" ]]; then
+	echo -e "$GREEN $(cat ~/check_ssh)\033[0m"
+else
+	echo -e "$RED SSH connection Error \033[0m"
+	return
+fi
 rm ~/check_ssh
 
 
