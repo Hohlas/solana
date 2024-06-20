@@ -95,7 +95,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 
  	# check guard running on remote server
- 	ssh REMOTE 'echo $CUR_IP > $HOME/keys/remote_ip' # update file on remote server
+ 	scp -P $PORT -i /root/keys/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/keys/remote_ip # update file on remote server
 	last_modified=$(date -r "$HOME/keys/remote_ip" +%s)
 	current_time=$(date +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
@@ -274,8 +274,9 @@ else #
 	echo $CUR_IP > ~/cur_ip
 	scp -P $PORT -i /root/keys/*.ssh ~/cur_ip root@$REMOTE_IP:~/keys/remote_ip
 	# ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
-	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/keys/remote_ip ~/remote_ip_check 
-	echo "send CUR_IP $(cat ~/remote_ip_check) to PRIMARY_SERVER $REMOTE_IP"
+	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/keys/remote_ip ~/tmp_ip 
+	echo "send CUR_IP $(cat ~/tmp_ip) to PRIMARY_SERVER $REMOTE_IP"
+ 	rm ~/tmp_ip
 fi
 # create ssh alias for remote server
 echo " 
