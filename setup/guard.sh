@@ -95,7 +95,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 
  	# check guard running on remote server
- 	scp -P $PORT -i /root/keys/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/keys/remote_ip # update file on remote server
+ 	command_output=$(scp -P $PORT -i /root/keys/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/keys/remote_ip) # update file on remote server
 	last_modified=$(date -r "$HOME/keys/remote_ip" +%s)
 	current_time=$(date +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
