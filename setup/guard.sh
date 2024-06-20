@@ -258,6 +258,7 @@ eval "$(ssh-agent -s)"  # Start ssh-agent in the background
 ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
 
 GET_VOTING_IP
+echo $CUR_IP > ~/cur_ip
 if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [ -f ~/keys/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
 		REMOTE_IP=$(cat ~/keys/remote_ip)
@@ -271,7 +272,6 @@ if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SE
 	fi
 else # 
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
-	echo $CUR_IP > ~/cur_ip
 	scp -P $PORT -i /root/keys/*.ssh ~/cur_ip root@$REMOTE_IP:~/keys/remote_ip
 	# ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
 	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/keys/remote_ip ~/tmp_ip 
