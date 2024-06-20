@@ -14,14 +14,13 @@ DISCONNECT_COUNTER=0
 SERV_TYPE='Secondary'
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 #===
-CHAT_ALARM=-1001611695684
-CHAT_INFO=-1001548522888
-BOT_TOKEN=cat ~/keys/tg_bot_tokens
-if [[ -z $BOT_TOKEN ]]; then # if $HEALTH is empty (must be 'ok')
+source ~/keys/tg_bot_token
+half1=${BOT_TOKEN%%:*}
+half2=${BOT_TOKEN#*:}
+BOT_TOKEN=$half1:$half2
+if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN is empty
 	echo -e "Warning! Can't read telegram bot token from ~/keys/tg_bot_token"
 	return
-else 
-	echo "load telegram bot token: $BOT_TOKEN"
 fi
 
 GET_VOTING_IP(){
@@ -94,6 +93,17 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 			SEND_ALARM
 		fi
 	fi  
+
+ 	# check guard running on remote server
+ 	ssh REMOTE 'echo $CUR_IP > $HOME/keys/remote_ip' # update file on remote server
+	last_modified=$(date -r "$HOME/keys/remote_ip" +%s)
+	current_time=$(date +%s)
+	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
+	if [ $time_diff -ge 600 ]; then
+		MSG="guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
+		SEND_ALARM
+		echo $REMOTE_IP > $HOME/keys/remote_ip # update file for stop alarm next 600 seconds
+	fi
 	}
 
 
@@ -292,7 +302,7 @@ else
 	return
 fi
 rm ~/check_ssh
-
+echo $REMOTE_IP > $HOME/keys/remote_ip # update file for stop alarm next 600 seconds
 
 while true  ###  main circle   #################################################
 do
