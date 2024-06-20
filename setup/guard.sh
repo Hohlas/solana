@@ -14,10 +14,15 @@ DISCONNECT_COUNTER=0
 SERV_TYPE='Secondary'
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 #===
-BOT_TOKEN="5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU"
 CHAT_ALARM=-1001611695684
 CHAT_INFO=-1001548522888
-
+BOT_TOKEN=cat ~/keys/tg_bot_tokens
+if [[ -z $BOT_TOKEN ]]; then # if $HEALTH is empty (must be 'ok')
+	echo -e "Warning! Can't read telegram bot token from ~/keys/tg_bot_token"
+	return
+else 
+	echo "load telegram bot token: $BOT_TOKEN"
+fi
 
 GET_VOTING_IP(){
 	SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
