@@ -39,7 +39,12 @@ my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$current_slot '
 slots_remaining=$((my_slot-current_slot))
 minutes_remaining=$((($slots_remaining * 459) / 60000))
 score=$(solana validators --sort=credits -r -n | grep $PUB_KEY | awk '{print $1}'); 
-echo -e " next:$GREEN$minutes_remaining\033[0mmin,  score=$score"
+if [[ $minutes_remaining -lt 2 ]]; then # minutes_remaining<2 
+		TME_CLR=$RED
+	else	
+		TME_CLR=$GREEN
+	fi
+echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$score"
 
 echo '--'
 echo ' vote account:      '$vote
