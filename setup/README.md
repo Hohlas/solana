@@ -6,7 +6,7 @@ sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux hto
 [Server setup - notion](https://hohla.notion.site/SERVER-SETUP-5107bc05d2cb422f94f2ed5d0471b5b4?pvs=4)
 ### create and mount partitions   
 ```bash
-lsblk # MOUNT POINTS
+lsblk # check MOUNTPOINTS
 fdisk /dev/nvme1n1 #
   # d # delete 
   # n # create new. 'ENTER' by default. 
