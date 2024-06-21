@@ -27,7 +27,6 @@ GET_VOTING_IP(){
 	SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 	}
-
 SEND_INFO(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
 	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
@@ -63,18 +62,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
 	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
-	if [[ $BEHIND -lt 1 ]]; then # if BEHIND<1 
-		behind_warning=0
-	else
-		let behind_warning=behind_warning+1
-		echo "Behind=$BEHIND $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
-		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
-			behind_warning=-12 # sent next message after  12*5 seconds
-	 		MSG="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
-			SEND_INFO
-		fi
-	fi
- 
+	 
  	# check health
  	HEALTH=$(curl -s http://localhost:8899/health)
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
@@ -93,6 +81,23 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 			SEND_ALARM
 		fi
 	fi  
+	
+	# check behind
+	if [[ $BEHIND -lt 1 ]]; then # if BEHIND<1 
+		behind_warning=0
+	else
+		let behind_warning=behind_warning+1
+		echo "Behind=$BEHIND $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
+		CLR=$RED
+		HEALTH="behind $BEHIND"
+		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
+			behind_warning=-12 # sent next message after  12*5 seconds
+	 		MSG="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
+			SEND_INFO
+		fi
+	fi
+	
+	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH         \r \033[0m"
 
  	# check guard running on remote server
  	command_output=$(scp -P $PORT -i /root/keys/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/keys/remote_ip) # update file on remote server
@@ -151,7 +156,7 @@ PRIMARY_SERVER(){ ##############################################################
 	#echo -e "\n = PRIMARY  SERVER ="
 	MSG=$(printf "PRIMARY SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
-	SERV_TYPE='Primary'
+	SERV_TYPE='PRIMARY'
 	IP_change=0
 	# CHECK_CONNECTION_LOOP 
 	until [ $IP_change -ge 3 ]; do
@@ -163,7 +168,6 @@ PRIMARY_SERVER(){ ##############################################################
 		else
 			IP_change=0
 		fi	
-		echo -ne " PRIMARY ${NODE}.${NAME}, next_slot $GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR} Health $HEALTH   \r \033[0m"
 		sleep 5
 	done
 	echo -e "$RED VOTING IP change to $VOTING_IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
@@ -173,7 +177,7 @@ PRIMARY_SERVER(){ ##############################################################
 SECONDARY_SERVER(){ ##################################################################
 	MSG=$(printf "SECONDARY  SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
-	SERV_TYPE='Secondary'
+	SERV_TYPE='SECONDARY'
 	# waiting remote server fail and selfcheck health
 	Become_primary=0 # чтоб не срабатывало с первого раза
 	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $Become_primary -ge 1 ]]; do
@@ -189,7 +193,6 @@ SECONDARY_SERVER(){ ############################################################
   		if [ "$CUR_IP" == "$VOTING_IP" ]; then
     			return
        		fi
-		echo -ne " SECONDARY ${NODE}.${NAME}, next_slot $GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S") MSK,${CLR}  Health $HEALTH     \r \033[0m"
 		sleep 5
 	done
 		# STOP SOLANA on REMOTE server
@@ -278,6 +281,7 @@ else #
 	echo "send CUR_IP $(cat ~/tmp_ip) to PRIMARY_SERVER $REMOTE_IP"
  	rm ~/tmp_ip
 fi
+
 # create ssh alias for remote server
 echo " 
 Host REMOTE
