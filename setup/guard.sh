@@ -62,7 +62,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
 	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
-	 
+	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
+		TME_CLR=$RED
+	else	
+		TME_CLR=$GREEN
+	fi
+ 
  	# check health
  	HEALTH=$(curl -s http://localhost:8899/health)
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
