@@ -6,14 +6,17 @@ sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux hto
 [Server setup - notion](https://hohla.notion.site/SERVER-SETUP-5107bc05d2cb422f94f2ed5d0471b5b4?pvs=4)
 ### create and mount partitions   
 ```bash
-mkdir -p /mnt/disk1
-mkdir -p /mnt/disk2
-mkdir -p /mnt/disk3
-lsblk # смотрим разделы
-fdisk /dev/nvme1n1 # additional not mounted disk
+lsblk # MOUNT POINTS
+fdisk /dev/nvme1n1 #
+  # d # delete 
+  # n # create new. 'ENTER' by default. 
+  # w # write changes
 mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
 ```
 ```bash
+mkdir -p /mnt/disk1
+mkdir -p /mnt/disk2
+mkdir -p /mnt/disk3
 mount /dev/nvme1n1p1 /mnt/disk1
 echo '/dev/nvme1n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
 mount /dev/nvme2n1p1 /mnt/disk2
