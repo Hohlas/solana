@@ -67,13 +67,13 @@ encfs ~/.crpt ~/keys #
 ```   copy validator.json, vote.json to ~/keys   ```
 ```bash
 # MAIN #
-export TAG=v1.17.28-jito
+export TAG=v1.18.15-jito
 export NODE=main
 export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
 ```
 ```bash
 # TEST #
-export TAG=v1.18.8
+export TAG=v1.18.17
 export NODE=test  # test or main
 export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
 ```
