@@ -102,7 +102,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		fi
 	fi
 	
-	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$GREEN$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH         \r \033[0m"
+	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH         \r \033[0m"
 
  	# check guard running on remote server
  	command_output=$(scp -P $PORT -i /root/keys/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/keys/remote_ip) # update file on remote server
