@@ -9,7 +9,8 @@ else
 cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
-curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/tg_bot_token > ~/keys/tg_bot_token
+ln -sf ~/sol_git/telegram_bot/tg_bot_token ~/keys/tg_bot_token
+# curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/tg_bot_token > ~/keys/tg_bot_token
 
 # update .bashrc, key links, grafana name
 ln -sf ~/keys/${NAME,,}_${NODE}_vote.json ~/solana/vote.json
