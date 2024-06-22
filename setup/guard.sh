@@ -280,7 +280,7 @@ if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SE
 	fi
 	if [[ -z $REMOTE_IP ]]; then # if $REMOTE_IP empty
 		echo -e "Warning! Run guard on SECONDARY server to get it's IP"
-		exit
+		return
 	fi
 else # 
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
