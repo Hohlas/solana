@@ -1,25 +1,29 @@
 #!/bin/bash
 
-PORT='2010'
+PORT='2010' # remote server ssh port
+KEYS=$HOME/keys
 PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) 
-SOL=$HOME/.local/share/solana/install/active_release/bin
+SOL_BIN=$HOME/.local/share/solana/install/active_release/bin
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
 #SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
-CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
+#CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
 DISCONNECT_COUNTER=0
-SERV_TYPE='Secondary'
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
-#===
-source ~/keys/tg_bot_token
+#==== tg_bot_token ====
+# CHAT_ALARM=-100...684
+# CHAT_INFO=-100...888
+# BOT_TOKEN=507...lWU
+#======================
+source $KEYS/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
 half1=${BOT_TOKEN%%:*}
 half2=${BOT_TOKEN#*:}
 BOT_TOKEN=$half1:$half2
 if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN is empty
-	echo -e "Warning! Can't read telegram bot token from ~/keys/tg_bot_token"
+	echo -e "Warning! Can't read telegram bot token from $KEYS/tg_bot_token"
 	return
 fi
 
@@ -105,14 +109,14 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH         \r \033[0m"
 
  	# check guard running on remote server
- 	command_output=$(scp -P $PORT -i /root/keys/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/keys/remote_ip) # update file on remote server
-	last_modified=$(date -r "$HOME/keys/remote_ip" +%s)
+ 	command_output=$(scp -P $PORT -i $KEYS/*.ssh $HOME/cur_ip root@$REMOTE_IP:$KEYS/remote_ip) # update file on remote server
+	last_modified=$(date -r "$KEYS/remote_ip" +%s)
 	current_time=$(date +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
 	if [ $time_diff -ge 600 ]; then
 		MSG="guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
 		SEND_ALARM
-		echo $REMOTE_IP > $HOME/keys/remote_ip # update file for stop alarm next 600 seconds
+		echo $REMOTE_IP > $KEYS/remote_ip # update file for stop alarm next 600 seconds
 	fi
 	}
 
@@ -148,7 +152,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
   }
 
 RETURN_PRIMARY_TO_MASTER_SERVER(){
-	if [[ -f ~/keys/master ]]; then # server has master flag file (priority server) 
+	if [[ -f $KEYS/master ]]; then # server has master flag file (priority server) 
 		if [[ $BEHIND -lt 1 && next_slot_time -ge 2 ]]; then # BEHIND==0 && 
 			Become_primary=5 # set flag to become primary server
 			MSG=$(printf "become primary server \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
@@ -213,7 +217,7 @@ SECONDARY_SERVER(){ ############################################################
 		return
 	fi
 
-	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
+	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
 	command_exit_status=$?
 	if [ $command_exit_status -eq 0 ]; then
 		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
@@ -232,7 +236,7 @@ SECONDARY_SERVER(){ ############################################################
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
 	echo "  move tower from REMOTE to LOCAL "
-	timeout 5 scp -P $PORT -i /root/keys/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
+	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
 	echo "  stop telegraf on REMOTE server"
 	ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
 	echo "  stop jito-relayer on REMOTE server"
@@ -255,22 +259,22 @@ SECONDARY_SERVER(){ ############################################################
 	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM
 	# solana-validator --ledger ~/solana/ledger monitor
-	# ssh REMOTE $SOL/solana-validator --ledger ~/solana/ledger monitor
-	#ssh REMOTE $SOL/solana catchup ~/solana/validator_link.json --our-localhost
+	# ssh REMOTE $SOL_BIN/solana-validator --ledger ~/solana/ledger monitor
+	#ssh REMOTE $SOL_BIN/solana catchup ~/solana/validator_link.json --our-localhost
 	}
 
 
 ### script start - check ssh connection ###########################################
-chmod 600 ~/keys/*.ssh
+chmod 600 $KEYS/*.ssh
 eval "$(ssh-agent -s)"  # Start ssh-agent in the background
-ssh-add ~/keys/*.ssh # Add SSH private key to the ssh-agent
+ssh-add $KEYS/*.ssh # Add SSH private key to the ssh-agent
 
 GET_VOTING_IP
 echo $CUR_IP > ~/cur_ip
 if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
-	if [ -f ~/keys/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
-		REMOTE_IP=$(cat ~/keys/remote_ip)
-		echo "get REMOTE_IP of SECONDARY_SERVER from ~/keys/remote_ip: $REMOTE_IP"
+	if [ -f $KEYS/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
+		REMOTE_IP=$(cat $KEYS/remote_ip)
+		echo "get REMOTE_IP of SECONDARY_SERVER from $KEYS/remote_ip: $REMOTE_IP"
 	else 
 		REMOTE_IP=''	
 	fi
@@ -280,9 +284,9 @@ if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SE
 	fi
 else # 
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
-	scp -P $PORT -i /root/keys/*.ssh ~/cur_ip root@$REMOTE_IP:~/keys/remote_ip
-	# ssh REMOTE 'echo $CUR_IP > ~/keys/remote_ip'
-	scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/keys/remote_ip ~/tmp_ip 
+	scp -P $PORT -i $KEYS/*.ssh ~/cur_ip root@$REMOTE_IP:$KEYS/remote_ip
+	# ssh REMOTE 'echo $CUR_IP > $KEYS/remote_ip'
+	scp -P $PORT -i $KEYS/*.ssh root@$REMOTE_IP:$KEYS/remote_ip ~/tmp_ip 
 	echo "send CUR_IP $(cat ~/tmp_ip) to PRIMARY_SERVER $REMOTE_IP"
  	rm ~/tmp_ip
 fi
@@ -293,7 +297,7 @@ Host REMOTE
 HostName $REMOTE_IP
 User root
 Port $PORT
-IdentityFile /root/keys/*.ssh
+IdentityFile $KEYS/*.ssh
 " > ~/.ssh/config
 
 # check SSH connection with primary node server
@@ -303,7 +307,7 @@ if [ $command_exit_status -ne  0 ]; then
   echo -e "$RED SSH connection not available  \033[0m"
   exit
 fi
-scp -P $PORT -i /root/keys/*.ssh root@$REMOTE_IP:~/check_ssh ~/
+scp -P $PORT -i $KEYS/*.ssh root@$REMOTE_IP:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
 if [[ $(cat ~/check_ssh) == "SSH connection succesful" ]]; then
 	echo -e "$GREEN $(cat ~/check_ssh)\033[0m"
@@ -312,7 +316,7 @@ else
 	return
 fi
 rm ~/check_ssh
-echo $REMOTE_IP > $HOME/keys/remote_ip # update file for stop alarm next 600 seconds
+echo $REMOTE_IP > $KEYS/remote_ip # update file for stop alarm next 600 seconds
 
 while true  ###  main circle   #################################################
 do
