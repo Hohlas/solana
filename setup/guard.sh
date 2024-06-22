@@ -110,7 +110,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 
  	# check guard running on remote server
  	command_output=$(scp -P $PORT -i $KEYS/*.ssh $HOME/cur_ip root@$REMOTE_IP:$KEYS/remote_ip) # update file on remote server
-	last_modified=$(date -r "$KEYS/remote_ip" +%s)
+	command_exit_status=$?
+	if [ $command_exit_status -ne 0 ]; then
+		MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
+		SEND_ALARM
+		fi
+ 	last_modified=$(date -r "$KEYS/remote_ip" +%s)
 	current_time=$(date +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
 	if [ $time_diff -ge 600 ]; then
