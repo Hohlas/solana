@@ -304,8 +304,8 @@ IdentityFile $KEYS/*.ssh
 command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh')
 command_exit_status=$?
 if [ $command_exit_status -ne  0 ]; then
-  echo -e "$RED SSH connection not available  \033[0m"
-  exit
+	echo -e "$RED SSH connection not available  \033[0m"
+  	return
 fi
 scp -P $PORT -i $KEYS/*.ssh root@$REMOTE_IP:~/check_ssh ~/
 ssh REMOTE rm ~/check_ssh
