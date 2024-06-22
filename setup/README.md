@@ -11,10 +11,10 @@ mkdir -p /mnt/disk2
 mkdir -p /mnt/disk3
 mkdir -p /mnt/keys
 chmod 600 /mnt/keys 
-mount /mnt/keys 
-ln -sf /mnt/keys ~/keys
 echo "# KEYS to RAMDISK 
 tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
+mount /mnt/keys 
+ln -sf /mnt/keys ~/keys
 ```
 ```bash
 lsblk # check MOUNTPOINTS
