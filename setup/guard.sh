@@ -155,7 +155,7 @@ become_primary_once=$1 # any script argument
 BECOME_PRIMARY(){
 	if [[ -n "$become_primary_once" && next_slot_time -ge 2 ]]; then #  if 'become_primary_once' not empty and next_slot>2
 		set_primary=2 # set flag to become primary server
-		become_primary_once='executed'
+		become_primary_once='' # once executed
 		MSG=$(printf "become primary server \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 		SEND_INFO
 	fi	
