@@ -69,8 +69,8 @@ systemctl restart fail2ban
 fail2ban-client status
 
 # config EncFS
-mkdir -p ~/.crpt ~/keys
-encfs ~/.crpt ~/keys # 
+# mkdir -p ~/.crpt ~/keys
+# encfs ~/.crpt ~/keys # 
 ```
 
 ## Install Solana Node
