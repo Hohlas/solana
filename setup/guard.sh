@@ -151,15 +151,15 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 	fi
   }
 
-RETURN_PRIMARY_TO_MASTER_SERVER(){
-	if [[ -f $KEYS/master ]]; then # server has master flag file (priority server) 
-		if [[ $BEHIND -lt 1 && next_slot_time -ge 2 ]]; then # BEHIND==0 && 
-			Become_primary=5 # set flag to become primary server
-			MSG=$(printf "become primary server \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
-			SEND_INFO
-		fi
+become_primary_once=$1 # any script argument
+BECOME_PRIMARY(){
+	if [[ -n "$become_primary_once" && next_slot_time -ge 2 ]]; then #  if 'become_primary_once' not empty and next_slot>2
+		set_primary=2 # set flag to become primary server
+		become_primary_once='executed'
+		MSG=$(printf "become primary server \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+		SEND_INFO
 	fi	
-}
+	}
 
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
@@ -188,16 +188,16 @@ SECONDARY_SERVER(){ ############################################################
 	SEND_INFO
 	SERV_TYPE='SECONDARY'
 	# waiting remote server fail and selfcheck health
-	Become_primary=0 # чтоб не срабатывало с первого раза
-	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $Become_primary -ge 1 ]]; do
+	set_primary=0 # 
+	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $set_primary -ge 1 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
-			Become_primary=2
+			set_primary=2
 		fi
 		CHECK_HEALTH #  self check node health
-		RETURN_PRIMARY_TO_MASTER_SERVER
+		BECOME_PRIMARY
   		GET_VOTING_IP
   		if [ "$CUR_IP" == "$VOTING_IP" ]; then
     			return
