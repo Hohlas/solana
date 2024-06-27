@@ -40,7 +40,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-local-snapshot-age 5000 \
 --accounts-hash-interval-slots 5000 \
 --no-skip-initial-accounts-db-clean \
-#--block-production-method central-scheduler \
+--block-production-method central-scheduler \
 --private-rpc \
 --full-rpc-api \
 --rpc-port 8899 \
@@ -48,7 +48,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \
 --tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
 --merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
---commission-bps 500 \
+--commission-bps 0 \
 --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 \
 --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf \
 --shred-receiver-address 145.40.93.84:1002
