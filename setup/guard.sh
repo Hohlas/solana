@@ -51,7 +51,7 @@ echo ' == SOLANA GUARD =='
 GET_VOTING_IP
 echo 'voting  IP='$VOTING_IP
 echo 'current IP='$CUR_IP
-echo 'IDENTITY = '$IDENTITY
+echo -e "IDENTITY = $GREEN$IDENTITY \033[0m";
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[34m network=api.testnet \033[0m v$version - $client";
