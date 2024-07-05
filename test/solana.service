@@ -19,7 +19,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --known-validator 9QxCLckBiJc783jnMvXZubK4wH86Eqqvashtrwvcsgkv \
 --expected-genesis-hash 4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY \
 --wal-recovery-mode skip_any_corrupted_record \
---identity /root/solana/validator_link.json \
+--identity /root/solana/empty-validator.json \
 --authorized-voter /root/solana/validator-keypair.json \
 --vote-account /root/solana/vote.json \
 --ledger /root/solana/ledger \
