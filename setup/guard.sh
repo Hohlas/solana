@@ -2,15 +2,17 @@
 
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
-PUB_KEY=$(solana address -k ~/solana/validator-keypair.json) 
-SOL_BIN=$HOME/.local/share/solana/install/active_release/bin
+EMPTY_KEY=$HOME/solana/empty-validator.json
+VOTING_KEY=$HOME/solana/validator-keypair.json
+LEDGER=$HOME/solana/ledger
+IDENTITY=$(solana address) 
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
-#SITES=("www.googererle.com" "www.bindfgdgg.com") # uncomment to check CHECK_CONNECTION()
-#CONNECTION_LOSS_SCRIPT="$HOME/sol_git/setup/vote_off.sh"
+configDir="$HOME/.config/solana"
+SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
 DISCONNECT_COUNTER=0
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 #==== tg_bot_token ====
@@ -28,7 +30,7 @@ if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN is empty
 fi
 
 GET_VOTING_IP(){
-	SERV='root@'$(solana gossip | grep $PUB_KEY | awk '{print $1}')
+	SERV='root@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
 	}
 SEND_INFO(){
@@ -48,6 +50,7 @@ echo ' == SOLANA GUARD =='
 GET_VOTING_IP
 echo 'voting  IP='$VOTING_IP
 echo 'current IP='$CUR_IP
+echo 'IDENTITY = '$IDENTITY
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[34m network=api.testnet \033[0m v$version - $client";
@@ -63,7 +66,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	RPC_SLOT=$(solana slot -u $rpcURL)
 	LOCAL_SLOT=$(solana slot -u localhost)
 	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
-	my_slot=$(solana leader-schedule -v | grep $PUB_KEY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
+	my_slot=$(solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
 	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
 	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
@@ -195,7 +198,7 @@ SECONDARY_SERVER(){ ############################################################
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $set_primary -ge 1 ]]; do
-		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${PUB_KEY}"'" )')
+		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
@@ -211,18 +214,7 @@ SECONDARY_SERVER(){ ############################################################
 	done
 		# STOP SOLANA on REMOTE server
 	MSG=$(printf "${NODE}.${NAME} change voting server ${VOTING_IP} ") # \n%s vote_off remote server
-	command_output=$(ssh -o ConnectTimeout=5 REMOTE ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json 2>&1)
-	command_exit_status=$?
-	if [ $command_exit_status -eq 0 ]; then
-		echo -e " change validator link on REMOTE server $GREEN successful \033[0m" 
-		MSG=$(printf "$MSG \n%s change validator link")
-  	else
-   		echo -e "$RED can't change validator link on REMOTE server \033[0m"
-     		echo $command_output
-		return
-	fi
-
-	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana-validator -l ~/solana/ledger set-identity ~/solana/empty-validator.json 2>&1)
+	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1)
 	command_exit_status=$?
 	if [ $command_exit_status -eq 0 ]; then
 		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
@@ -241,21 +233,20 @@ SECONDARY_SERVER(){ ############################################################
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
 	echo "  move tower from REMOTE to LOCAL "
-	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:/root/solana/ledger/tower-1_9-$PUB_KEY.bin /root/solana/ledger
+	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
 	echo "  stop telegraf on REMOTE server"
 	ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
 	echo "  stop jito-relayer on REMOTE server"
 	# ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
 
 	# START SOLANA on LOCAL server
-	if [ -f ~/solana/ledger/tower-1_9-$PUB_KEY.bin ]; then 
+	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
 		TOWER_STATUS=' with existing tower'
-		solana-validator -l ~/solana/ledger set-identity --require-tower ~/solana/validator-keypair.json;
+		solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	else
 		TOWER_STATUS=' without tower'
-		solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json;
+		solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	fi
-	# ln -sfn ~/solana/validator-keypair.json ~/solana/validator_link.json
 	# update telegraf
 	sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 	systemctl start telegraf
@@ -263,9 +254,9 @@ SECONDARY_SERVER(){ ############################################################
 	echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
 	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM
-	# solana-validator --ledger ~/solana/ledger monitor
-	# ssh REMOTE $SOL_BIN/solana-validator --ledger ~/solana/ledger monitor
-	#ssh REMOTE $SOL_BIN/solana catchup ~/solana/validator_link.json --our-localhost
+	# solana-validator --ledger $LEDGER monitor
+	# ssh REMOTE $SOL_BIN/solana-validator --ledger $LEDGER monitor
+	# ssh REMOTE $SOL_BIN/solana catchup ~/solana/validator_link.json --our-localhost
 	}
 
 
