@@ -297,22 +297,23 @@ Port $PORT
 IdentityFile $KEYS/*.ssh
 " > ~/.ssh/config
 
-# check SSH connection with primary node server
-command_output=$(ssh REMOTE 'echo "SSH connection succesful" > ~/check_ssh')
+# check SSH connection with remote server
+remote_identity=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana address 2>&1)
 command_exit_status=$?
 if [ $command_exit_status -ne  0 ]; then
 	echo -e "$RED SSH connection not available  \033[0m"
   	return
 fi
-scp -P $PORT -i $KEYS/*.ssh root@$REMOTE_IP:~/check_ssh ~/
-ssh REMOTE rm ~/check_ssh
-if [[ $(cat ~/check_ssh) == "SSH connection succesful" ]]; then
-	echo -e "$GREEN $(cat ~/check_ssh)\033[0m"
+
+if [ "$remote_identity" == "$IDENTITY" ]; then
+	echo -e "$GREEN SSH connection succesful \033[0m"
 else
-	echo -e "$RED SSH connection Error \033[0m"
+    	echo -e "$RED Remote server connection Error \033[0m"
+	echo "Current Identity = $IDENTITY,"
+	echo "Remote Identity  = $remote_identity"
 	return
 fi
-rm ~/check_ssh
+
 echo $REMOTE_IP > $KEYS/remote_ip # update file for stop alarm next 600 seconds
 
 while true  ###  main circle   #################################################
