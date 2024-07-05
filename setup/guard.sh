@@ -2,9 +2,10 @@
 
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
-EMPTY_KEY=$HOME/solana/empty-validator.json
-VOTING_KEY=$HOME/solana/validator-keypair.json
 LEDGER=$HOME/solana/ledger
+SOLANA_SERVICE="$HOME/solana/solana.service"
+EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
+VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
