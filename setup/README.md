@@ -52,6 +52,16 @@ mount -a
 
 </details>
 
+<details>
+<summary>System check</summary>
+
+```bash
+curl -sL yabs.sh | bash 
+smartctl -a /dev/nvme0n1 
+```
+
+</details>
+
 
 <details>
 <summary>SSH settings</summary>
