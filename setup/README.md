@@ -3,7 +3,6 @@
 ```bash
 sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux htop curl nano fail2ban smartmontools mc man rsync cron logrotate rsyslog encfs jq -y
 ```
-[Server setup - notion](https://hohla.notion.site/SERVER-SETUP-5107bc05d2cb422f94f2ed5d0471b5b4?pvs=4)
 ### create and mount partitions   
 ```bash
 mkdir -p /mnt/disk1
