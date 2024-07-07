@@ -31,8 +31,10 @@ mount /dev/nvme3n1p1 /mnt/disk3
 echo '/dev/nvme3n1p1 /mnt/disk3 ext4 defaults 0 1' | sudo tee -a /etc/fstab
 mount -a
 ```
+
 <details>
 <summary>SSH settings</summary>
+  
 ```bash
 export NEWHOSTNAME="hohla"
 ```
@@ -71,7 +73,9 @@ fail2ban-client status
 # mkdir -p ~/.crpt ~/keys
 # encfs ~/.crpt ~/keys # 
 ```
+
 </details>
+
 ## Install Solana Node
 ```   copy validator.json, vote.json to ~/keys   ```
 ```bash
