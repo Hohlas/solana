@@ -152,7 +152,10 @@ systemctl restart telegraf
 </details>
 
 ## Snapshot Finder
-### setup snapshot finder
+
+<details>
+<summary>setup snapshot finder</summary>
+
 ```bash
 cd 
 ulimit -n 1000000
@@ -166,6 +169,9 @@ python3 -m venv venv
 source ./venv/bin/activate
 pip3 install -r requirements.txt
 ```
+
+</details>
+
 ### init snapshot finder
 ```bash
 source ~/.bashrc; 
