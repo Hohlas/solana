@@ -22,7 +22,25 @@ fdisk /dev/nvme1n1 #
   # n # create new. 'ENTER' by default. 
   # w # write changes
 mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
-# mount disks
+```
+
+<details>
+<summary>2 disks</summary>
+
+```bash
+rm -r /mnt/disk3
+ln -sf /mnt/disk1 /mnt/disk3
+mount /dev/nvme0n1p1 /mnt/disk1
+echo '/dev/nvme0n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount -a
+```
+
+</details>
+
+<details>
+<summary>3 disks</summary>
+
+```bash
 mount /dev/nvme1n1p1 /mnt/disk1
 echo '/dev/nvme1n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
 mount /dev/nvme2n1p1 /mnt/disk2
@@ -31,6 +49,9 @@ mount /dev/nvme3n1p1 /mnt/disk3
 echo '/dev/nvme3n1p1 /mnt/disk3 ext4 defaults 0 1' | sudo tee -a /etc/fstab
 mount -a
 ```
+
+</details>
+
 
 <details>
 <summary>SSH settings</summary>
