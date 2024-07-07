@@ -113,13 +113,20 @@ check | logs | next | monitor | catch
 guard | vote_on | vote_off | ssh_agent
 mount_keys | umount_keys | shred_keys
 ```
-## Jito-Relayer Setup
+
+<details>
+<summary>Jito-Relayer Setup</summary>
+
 ```bash
 curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/jito_relayer_setup.sh > ~/jito_relayer_setup.sh
 chmod +x ~/jito_relayer_setup.sh
 ~/jito_relayer_setup.sh
 ```
-## Grafana Setup
+</details>
+
+<details>
+<summary>Grafana Setup</summary>
+
 ```bash
 source ~/sol_git/setup/grafana_setup.sh
 ```
@@ -141,6 +148,9 @@ nano /etc/telegraf/telegraf.conf  # add config
 sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
 systemctl restart telegraf
 ```
+
+</details>
+
 ## Snapshot Finder
 ### setup snapshot finder
 ```bash
