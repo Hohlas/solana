@@ -21,7 +21,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
 --wal-recovery-mode skip_any_corrupted_record \
 --minimal-snapshot-download-speed 41943040 \
---identity /root/solana/validator_link.json \
+--identity /root/solana/empty-validator.json \
 --authorized-voter /root/solana/validator-keypair.json \
 --vote-account /root/solana/vote.json \
 --snapshots /mnt/disk1/snapshots \
