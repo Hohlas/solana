@@ -33,6 +33,11 @@ fi
 GET_VOTING_IP(){
 	SERV='root@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
+	if [ "$CUR_IP" == "$VOTING_IP" ]; then
+		SERV_TYPE='PRIMARY'
+    else 
+		SERV_TYPE='SECONDARY'
+    fi
 	}
 SEND_INFO(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
@@ -113,19 +118,19 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH         \r \033[0m"
 
  	# check guard running on remote server
- 	command_output=$(scp -P $PORT -i $KEYS/*.ssh $HOME/cur_ip root@$REMOTE_IP:$KEYS/remote_ip) # update file on remote server
+ 	command_output=$(scp -P $PORT -i $KEYS/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/remote_ip) # update file on remote server
 	command_exit_status=$?
 	if [ $command_exit_status -ne 0 ]; then
 		MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
 		SEND_ALARM
 		fi
- 	last_modified=$(date -r "$KEYS/remote_ip" +%s)
+ 	last_modified=$(date -r "$HOME/remote_ip" +%s)
 	current_time=$(date +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
 	if [ $time_diff -ge 600 ]; then
 		MSG="guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
 		SEND_ALARM
-		echo $REMOTE_IP > $KEYS/remote_ip # update file for stop alarm next 600 seconds
+		echo $REMOTE_IP > $HOME/remote_ip # update file for stop alarm next 600 seconds
 	fi
 	}
 
@@ -160,21 +165,10 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 	fi
   }
 
-become_primary_once=$1 # any script argument
-BECOME_PRIMARY(){
-	if [[ -n "$become_primary_once" && next_slot_time -ge 2 ]]; then #  if 'become_primary_once' not empty and next_slot>2
-		set_primary=2 # set flag to become primary server
-		become_primary_once='' # once executed
-		MSG=$(printf "become primary server \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
-		SEND_INFO
-	fi	
-	}
-
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
 	MSG=$(printf "PRIMARY SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
-	SERV_TYPE='PRIMARY'
 	IP_change=0
 	# CHECK_CONNECTION_LOOP 
 	until [ $IP_change -ge 3 ]; do
@@ -195,7 +189,6 @@ PRIMARY_SERVER(){ ##############################################################
 SECONDARY_SERVER(){ ##################################################################
 	MSG=$(printf "SECONDARY  SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
-	SERV_TYPE='SECONDARY'
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $set_primary -ge 1 ]]; do
@@ -205,12 +198,19 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $Delinquent == true ]]; then
 			set_primary=2
 		fi
+		if [[ $become_primary == "once" && next_slot_time -ge 2 ]]; then
+			become_primary=''
+			set_primary=2
+		fi
+		if [[ $become_primary == "everytime" && next_slot_time -ge 2 ]]; then
+			set_primary=2
+		fi	
 		CHECK_HEALTH #  self check node health
 		BECOME_PRIMARY
   		GET_VOTING_IP
   		if [ "$CUR_IP" == "$VOTING_IP" ]; then
-    			return
-       		fi
+    		return
+       	fi
 		sleep 5
 	done
 		# STOP SOLANA on REMOTE server
@@ -261,17 +261,15 @@ SECONDARY_SERVER(){ ############################################################
 	}
 
 
-### script start - check ssh connection ###########################################
-chmod 600 $KEYS/*.ssh
-eval "$(ssh-agent -s)"  # Start ssh-agent in the background
-ssh-add $KEYS/*.ssh # Add SSH private key to the ssh-agent
-
 GET_VOTING_IP
-echo $CUR_IP > ~/cur_ip
-if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
-	if [ -f $KEYS/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
-		REMOTE_IP=$(cat $KEYS/remote_ip)
-		echo "get REMOTE_IP of SECONDARY_SERVER from $KEYS/remote_ip: $REMOTE_IP"
+become_primary=$1 # read script argument
+if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
+	if [[ $become_primary == "p" ]]; then 
+		become_primary='everytime'; 
+		echo -e "start guard in $RED everytime Primary mode\033[0m"
+	fi
+	if [ -f $HOME/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
+		REMOTE_IP=$(cat $HOME/remote_ip) # echo "get REMOTE_IP of SECONDARY_SERVER from $HOME/remote_ip: $REMOTE_IP"
 	else 
 		REMOTE_IP=''	
 	fi
@@ -279,15 +277,17 @@ if [ "$CUR_IP" == "$VOTING_IP" ]; then # PRIMARY can't determine REMOTE_IP of SE
 		echo -e "Warning! Run guard on SECONDARY server to get it's IP"
 		return
 	fi
-else # 
+else # SECONDARY
+	if [[ $become_primary == "p" ]]; then 
+		become_primary='once'; 
+		echo -e "start guard in $RED switch to Primary mode\033[0m"
+	fi
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
-	scp -P $PORT -i $KEYS/*.ssh ~/cur_ip root@$REMOTE_IP:$KEYS/remote_ip
-	# ssh REMOTE 'echo $CUR_IP > $KEYS/remote_ip'
-	scp -P $PORT -i $KEYS/*.ssh root@$REMOTE_IP:$KEYS/remote_ip ~/tmp_ip 
-	echo "send CUR_IP $(cat ~/tmp_ip) to PRIMARY_SERVER $REMOTE_IP"
- 	rm ~/tmp_ip
 fi
 
+chmod 600 $KEYS/*.ssh
+eval "$(ssh-agent -s)"  # Start ssh-agent in the background
+ssh-add $KEYS/*.ssh # Add SSH private key to the ssh-agent
 # create ssh alias for remote server
 echo " 
 Host REMOTE
@@ -297,7 +297,7 @@ Port $PORT
 IdentityFile $KEYS/*.ssh
 " > ~/.ssh/config
 
-# check SSH connection with remote server
+# check SSH connection to remote server
 remote_identity=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana address 2>&1)
 command_exit_status=$?
 if [ $command_exit_status -ne  0 ]; then
@@ -314,7 +314,8 @@ else
 	return
 fi
 
-echo $REMOTE_IP > $KEYS/remote_ip # update file for stop alarm next 600 seconds
+echo $CUR_IP > $HOME/cur_ip
+echo $REMOTE_IP > $HOME/remote_ip # update file for stop alarm next 600 seconds
 
 while true  ###  main circle   #################################################
 do
