@@ -33,11 +33,14 @@ fi
 GET_VOTING_IP(){
 	SERV='root@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
-	if [ "$CUR_IP" == "$VOTING_IP" ]; then
+	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP empty
+		return
+  		fi
+ 	if [ "$CUR_IP" == "$VOTING_IP" ]; then
 		SERV_TYPE='PRIMARY'
-    else 
+	else 
 		SERV_TYPE='SECONDARY'
-    fi
+    	fi
 	}
 SEND_INFO(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
