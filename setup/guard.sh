@@ -169,17 +169,10 @@ PRIMARY_SERVER(){ ##############################################################
 	#echo -e "\n = PRIMARY  SERVER ="
 	MSG=$(printf "PRIMARY SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
 	SEND_INFO
-	IP_change=0
-	# CHECK_CONNECTION_LOOP 
-	until [ $IP_change -ge 3 ]; do
+	while [[ "$CUR_IP" == "$VOTING_IP" ]]; do
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-		if [ "$CUR_IP" != "$VOTING_IP" ]; then
-			let IP_change+=1
-		else
-			IP_change=0
-		fi	
 		sleep 5
 	done
 	echo -e "$RED VOTING IP change to $VOTING_IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
