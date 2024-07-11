@@ -5,9 +5,9 @@ sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux hto
 ```
 ### create and mount partitions   
 ```bash
-mkdir -p /mnt/disk1
-mkdir -p /mnt/disk2
-mkdir -p /mnt/disk3
+mkdir -p /mnt/disk1 # accounts
+mkdir -p /mnt/disk2 # ledger
+mkdir -p /mnt/disk3 # accounts_index & hash_cash
 mkdir -p /mnt/keys
 chmod 600 /mnt/keys 
 echo "# KEYS to RAMDISK 
