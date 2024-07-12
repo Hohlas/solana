@@ -36,7 +36,7 @@ mount -a
 </details>
 
 <details>
-<summary>3 disks</summary>
+<summary>system_disk + disk1 + disk2</summary>
 
 ```bash
 mount /dev/nvme1n1p1 /mnt/disk1
