@@ -2,12 +2,8 @@
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
 # create dirs
 mkdir -p ~/solana
-mkdir -p /mnt/disk1/snapshots
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/ledger
-mkdir -p /mnt/disk3/accounts_index
-mkdir -p /mnt/disk3/accounts_hash_cache
-
 
 if [ ! -e /swapfile2 ]; then
 echo -e '\n\e[42m make SWAP \e[0m\n'
