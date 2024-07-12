@@ -25,11 +25,11 @@ mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
 ```
 
 <details>
-<summary>RAID0 + disk1</summary>
+<summary>RAID0 + disk2</summary>
 
 ```bash
-mount /dev/nvme0n1p1 /mnt/disk1
-echo '/dev/nvme0n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount /dev/nvme2n1p1 /mnt/disk2
+echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
 mount -a
 ```
 
