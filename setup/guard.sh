@@ -202,7 +202,6 @@ SECONDARY_SERVER(){ ############################################################
 			set_primary=2
 		fi	
 		CHECK_HEALTH #  self check node health
-		BECOME_PRIMARY
   		GET_VOTING_IP
   		if [ "$CUR_IP" == "$VOTING_IP" ]; then
     		return
