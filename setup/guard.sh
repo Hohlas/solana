@@ -232,7 +232,7 @@ SECONDARY_SERVER(){ ############################################################
 	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
 	echo "  stop telegraf on REMOTE server"
 	ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
-	echo "  stop jito-relayer on REMOTE server"
+	# echo "  stop jito-relayer on REMOTE server"
 	# ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
 
 	# START SOLANA on LOCAL server
