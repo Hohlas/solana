@@ -25,6 +25,28 @@ mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
 ```
 
 <details>
+<summary>SWAP</summary>
+
+```bash
+if [ ! -e /swapfile2 ]; then
+echo -e '\n\e[42m make SWAP \e[0m\n'
+fallocate -l 200G /swapfile2
+chmod 600 /swapfile2
+mkswap /swapfile2
+swapon /swapfile2 
+echo "
+# add SWAP
+/swapfile2 none swap sw 0 0
+" | sudo tee -a /etc/fstab
+else
+echo -e '\n\e[42m SWAP already exist \e[0m\n'
+fi
+```
+
+</details>
+
+
+<details>
 <summary>RAID0 + disk2</summary>
 
 ```bash
