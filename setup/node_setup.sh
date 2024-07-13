@@ -5,6 +5,20 @@ mkdir -p ~/solana
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/ledger
 
+if [ ! -e /swapfile ]; then
+echo -e '\n\e[42m make SWAP \e[0m\n'
+fallocate -l 200G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile 
+echo "
+# SWAP
+/swapfile2 none swap sw 0 0
+" | sudo tee -a /etc/fstab
+else
+echo -e '\n\e[42m SWAP already exist \e[0m\n'
+fi
+
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sudo sysctl vm.swappiness=10  # change current SWAPPINESS
 echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf # change after reboot SWAPPINESS
