@@ -3,7 +3,10 @@
 ```bash
 sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux htop curl nano fail2ban smartmontools mc man rsync cron logrotate rsyslog encfs jq -y
 ```
-### create and mount partitions   
+
+<details>
+<summary>create and mount partitions</summary>
+
 ```bash
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/ledger
@@ -24,6 +27,29 @@ fdisk /dev/nvme1n1 #
 mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
 ```
 
+### RAID0 + disk2
+```bash
+mount /dev/nvme2n1p1 /mnt/disk2
+echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount -a
+```
+
+### system_disk + disk1 + disk2
+```bash
+mount /dev/nvme1n1p1 /mnt/disk1
+echo '/dev/nvme1n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount /dev/nvme2n1p1 /mnt/disk2
+echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+mount -a
+```
+
+</details>
+
+
+
+  
+
+
 <details>
 <summary>SWAP</summary>
 
@@ -41,31 +67,6 @@ echo "
 else
 echo -e '\n\e[42m SWAP already exist \e[0m\n'
 fi
-```
-
-</details>
-
-
-<details>
-<summary>RAID0 + disk2</summary>
-
-```bash
-mount /dev/nvme2n1p1 /mnt/disk2
-echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
-mount -a
-```
-
-</details>
-
-<details>
-<summary>system_disk + disk1 + disk2</summary>
-
-```bash
-mount /dev/nvme1n1p1 /mnt/disk1
-echo '/dev/nvme1n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
-mount /dev/nvme2n1p1 /mnt/disk2
-echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
-mount -a
 ```
 
 </details>
