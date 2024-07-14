@@ -15,6 +15,16 @@ else
   echo -e '\n\e[42m Install Solana Testnet \e[0m\n'
   sh -c "$(curl -sSfL https://release.solana.com/$NEW_TAG/install)" 
 fi
+
+# create simlinks  agave -> solana
+cd "/root/.local/share/solana/install/active_release/bin/" || exit
+for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
+    if [ -f "$file" ]; then # файл существует ли 
+        ln -sf "$file" "${file/agave-/solana-}" # Создаем символическую ссылку
+        echo "create link: $new_name -> $file"
+    fi
+done
+
 solana --version
 
 if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
