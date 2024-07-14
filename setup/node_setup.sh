@@ -5,7 +5,17 @@ mkdir -p ~/solana
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/ledger
 
-# SWAP
+if [ ! -d "$HOME/keys" ]; then
+    mkdir -p /mnt/keys
+    ln -sf /mnt/keys "$HOME/keys"
+    chmod 600 /mnt/keys 
+	echo "# KEYS to RAMDISK 
+	tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
+	mount /mnt/keys
+	echo "create and mount ~/keys in RAMDISK"
+else
+    echo "~/keys exist"
+fi
 
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sudo sysctl vm.swappiness=10  # change current SWAPPINESS
