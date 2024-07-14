@@ -23,11 +23,16 @@ if [ "$CURRENT_SWAP_SIZE" -lt "$SWAP_SIZE" ]; then
     ADDITIONAL_SWAP=$((SWAP_SIZE - CURRENT_SWAP_SIZE))
     echo "current SWAP size ${CURRENT_SWAP_SIZE}G"
 	echo "create additional SWAP ${ADDITIONAL_SWAP}G."
-    fallocate -l ${ADDITIONAL_SWAP}G /swapfile2
-	chmod 600 /swapfile2
-    mkswap /swapfile2
-    swapon /swapfile2
-    echo "/swapfile2 none swap sw 0 0" | sudo tee -a /etc/fstab
+    command_output=$(fallocate -l ${ADDITIONAL_SWAP}G /swapfile2) 
+	command_exit_status=$?
+	if [ $command_exit_status -ne 0 ]; then
+		echo -e "\033[31m can't create swapfile2 \033[0m"
+	else
+		chmod 600 /swapfile2
+		mkswap /swapfile2
+		swapon /swapfile2
+		echo "/swapfile2 none swap sw 0 0" | sudo tee -a /etc/fstab
+	fi
 else
     echo "current SWAP size $CURRENT_SWAP_SIZE enough"
 fi
