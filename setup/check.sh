@@ -49,7 +49,7 @@ echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$score"
 echo '--'
 echo ' vote account:      '$vote
 echo -e " epmty_keypair:     "$GRAY$empty"\033[0m"   # gray color
-echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
+#echo -e " validator_link:    ${LNK_CLR}"$link"\033[0m"
 echo -e " validator-keypair: "$GREEN$PUB_KEY"\033[0m" # green color
 echo -e " current validator: ${VAL_CLR}"$current_validator"\033[0m"
 echo '--'
