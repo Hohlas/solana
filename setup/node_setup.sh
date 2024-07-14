@@ -18,9 +18,10 @@ else
 fi
 
 SWAP_SIZE=300 # required SWAP size
+MIN_DIFFERENCE=1
 CURRENT_SWAP_SIZE=$(free -g | awk '/^Swap:/ {print $2}')
-if [ "$CURRENT_SWAP_SIZE" -lt "$SWAP_SIZE" ]; then
-    ADDITIONAL_SWAP=$((SWAP_SIZE - CURRENT_SWAP_SIZE))
+ADDITIONAL_SWAP=$((SWAP_SIZE - CURRENT_SWAP_SIZE))
+if [ "$ADDITIONAL_SWAP" -gt "$MIN_DIFFERENCE" ]; then
     echo "current SWAP size ${CURRENT_SWAP_SIZE}G"
 	echo "create additional SWAP ${ADDITIONAL_SWAP}G."
     command_output=$(fallocate -l ${ADDITIONAL_SWAP}G /swapfile2) 
