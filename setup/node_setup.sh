@@ -17,6 +17,7 @@ else
     echo "~/keys exist"
 fi
 
+echo -e '\n\e[42m create SWAP \e[0m\n'	
 SWAP_SIZE=300 # required SWAP size
 MIN_DIFFERENCE=1
 CURRENT_SWAP_SIZE=$(free -g | awk '/^Swap:/ {print $2}')
