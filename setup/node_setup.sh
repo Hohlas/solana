@@ -17,6 +17,22 @@ else
     echo "~/keys exist"
 fi
 
+SWAP_SIZE=300 # required SWAP size
+CURRENT_SWAP_SIZE=$(free -g | awk '/^Swap:/ {print $2}')
+echo "current SWAP size = $CURRENT_SWAP_SIZE"
+if [ "$CURRENT_SWAP_SIZE" -lt "$SWAP_SIZE" ]; then
+    ADDITIONAL_SWAP=$((SWAP_SIZE - CURRENT_SWAP_SIZE))
+    echo "current SWAP size ${CURRENT_SWAP_SIZE}G"
+	echo "create additional SWAP ${ADDITIONAL_SWAP}G."
+    fallocate -l ${ADDITIONAL_SWAP}G /swapfile2
+	chmod 600 /swapfile2
+    mkswap /swapfile2
+    swapon /swapfile2
+    echo "/swapfile2 none swap sw 0 0" | sudo tee -a /etc/fstab
+else
+    echo "current SWAP size $CURRENT_SWAP_SIZE enough"
+fi
+
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sudo sysctl vm.swappiness=10  # change current SWAPPINESS
 echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf # change after reboot SWAPPINESS
