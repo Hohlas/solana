@@ -19,7 +19,6 @@ fi
 
 SWAP_SIZE=300 # required SWAP size
 CURRENT_SWAP_SIZE=$(free -g | awk '/^Swap:/ {print $2}')
-echo "current SWAP size = $CURRENT_SWAP_SIZE"
 if [ "$CURRENT_SWAP_SIZE" -lt "$SWAP_SIZE" ]; then
     ADDITIONAL_SWAP=$((SWAP_SIZE - CURRENT_SWAP_SIZE))
     echo "current SWAP size ${CURRENT_SWAP_SIZE}G"
