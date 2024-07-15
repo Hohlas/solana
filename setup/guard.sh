@@ -131,9 +131,10 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		fi
  	last_modified=$(date -r "$HOME/remote_behind" +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
-	if [ $time_diff -ge 600 ]; then
+	if [ $time_diff -ge 60 ] && [ $((current_time - connection_alarm_time)) -ge 60  ]; then
 		MSG="guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
 		SEND_ALARM
+		connection_alarm_time=$current_time
 	fi
 	}
 
