@@ -205,7 +205,7 @@ SECONDARY_SERVER(){ ############################################################
 			set_primary=2
 			echo "$(TIME) Delinquent"; echo "$(TIME) Delinquent" >> ~/guard.log
 		fi
-		if [[ $REMOTE_BEHIND -ge $threshold_behind ]]; then
+		if [[ $threshold_behind -ge 1 ]] && [[ $REMOTE_BEHIND -ge $threshold_behind ]]; then
 			set_primary=2
 			MSG="REMOTE_BEHIND>$threshold_behind"
    			SEND_ALARM
@@ -281,7 +281,7 @@ if [[ $argument =~ ^[0-9]+$ ]] && [ "$argument" -gt 0 ]; then
     threshold_behind=$argument # 
 	echo -e "$RED threshold behind = $threshold_behind  \033[0m"
 else
-    threshold_behind="999"
+    threshold_behind="0"
 	become_primary=$argument 
 fi
 	
