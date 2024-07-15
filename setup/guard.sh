@@ -121,19 +121,19 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH         \r \033[0m"
 
  	# check guard running on remote server
- 	command_output=$(scp -P $PORT -i $KEYS/*.ssh $HOME/cur_ip root@$REMOTE_IP:$HOME/remote_ip) # update file on remote server
+ 	current_time=$(date +%s)
+	command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$BEHIND' > $HOME/remote_behind" 2>&1)
 	command_exit_status=$?
-	if [ $command_exit_status -ne 0 ]; then
-		MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
+	if [ $command_exit_status -ne 0 ] && [ $((current_time - connection_alarm_time)) -ge 60  ]; then
+		MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
 		SEND_ALARM
+		connection_alarm_time=$current_time
 		fi
- 	last_modified=$(date -r "$HOME/remote_ip" +%s)
-	current_time=$(date +%s)
+ 	last_modified=$(date -r "$HOME/remote_behind" +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
 	if [ $time_diff -ge 600 ]; then
 		MSG="guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
 		SEND_ALARM
-		echo $REMOTE_IP > $HOME/remote_ip # update file for stop alarm next 600 seconds
 	fi
 	}
 
@@ -216,14 +216,15 @@ SECONDARY_SERVER(){ ############################################################
 		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
-  		echo $command_output
-		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana)
+		MSG="Can't set identity on remote server, Error: $command_output"
+		SEND_ALARM
+		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana 2>&1)
   		command_exit_status=$?
     	if [ $command_exit_status -eq 0 ]; then
 			echo -e "$RED  restart solana on REMOTE server in NO_VOTING mode \033[0m"
       	else
-			echo -e "$RED  can't restart solana on REMOTE server \033[0m"
-   			echo $command_output
+			MSG="Can't restart solana on REMOTE server, Error: $command_output"
+   			SEND_ALARM
 		fi
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
@@ -268,7 +269,7 @@ if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SE
 		REMOTE_IP=''	
 	fi
 	if [[ -z $REMOTE_IP ]]; then # if $REMOTE_IP empty
-		echo -e "Warning! Run guard on SECONDARY server to get it's IP"
+		echo -e "Warning! Run guard on SECONDARY server first to get it's IP"
 		return
 	fi
 else # SECONDARY
@@ -295,21 +296,26 @@ IdentityFile $KEYS/*.ssh
 remote_identity=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana address 2>&1)
 command_exit_status=$?
 if [ $command_exit_status -ne  0 ]; then
-	echo -e "$RED SSH connection not available  \033[0m"
+	echo -e "$RED SSH connection not available, Error: $remote_identity  \033[0m"
   	return
 fi
 
 if [ "$remote_identity" == "$IDENTITY" ]; then
 	echo -e "$GREEN SSH connection succesful \033[0m"
 else
-    	echo -e "$RED Remote server connection Error \033[0m"
+    echo -e "$RED Remote server connection Error \033[0m"
 	echo "Current Identity = $IDENTITY,"
 	echo "Remote Identity  = $remote_identity"
 	return
 fi
 
-echo $CUR_IP > $HOME/cur_ip
-echo $REMOTE_IP > $HOME/remote_ip # update file for stop alarm next 600 seconds
+echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
+command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$CUR_IP' > $HOME/remote_ip" 2>&1) # send 'current IP' to remote server
+command_exit_status=$?
+if [ $command_exit_status -ne 0 ]; then
+    MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
+    SEND_ALARM
+fi
 
 while true  ###  main circle   #################################################
 do
