@@ -117,8 +117,9 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 			SEND_INFO
 		fi
 	fi
-	if (( $(cat $HOME/remote_behind) >= 1 )); then 
-		REMOTE_HEALTH="$RED behind $(cat $HOME/remote_behind)"; 
+	REMOTE_BEHIND=$(cat $HOME/remote_behind)
+	if (( $REMOTE_BEHIND >= 1 )); then 
+		REMOTE_HEALTH="$RED behind $REMOTE_BEHIND"; 
 	else 
 		REMOTE_HEALTH="$GREEN ok"; 
 	fi
@@ -200,6 +201,11 @@ SECONDARY_SERVER(){ ############################################################
 			set_primary=2
 			echo "Delinquent"; echo "Delinquent" >> ~/guard.log
 		fi
+		if [[ $REMOTE_BEHIND -ge $threshold_behind ]]; then
+			set_primary=2
+			MSG="REMOTE_BEHIND>$threshold_behind"
+   			SEND_ALARM
+		fi
 		if [[ $become_primary == "once" && next_slot_time -ge 2 ]]; then
 			become_primary=''
 			set_primary=2
@@ -265,7 +271,16 @@ SECONDARY_SERVER(){ ############################################################
 
 
 GET_VOTING_IP
-become_primary=$1 # read script argument
+argument=$1 # read script argument
+become_primary=''
+if [[ $argument =~ ^[0-9]+$ ]] && [ "$argument" -gt 0 ]; then
+    threshold_behind=$argument # 
+	echo -e "$RED threshold behind = $threshold_behind  \033[0m"
+else
+    threshold_behind="999"
+	become_primary=$argument 
+fi
+	
 if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [[ $become_primary == "p" ]]; then 
 		become_primary='everytime'; 
