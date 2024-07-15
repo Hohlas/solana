@@ -207,8 +207,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi
 		if [[ $threshold_behind -ge 1 ]] && [[ $REMOTE_BEHIND -ge $threshold_behind ]]; then
 			set_primary=2
-			MSG="REMOTE_BEHIND>$threshold_behind"
-   			SEND_ALARM
+			MSG="REMOTE_BEHIND>$threshold_behind"; SEND_ALARM
 		fi
 		if [[ $become_primary == "once" && next_slot_time -ge 2 ]]; then
 			become_primary=''
@@ -234,15 +233,17 @@ SECONDARY_SERVER(){ ############################################################
 		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
-		MSG="Can't set identity on remote server, Error: $command_output"
-		SEND_ALARM
+		MSG="Can't set identity on remote server, Error: $command_output"; SEND_ALARM
 		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana 2>&1)
   		command_exit_status=$?
     	if [ $command_exit_status -eq 0 ]; then
 			echo -e "$(TIME)$RED  restart solana on REMOTE server in NO_VOTING mode \033[0m"
       	else
-			MSG="Can't restart solana on REMOTE server, Error: $command_output"
-   			SEND_ALARM
+			MSG="Can't restart solana on REMOTE server, Error: $command_output"; SEND_ALARM
+			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
+				return
+			fi
+			MSG="Can't ping REMOTE server"; SEND_ALARM
 		fi
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
