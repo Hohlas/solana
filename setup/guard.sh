@@ -219,12 +219,11 @@ SECONDARY_SERVER(){ ############################################################
   		echo $command_output
 		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana)
   		command_exit_status=$?
-    		if [ $command_exit_status -eq 0 ]; then
+    	if [ $command_exit_status -eq 0 ]; then
 			echo -e "$RED  restart solana on REMOTE server in NO_VOTING mode \033[0m"
-      		else
+      	else
 			echo -e "$RED  can't restart solana on REMOTE server \033[0m"
    			echo $command_output
-   			return
 		fi
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
