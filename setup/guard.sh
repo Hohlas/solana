@@ -30,6 +30,8 @@ if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN is empty
 	return
 fi
 
+TIME() {TZ=Europe/Moscow date +"%b %e  %H:%M:%S"}
+
 GET_VOTING_IP(){
 	SERV='root@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
@@ -42,7 +44,6 @@ GET_VOTING_IP(){
 		SERV_TYPE='SECONDARY'
     	fi
 	}
-TIME() {TZ=Europe/Moscow date +"%b %e  %H:%M:%S"}
 SEND_INFO(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
 	echo "$(TIME) $MSG" >> ~/guard.log
@@ -96,7 +97,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	else
 		CLR=$RED
 		let health_warning=health_warning+1
-		echo "Health: $HEALTH $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
+		echo "$(TIME) Health: $HEALTH" >> ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
 			health_warning=-12
 			MSG="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
@@ -109,7 +110,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		behind_warning=0
 	else
 		let behind_warning=behind_warning+1
-		echo "Behind=$BEHIND $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log  # log every warning_message
+		echo "$(TIME) Behind=$BEHIND" >> ~/guard.log  # log every warning_message
 		CLR=$RED
 		HEALTH="behind $BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
@@ -157,16 +158,16 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
     # connection losses counter
     if [ "$connection" = false ]; then
         let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
-        echo "connection failed, attempt $DISCONNECT_COUNTER $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
-        echo "connection failed, attempt "$DISCONNECT_COUNTER
+        echo "$(TIME) connection failed, attempt $DISCONNECT_COUNTER" >> ~/guard.log
+        echo "$(TIME) connection failed, attempt "$DISCONNECT_COUNTER
     else
         DISCONNECT_COUNTER=0
     fi
     # connection loss for 15 seconds (5sec * 3)
     if [ $DISCONNECT_COUNTER -ge 3 ]; then
-        echo "CONNECTION LOSS"
+        echo "$(TIME) CONNECTION LOSS"
         # bash "$CONNECTION_LOSS_SCRIPT" # no need to vote_off in offline
-        echo "RESTART SOLANA $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
+        echo "$(TIME) RESTART SOLANA" >> ~/guard.log
         systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
         systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
 		MSG="$SERV_TYPE ${NODE}.${NAME}: Restart solana"
@@ -185,8 +186,8 @@ PRIMARY_SERVER(){ ##############################################################
 		GET_VOTING_IP
 		sleep 5
 	done
-	echo -e "$RED VOTING IP change to $VOTING_IP \033[0m  $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK         \r"
-	echo "VOTING IP change to $VOTING_IP $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S") MSK" >> ~/guard.log
+	echo -e "$(TIME) $RED VOTING IP change to $VOTING_IP \033[0m         \r"
+	echo "$(TIME) VOTING IP change to $VOTING_IP" >> ~/guard.log
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
@@ -200,7 +201,7 @@ SECONDARY_SERVER(){ ############################################################
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
 			set_primary=2
-			echo "Delinquent"; echo "Delinquent" >> ~/guard.log
+			echo "$(TIME) Delinquent"; echo "$(TIME) Delinquent" >> ~/guard.log
 		fi
 		if [[ $REMOTE_BEHIND -ge $threshold_behind ]]; then
 			set_primary=2
@@ -210,11 +211,11 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $become_primary == "once" && next_slot_time -ge 2 ]]; then
 			become_primary=''
 			set_primary=2
-			echo "become primary once"; echo "become primary once" >> ~/guard.log
+			echo "$(TIME) become primary once"; echo "$(TIME) become primary once" >> ~/guard.log
 		fi
 		if [[ $become_primary == "everytime" && next_slot_time -ge 2 ]]; then
 			set_primary=2
-			echo "become primary everytime"; echo "become primary everytime" >> ~/guard.log
+			echo "$(TIME) become primary everytime"; echo "$(TIME) become primary everytime" >> ~/guard.log
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
@@ -236,7 +237,7 @@ SECONDARY_SERVER(){ ############################################################
 		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana 2>&1)
   		command_exit_status=$?
     	if [ $command_exit_status -eq 0 ]; then
-			echo -e "$RED  restart solana on REMOTE server in NO_VOTING mode \033[0m"
+			echo -e "$(TIME)$RED  restart solana on REMOTE server in NO_VOTING mode \033[0m"
       	else
 			MSG="Can't restart solana on REMOTE server, Error: $command_output"
    			SEND_ALARM
@@ -262,7 +263,7 @@ SECONDARY_SERVER(){ ############################################################
 	sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 	systemctl start telegraf
 	# systemctl start jito-relayer.service
-	echo -e "\033[31m vote ON\033[0m"$TOWER_STATUS
+	echo -e "$(TIME)$RED vote ON\033[0m"$TOWER_STATUS
 	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM
 	# solana-validator --ledger $LEDGER monitor
