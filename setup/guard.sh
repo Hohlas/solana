@@ -30,7 +30,9 @@ if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN is empty
 	return
 fi
 
-TIME() {TZ=Europe/Moscow date +"%b %e  %H:%M:%S"}
+TIME() {
+TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
+}
 
 GET_VOTING_IP(){
 	SERV='root@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
