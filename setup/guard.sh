@@ -117,8 +117,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 			SEND_INFO
 		fi
 	fi
-	if (( $(cat $HOME/remote_behind) >= 1 )); then BEHIND_CLR=$RED; else BEHIND_CLR=$GREEN; fi
-	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH\033[0m, remote_begind $BEHIND_CLR$(cat $HOME/remote_behind)\033[0m         \r "
+	if (( $(cat $HOME/remote_behind) >= 1 )); then 
+		REMOTE_HEALTH="$RED behind $(cat $HOME/remote_behind)"; 
+	else 
+		REMOTE_HEALTH="$GREEN ok"; 
+	fi
+	echo -ne " $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin, $(TZ=Europe/Moscow date +"%H:%M:%S"),${CLR} $HEALTH\033[0m, $REMOTE_HEALTH\033[0m         \r "
 
  	# check guard running on remote server
  	current_time=$(date +%s)
@@ -194,13 +198,16 @@ SECONDARY_SERVER(){ ############################################################
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
 			set_primary=2
+			echo "Delinquent"; echo "Delinquent" >> ~/guard.log
 		fi
 		if [[ $become_primary == "once" && next_slot_time -ge 2 ]]; then
 			become_primary=''
 			set_primary=2
+			echo "become primary once"; echo "become primary once" >> ~/guard.log
 		fi
 		if [[ $become_primary == "everytime" && next_slot_time -ge 2 ]]; then
 			set_primary=2
+			echo "become primary everytime"; echo "become primary everytime" >> ~/guard.log
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
