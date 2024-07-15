@@ -42,15 +42,16 @@ GET_VOTING_IP(){
 		SERV_TYPE='SECONDARY'
     	fi
 	}
+TIME() {TZ=Europe/Moscow date +"%b %e  %H:%M:%S"}
 SEND_INFO(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
- 	echo -e "$MSG \033[0m"
+	echo "$(TIME) $MSG" >> ~/guard.log
+ 	echo -e "$(TIME) $MSG \033[0m"
 	}
 SEND_ALARM(){
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
-	echo "$MSG $(TZ=Europe/Moscow date +"%b %e  %H:%M:%S")" >> ~/guard.log
- 	echo -e "$RED $MSG \033[0m"
+	echo "$(TIME) $MSG" >> ~/guard.log
+ 	echo -e "$(TIME) $RED $MSG \033[0m"
 	}
 
 
