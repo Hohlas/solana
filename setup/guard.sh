@@ -180,7 +180,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
-	MSG=$(printf "PRIMARY ${NODE}.${NAME} $CUR_IP start")
+	MSG=$(printf "PRIMARY ${NODE}.${NAME}\n%s $CUR_IP start")
 	SEND_INFO
 	while [[ "$CUR_IP" == "$VOTING_IP" ]]; do
 		CHECK_CONNECTION
@@ -193,7 +193,7 @@ PRIMARY_SERVER(){ ##############################################################
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
-	MSG=$(printf "SECONDARY ${NODE}.${NAME} $CUR_IP start")
+	MSG=$(printf "SECONDARY ${NODE}.${NAME}\n%s $CUR_IP start")
 	SEND_INFO
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
