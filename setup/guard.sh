@@ -180,7 +180,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
-	MSG=$(printf "PRIMARY ${NODE}.${NAME}\n%s $CUR_IP start")
+	MSG=$(printf "PRIMARY ${NODE}.${NAME}\n%s$CUR_IP start")
 	SEND_INFO
 	while [[ "$CUR_IP" == "$VOTING_IP" ]]; do
 		CHECK_CONNECTION
@@ -188,12 +188,12 @@ PRIMARY_SERVER(){ ##############################################################
 		GET_VOTING_IP
 		sleep 5
 	done
-	echo -e "$(TIME) $RED VOTING IP change to $VOTING_IP \033[0m         \r"
-	echo "$(TIME) VOTING IP change to $VOTING_IP" >> ~/guard.log
+	echo -e "$(TIME)$RED change VOTING: $VOTING_IP \033[0m         \r"
+	echo "$(TIME) change VOTING: $VOTING_IP" >> ~/guard.log
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
-	MSG=$(printf "SECONDARY ${NODE}.${NAME}\n%s $CUR_IP start")
+	MSG=$(printf "SECONDARY ${NODE}.${NAME}\n%s$CUR_IP start")
 	SEND_INFO
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
