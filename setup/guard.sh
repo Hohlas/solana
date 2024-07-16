@@ -114,7 +114,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		let behind_warning=behind_warning+1
 		echo "$(TIME) Behind=$BEHIND" >> ~/guard.log  # log every warning_message
 		CLR=$RED
-		HEALTH="behind $BEHIND"
+		HEALTH="$BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
 			behind_warning=-12 # sent next message after  12*5 seconds
 	 		MSG="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
@@ -123,7 +123,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
 	if (( $REMOTE_BEHIND >= 1 )); then 
-		REMOTE_HEALTH="$RED behind $REMOTE_BEHIND"; 
+		REMOTE_HEALTH="$RED $REMOTE_BEHIND"; 
 	else 
 		REMOTE_HEALTH="$GREEN ok"; 
 	fi
