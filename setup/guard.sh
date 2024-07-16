@@ -133,14 +133,14 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	current_time=$(date +%s)
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$BEHIND' > $HOME/remote_behind" 2>&1)
 	command_exit_status=$?
-	if [ $command_exit_status -ne 0 ] && [ $((current_time - connection_alarm_time)) -ge 60  ]; then
+	if [ $command_exit_status -ne 0 ] && [ $((current_time - connection_alarm_time)) -ge 120  ]; then
 		MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
 		SEND_ALARM
 		connection_alarm_time=$current_time
 		fi
  	last_modified=$(date -r "$HOME/remote_behind" +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
-	if [ $time_diff -ge 300 ] && [ $((current_time - connection_alarm_time)) -ge 60  ]; then
+	if [ $time_diff -ge 300 ] && [ $((current_time - connection_alarm_time)) -ge 120  ]; then
 		MSG="guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
 		SEND_ALARM
 		connection_alarm_time=$current_time
