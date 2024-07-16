@@ -180,7 +180,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
-	MSG=$(printf "PRIMARY SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+	MSG=$(printf "PRIMARY ${NODE}.${NAME} $CUR_IP start")
 	SEND_INFO
 	while [[ "$CUR_IP" == "$VOTING_IP" ]]; do
 		CHECK_CONNECTION
@@ -193,7 +193,7 @@ PRIMARY_SERVER(){ ##############################################################
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
-	MSG=$(printf "SECONDARY  SERVER start \n%s ${NODE}.${NAME} \n%s on $CUR_IP")
+	MSG=$(printf "SECONDARY ${NODE}.${NAME} $CUR_IP start")
 	SEND_INFO
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
@@ -256,7 +256,7 @@ SECONDARY_SERVER(){ ############################################################
 
 	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
-		TOWER_STATUS=' with existing tower'
+		TOWER_STATUS=' with tower'
 		solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	else
 		TOWER_STATUS=' without tower'
