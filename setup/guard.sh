@@ -127,7 +127,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	else 
 		REMOTE_HEALTH="$GREEN ok"; 
 	fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m         \r "
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m $primary_mode        \r "
 
  	# check guard running on remote server
  	current_time=$(date +%s)
@@ -209,9 +209,9 @@ SECONDARY_SERVER(){ ############################################################
 			set_primary=2
 			MSG="REMOTE_BEHIND>$behind_threshold"; SEND_ALARM
 		fi
-		if [[ $primary_mode == "permanent" && next_slot_time -ge 2 ]]; then
+		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
 			set_primary=2
-			echo "$(TIME) set permanent primary"; echo "$(TIME) set permanent primary" >> ~/guard.log
+			echo "$(TIME) set Permanent Primary mode"; echo "$(TIME) set Permanent Primary mode" >> ~/guard.log
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
@@ -281,7 +281,7 @@ else
 	primary_mode=$argument 
 fi
 if [[ $primary_mode == "p" ]]; then 
-	primary_mode='permanent'; 
+	primary_mode='permanent_primary'; 
 	echo -e "start guard in $RED Permanent Primary mode\033[0m"
 fi	
 if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
