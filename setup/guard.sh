@@ -209,12 +209,7 @@ SECONDARY_SERVER(){ ############################################################
 			set_primary=2
 			MSG="REMOTE_BEHIND>$behind_threshold"; SEND_ALARM
 		fi
-		if [[ $become_primary == "once" && next_slot_time -ge 2 ]]; then
-			become_primary=''
-			set_primary=2
-			echo "$(TIME) become primary once"; echo "$(TIME) become primary once" >> ~/guard.log
-		fi
-		if [[ $become_primary == "permanent" && next_slot_time -ge 2 ]]; then
+		if [[ $primary_mode == "permanent" && next_slot_time -ge 2 ]]; then
 			set_primary=2
 			echo "$(TIME) set permanent primary"; echo "$(TIME) set permanent primary" >> ~/guard.log
 		fi	
@@ -277,20 +272,19 @@ SECONDARY_SERVER(){ ############################################################
 
 GET_VOTING_IP
 argument=$1 # read script argument
-become_primary=''
+primary_mode=''
 if [[ $argument =~ ^[0-9]+$ ]] && [ "$argument" -gt 0 ]; then
     behind_threshold=$argument # 
 	echo -e "$RED behind threshold = $behind_threshold  \033[0m"
 else
-    behind_threshold="0"
-	become_primary=$argument 
+    	behind_threshold="0"
+	primary_mode=$argument 
 fi
-	
+if [[ $primary_mode == "p" ]]; then 
+	primary_mode='permanent'; 
+	echo -e "start guard in $RED Permanent Primary mode\033[0m"
+fi	
 if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
-	if [[ $become_primary == "p" ]]; then 
-		become_primary='permanent'; 
-		echo -e "start guard in $RED Permanent Primary mode\033[0m"
-	fi
 	if [ -f $HOME/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
 		REMOTE_IP=$(cat $HOME/remote_ip) # echo "get REMOTE_IP of SECONDARY_SERVER from $HOME/remote_ip: $REMOTE_IP"
 	else 
@@ -301,10 +295,6 @@ if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SE
 		return
 	fi
 else # SECONDARY
-	if [[ $become_primary == "p" ]]; then 
-		become_primary='once'; 
-		echo -e "start guard in $RED switch to Primary mode\033[0m"
-	fi
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
 fi
 
