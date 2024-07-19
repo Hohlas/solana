@@ -1,5 +1,5 @@
-# solana guard
-[guard.sh](https://github.com/Hohlas/solana/blob/v1.1.3/setup/guard.sh)
+# solana guard | [guard.sh](https://github.com/Hohlas/solana/blob/v1.1.3/setup/guard.sh)
+Скрипт бесшовного перелючения голосования ноды соланы между основным и резервным серверами
 ## Основные функции
 Автоматический переключение голосования при делинке основного сервера.
 Ручное переключение, например, при обновлении версии.
