@@ -1,39 +1,14 @@
-<details>
-<summary>Table of Contents</summary>
+# solana guard
+[guard.sh](https://github.com/Hohlas/solana/blob/v1.1.3/setup/guard.sh)
+## Основные функции
+Автоматический переключение голосования при делинке основного сервера.
+Ручное переключение, например, при обновлении версии.
+Циклическая работа - после автоматического переключения голосования скрипт теперь не нужно перезапускать, он самостоятельно меняет статус Primary/Secondary и продолжает мониторинг.
+Проверка состояния нод соланы на обоих серверах - статусы health,behind. Ведение логов отправка алертов в телегу.
+Взаимная проверка работы скрипта на удаленном сервере. Primary сервер мониторит, работает ли скрипт на Secondary сервере, и наоборот. 
 
-- [Getting Started](#getting-started)
-  - [Operating System Compatibility](#operating-system-compatibility)
-  - [Prerequisites](#prerequisites)
-  - [Basic Installation](#basic-installation)
-    - [Manual Inspection](#manual-inspection)
-- [Using Oh My Zsh](#using-oh-my-zsh)
-  - [Plugins](#plugins)
-    - [Enabling Plugins](#enabling-plugins)
-    - [Using Plugins](#using-plugins)
-  - [Themes](#themes)
-    - [Selecting A Theme](#selecting-a-theme)
-  - [FAQ](#faq)
-- [Advanced Topics](#advanced-topics)
-  - [Advanced Installation](#advanced-installation)
-    - [Custom Directory](#custom-directory)
-    - [Unattended Install](#unattended-install)
-    - [Installing From A Forked Repository](#installing-from-a-forked-repository)
-    - [Manual Installation](#manual-installation)
-  - [Installation Problems](#installation-problems)
-  - [Custom Plugins And Themes](#custom-plugins-and-themes)
-  - [Enable GNU ls In macOS And freeBSD Systems](#enable-gnu-ls-in-macos-and-freebsd-systems)
-  - [Skip Aliases](#skip-aliases)
-  - [Disable async git prompt](#disable-async-git-prompt)
-- [Getting Updates](#getting-updates)
-  - [Updates Verbosity](#updates-verbosity)
-  - [Manual Updates](#manual-updates)
-- [Uninstalling Oh My Zsh](#uninstalling-oh-my-zsh)
-- [How Do I Contribute To Oh My Zsh?](#how-do-i-contribute-to-oh-my-zsh)
-  - [Do Not Send Us Themes](#do-not-send-us-themes)
-- [Contributors](#contributors)
-- [Follow Us](#follow-us)
-- [Merchandise](#merchandise)
-- [License](#license)
-- [About Planet Argon](#about-planet-argon)
+Для ручного переключения голосования достаточно запустить скрипт на резервном сервере с любым аргументом, например ~/guard.sh x. При этом скрипт отключает голосование на основном сервере, копирует с него тауэр, и включает голосование у себя, переходя в статус Primary. Второй сервер соответственно сам принимает статус Secondary, и мониторинг продолжается в штатном режиме.
 
-</details>
+
+
+[guard.sh](https://github.com/Hohlas/solana/blob/v1.1.3/setup/guard.sh)
