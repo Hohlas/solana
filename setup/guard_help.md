@@ -22,7 +22,7 @@
 ![permanent_primary](https://github.com/user-attachments/assets/04a6727f-4236-4067-9b68-63d740fe5047)
 
 - Переключение сервера при достижении отставания 'behind' порогового значения X, не дожидаясь делинка ноды. Задается аргументом 'guard X'.
-- 
+ 
 ![threshold_behind](https://github.com/user-attachments/assets/c36d34c1-d9e8-4179-bc77-bcfda42b3000)
 
 - 
