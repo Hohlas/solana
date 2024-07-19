@@ -24,7 +24,6 @@ echo 'export NODE='$NODE >> $HOME/.bashrc
 echo 'export NAME='$NAME >> $HOME/.bashrc
 echo 'export validator_key='$(solana address -k ~/solana/validator-keypair.json) >> $HOME/.bashrc
 echo 'export vote_account='$(solana address -k ~/solana/vote.json) >> $HOME/.bashrc
-~/sol_git/setup/vote_off.sh
 
 # update services and network url
 if [[ $NODE == "main" ]]; then
