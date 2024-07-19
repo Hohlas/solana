@@ -8,6 +8,8 @@
 - Проверка состояния нод соланы на обоих серверах - статусы health,behind. Ведение логов отправка алертов в телегу.
   
 ![work_primary](https://github.com/user-attachments/assets/cbf14241-15de-4fed-af93-328b19f0f9d1)
+![start](https://github.com/user-attachments/assets/47510020-732f-4b92-a6ed-735bbb2c5884)
+![2024-07-19_19-09-23](https://github.com/user-attachments/assets/eaa3d757-205c-4f57-a408-ca15d0f3de58)
 
 ## Алгоритм работы резервного сервереа Secondary
 ## Алгоритм работы основного сервера Primary
