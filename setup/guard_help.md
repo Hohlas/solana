@@ -36,4 +36,17 @@ else
     echo "~/keys exist"
 fi
 ```
+### изменение solana.service
+```bash
+--identity /root/solana/empty-validator.json \
+--authorized-voter /root/solana/validator-keypair.json \
+--vote-account /root/solana/vote.json \
+```
+
+### создание 'пустого' ключа
+```bash
+if [ ! -f ~/solana/empty-validator.json ]; then 
+solana-keygen new -s --no-bip39-passphrase -o ~/solana/empty-validator.json
+fi
+```
 [guard.sh](https://github.com/Hohlas/solana/blob/v1.1.3/setup/guard.sh)
