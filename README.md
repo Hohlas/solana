@@ -1,6 +1,6 @@
 # solana
 solana scripts 
 
-[setup](setup/readme.md)
+[setup](setup/README.md)
 
 [guard](setup/guard_help.md)
