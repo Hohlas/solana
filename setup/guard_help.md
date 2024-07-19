@@ -15,7 +15,7 @@
 LATEST_TAG_URL=https://api.github.com/repos/Hohlas/solana/releases/latest
 TAG=$(curl -sSL "$LATEST_TAG_URL" | jq -r '.tag_name')
 echo "download latest guard version: $TAG"
-curl https://raw.githubusercontent.com/Hohlas/solana/v$TAG/setup/guard.sh > $HOME/guard.sh
+curl "https://raw.githubusercontent.com/Hohlas/solana/$TAG/setup/guard.sh" > $HOME/guard.sh
 # set alias
 if ! grep -q "guard" ~/.bashrc; then
   echo "alias guard='source $HOME/guard.sh'" >> $HOME/.bashrc
