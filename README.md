@@ -1,3 +1,3 @@
 # solana
 solana scripts
-setup/guard_help.md
+[Скачать guard.sh](setup/guard.sh)
