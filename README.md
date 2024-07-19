@@ -1,3 +1,4 @@
 # solana
-solana scripts
-[Скачать guard.sh](setup/guard.sh)
+solana scripts 
+[setup](setup/readme.md)
+[guard](setup/guard_help.md)
