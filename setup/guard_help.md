@@ -22,7 +22,7 @@ if ! grep -q "guard" ~/.bashrc; then
 fi
 ```
 
-### создание папки ~/keys на рамдиске
+### создание папки ~/keys на рамдиске и символических ссылок
 ```bash
 if [ ! -d "$HOME/keys" ]; then
     mkdir -p /mnt/keys
@@ -35,6 +35,9 @@ if [ ! -d "$HOME/keys" ]; then
 else
     echo "~/keys exist"
 fi
+# create links
+ln -sf ~/keys/vote-keypair.json ~/solana/vote.json
+ln -sf ~/keys/validator-keypair.json ~/solana/validator-keypair.json
 ```
 ### изменение solana.service
 ```bash
