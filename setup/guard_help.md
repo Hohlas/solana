@@ -19,11 +19,11 @@
   
 - Назначение приоритетного сервера для голосования запуском с аргументом 'guard p'. Голосование постоянно переключается обратно на приоритетный сервер после возвращения его состояния в норму (health, behind).
 
-![permanent_primary](https://github.com/user-attachments/assets/04a6727f-4236-4067-9b68-63d740fe5047)
+![permanent_primary](https://github.com/user-attachments/assets/419d5605-d125-4dee-b77b-f13576025e0a)
 
 - Переключение сервера при достижении отставания 'behind' порогового значения X, не дожидаясь делинка ноды. Задается аргументом 'guard X'.
  
-![threshold_behind](https://github.com/user-attachments/assets/c36d34c1-d9e8-4179-bc77-bcfda42b3000)
+![behind_threshold](https://github.com/user-attachments/assets/8da43706-efb0-4270-9fc0-ee001cc06832)
 
 - 
 
