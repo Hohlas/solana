@@ -9,9 +9,8 @@
 
 Для ручного переключения голосования достаточно запустить скрипт на резервном сервере с любым аргументом, например ~/guard.sh x. При этом скрипт отключает голосование на основном сервере, копирует с него тауэр, и включает голосование у себя, переходя в статус Primary. Второй сервер соответственно сам принимает статус Secondary, и мониторинг продолжается в штатном режиме.
 
+### загрузка guard.sh
 ```bash
-
-
 # download guard.sh
 LATEST_TAG_URL=https://api.github.com/repos/Hohlas/solana/releases/latest
 TAG=$(curl -sSL "$LATEST_TAG_URL" | jq -r '.tag_name')
@@ -23,4 +22,18 @@ if ! grep -q "guard" ~/.bashrc; then
 fi
 ```
 
+### создание папки ~/keys на рамдиске
+```bash
+if [ ! -d "$HOME/keys" ]; then
+    mkdir -p /mnt/keys
+    ln -sf /mnt/keys "$HOME/keys"
+    chmod 600 /mnt/keys 
+	echo "# KEYS to RAMDISK 
+	tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
+	mount /mnt/keys
+	echo "create and mount ~/keys in RAMDISK"
+else
+    echo "~/keys exist"
+fi
+```
 [guard.sh](https://github.com/Hohlas/solana/blob/v1.1.3/setup/guard.sh)
