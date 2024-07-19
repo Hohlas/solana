@@ -127,6 +127,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	else 
 		REMOTE_HEALTH="$GREEN ok"; 
 	fi
+	
 	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S"), $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m         \r "
 
  	# check guard running on remote server
