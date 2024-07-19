@@ -7,10 +7,13 @@
 - Взаимная проверка работы скриптов. Primary сервер мониторит, запущен ли скрипт на Secondary сервере, и наоборот.
 - Мониторинг состояния нод соланы на обоих серверах - статусы health,behind.
   ![2024-07-19_19-09-23](https://github.com/user-attachments/assets/eaa3d757-205c-4f57-a408-ca15d0f3de58)
+  
 - Ведение логов.
   ![log1](https://github.com/user-attachments/assets/62f053d7-a9b5-4a56-a542-152af831bd0f)
+  
 - Алерты в телегу.
-  ![telegram](https://github.com/user-attachments/assets/5b286180-5ef4-41e5-8e27-66bd6fde61e7)
+  ![telegram_alert](https://github.com/user-attachments/assets/5d8c989e-6bcb-45c4-b793-6d6f9d3ba2ba)
+  
 - Назначение приоритетного сервера для голосования. 
 
 ## Алгоритм работы резервного сервереа Secondary
