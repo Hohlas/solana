@@ -1,5 +1,4 @@
-# solana
-solana scripts 
+# solana.sh
 
 [setup](setup/README.md)
 
