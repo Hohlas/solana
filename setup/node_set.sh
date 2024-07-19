@@ -24,6 +24,11 @@ echo 'export NODE='$NODE >> $HOME/.bashrc
 echo 'export NAME='$NAME >> $HOME/.bashrc
 echo 'export validator_key='$(solana address -k ~/solana/validator-keypair.json) >> $HOME/.bashrc
 echo 'export vote_account='$(solana address -k ~/solana/vote.json) >> $HOME/.bashrc
+source $HOME/.bashrc
+if [ ! -f ~/solana/empty-validator.json ]; then 
+solana-keygen new -s --no-bip39-passphrase -o ~/solana/empty-validator.json
+fi
+# ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
 
 # update services and network url
 if [[ $NODE == "main" ]]; then
