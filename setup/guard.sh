@@ -214,9 +214,9 @@ SECONDARY_SERVER(){ ############################################################
 			set_primary=2
 			echo "$(TIME) become primary once"; echo "$(TIME) become primary once" >> ~/guard.log
 		fi
-		if [[ $become_primary == "everytime" && next_slot_time -ge 2 ]]; then
+		if [[ $become_primary == "permanent" && next_slot_time -ge 2 ]]; then
 			set_primary=2
-			echo "$(TIME) become primary everytime"; echo "$(TIME) become primary everytime" >> ~/guard.log
+			echo "$(TIME) set permanent primary"; echo "$(TIME) set permanent primary" >> ~/guard.log
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
@@ -288,8 +288,8 @@ fi
 	
 if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [[ $become_primary == "p" ]]; then 
-		become_primary='everytime'; 
-		echo -e "start guard in $RED everytime Primary mode\033[0m"
+		become_primary='permanent'; 
+		echo -e "start guard in $RED Permanent Primary mode\033[0m"
 	fi
 	if [ -f $HOME/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
 		REMOTE_IP=$(cat $HOME/remote_ip) # echo "get REMOTE_IP of SECONDARY_SERVER from $HOME/remote_ip: $REMOTE_IP"
@@ -345,7 +345,7 @@ if [ $command_exit_status -ne 0 ]; then
     SEND_ALARM
 fi
 
-while true  ###  main circle   #################################################
+while true  ###  main cycle   #################################################
 do
 	GET_VOTING_IP
 	if [ "$CUR_IP" == "$VOTING_IP" ]; then
