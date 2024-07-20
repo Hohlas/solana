@@ -240,11 +240,26 @@ SECONDARY_SERVER(){ ############################################################
 		fi
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
-	echo "  move tower from REMOTE to LOCAL "
+	# remove old tower before
+	rm $LEDGER/tower-2_9-$IDENTITY.bin 
+	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) remove old tower OK" | tee -a ~/guard.log
+	else echo "$(TIME) remove old tower Error: $command_exit_status" | tee -a ~/guard.log
+	fi
+	# copy tower from remote server
 	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
-	echo "  stop telegraf on REMOTE server"
+	command_exit_status=$?
+	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) copy tower from $SERV OK" | tee -a ~/guard.log
+	elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) copy tower from $SERV timeout exceed" | tee -a ~/guard.log
+	else echo "$(TIME) copy tower from $SERV Error: $command_exit_status" | tee -a ~/guard.log
+	fi
+	# stop telegraf service on remote server
 	ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
-	# echo "  stop jito-relayer on REMOTE server"
+	command_exit_status=$?
+	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) stop telegraf on remote server OK" | tee -a ~/guard.log
+	elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) stop telegraf on remote server timeout exceed" | tee -a ~/guard.log
+ 	else echo "$(TIME) stop telegraf on remote server Error: $command_exit_status" | tee -a ~/guard.log
+	fi
+ 	# echo "  stop jito-relayer on REMOTE server"
 	# ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
 
 	# START SOLANA on LOCAL server
