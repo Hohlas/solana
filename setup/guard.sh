@@ -112,7 +112,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		behind_warning=0
 	else
 		let behind_warning=behind_warning+1
-		echo "$(TIME) Behind=$BEHIND" | tee -a ~/guard.log  # log every warning_message
+		echo "$(TIME) Behind=$BEHIND    " | tee -a ~/guard.log  # log every warning_message
 		CLR=$RED
 		HEALTH="$BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
