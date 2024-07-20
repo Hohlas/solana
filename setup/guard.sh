@@ -205,7 +205,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
-  		if [ "$SERV_TYPE" == "$PRIMARY" ]; then 
+  		if [ "$SERV_TYPE" == "PRIMARY" ]; then 
     			return; 
        		fi
 		sleep 5
@@ -343,7 +343,7 @@ fi
 while true  ###  main cycle   #################################################
 do
 	GET_VOTING_IP
-	if [ "$SERV_TYPE" == "$PRIMARY" ]; then
+	if [ "$SERV_TYPE" == "PRIMARY" ]; then
 		PRIMARY_SERVER
 	else
 		SECONDARY_SERVER
