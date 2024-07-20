@@ -60,12 +60,12 @@ SEND_ALARM(){
 	}
 
 
-echo ' == SOLANA GUARD =='
+echo " == SOLANA GUARD ==" | tee -a ~/guard.log
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
-echo 'voting  IP='$VOTING_IP
-echo 'current IP='$CUR_IP
-echo -e "IDENTITY = $GREEN$IDENTITY \033[0m";
+echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
+echo "current IP=$CUR_IP" | tee -a ~/guard.log
+echo -e "IDENTITY = $GREEN$IDENTITY \033[0m" | tee -a ~/guard.log
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[34m network=api.testnet \033[0m v$version - $client";
@@ -266,7 +266,7 @@ SECONDARY_SERVER(){ ############################################################
 	# sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 	systemctl start telegraf
 	# systemctl start jito-relayer.service
-	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
+	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	# solana-validator --ledger $LEDGER monitor
 	# ssh REMOTE $SOL_BIN/solana-validator --ledger $LEDGER monitor
@@ -323,9 +323,9 @@ if [ $command_exit_status -ne  0 ]; then
 fi
 
 if [ "$remote_identity" == "$IDENTITY" ]; then
-	echo -e "$GREEN SSH connection succesful \033[0m"
+	echo -e "$GREEN SSH connection succesful \033[0m" | tee -a ~/guard.log
 else
-    echo -e "$RED Remote server connection Error \033[0m"
+    	echo -e "$RED Remote server connection Error \033[0m"
 	echo "Current Identity = $IDENTITY,"
 	echo "Remote Identity  = $remote_identity"
 	return
