@@ -37,15 +37,13 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 GET_VOTING_IP(){
 	SERV='root@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
- 	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger $LEDGER monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP empty
 		return
   		fi
- 	# if [ "$CUR_IP" == "$VOTING_IP" ];  then
-  	if [ "$local_validator" == "$IDENTITY" ]; then
-  		SERV_TYPE='PRIMARY'
+ 	if [ "$CUR_IP" == "$VOTING_IP" ]; then
+		SERV_TYPE='PRIMARY'
 	else 
- 		SERV_TYPE='SECONDARY'
+		SERV_TYPE='SECONDARY'
     	fi
 	}
 SEND_INFO(){
@@ -205,8 +203,8 @@ SECONDARY_SERVER(){ ############################################################
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
-  		if [ "$SERV_TYPE" == "PRIMARY" ]; then 
-    			return; 
+  		if [ "$CUR_IP" == "$VOTING_IP" ]; then
+    			return
        		fi
 		sleep 5
 	done
@@ -343,7 +341,7 @@ fi
 while true  ###  main cycle   #################################################
 do
 	GET_VOTING_IP
-	if [ "$SERV_TYPE" == "PRIMARY" ]; then
+	if [ "$CUR_IP" == "$VOTING_IP" ]; then
 		PRIMARY_SERVER
 	else
 		SECONDARY_SERVER
