@@ -231,7 +231,7 @@ SECONDARY_SERVER(){ ############################################################
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
 	# remove old tower before
-	rm $LEDGER/tower-2_9-$IDENTITY.bin 
+	rm $LEDGER/tower*$IDENTITY.bin 
 	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) remove old tower OK" | tee -a ~/guard.log
 	else echo "$(TIME) remove old tower Error: $command_exit_status" | tee -a ~/guard.log
 	fi
