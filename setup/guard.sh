@@ -47,14 +47,16 @@ GET_VOTING_IP(){
     	fi
 	}
 SEND_INFO(){
-	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$MSG" > /dev/null
-	echo "$(TIME) $MSG" >> ~/guard.log
- 	echo -e "$(TIME) $MSG \033[0m"
+	local message="$1"
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
+	echo "$(TIME) $message" >> ~/guard.log
+ 	echo -e "$(TIME) $message \033[0m"
 	}
 SEND_ALARM(){
-	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$MSG" > /dev/null
-	echo "$(TIME) $MSG" >> ~/guard.log
- 	echo -e "$(TIME) $RED $MSG \033[0m"
+	local message="$1"
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$message" > /dev/null
+	echo "$(TIME) $message" >> ~/guard.log
+ 	echo -e "$(TIME) $RED $message \033[0m"
 	}
 
 
@@ -102,8 +104,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		echo "$(TIME) Health: $HEALTH" >> ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
 			health_warning=-12
-			MSG="$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
-			SEND_ALARM
+			SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
 		fi
 	fi  
 	
@@ -117,8 +118,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		HEALTH="$BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
 			behind_warning=-12 # sent next message after  12*5 seconds
-	 		MSG="$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
-			SEND_INFO
+	 		SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
@@ -134,15 +134,13 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$BEHIND' > $HOME/remote_behind" 2>&1)
 	command_exit_status=$?
 	if [ $command_exit_status -ne 0 ] && [ $((current_time - connection_alarm_time)) -ge 120  ]; then
-		MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
-		SEND_ALARM
+		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
 		connection_alarm_time=$current_time
 		fi
  	last_modified=$(date -r "$HOME/remote_behind" +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
 	if [ $time_diff -ge 300 ] && [ $((current_time - connection_alarm_time)) -ge 120  ]; then
-		MSG="guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
-		SEND_ALARM
+		SEND_ALARM "guard inactive on ${NODE}.${NAME}, $REMOTE_IP"
 		connection_alarm_time=$current_time
 	fi
 	}
@@ -169,15 +167,13 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
         # bash "$CONNECTION_LOSS_SCRIPT" # no need to vote_off in offline
         systemctl restart solana
         systemctl stop jito-relayer.service
-	MSG="$SERV_TYPE ${NODE}.${NAME}: Connection loss, RESTART SOLANA"
-	SEND_ALARM
+	SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Connection loss, RESTART SOLANA"
 	fi
   }
 
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
-	MSG=$(printf "PRIMARY ${NODE}.${NAME}\n%s$CUR_IP start")
-	SEND_INFO
+	SEND_INFO "PRIMARY ${NODE}.${NAME}\n%s$CUR_IP start"
 	while [[ "$CUR_IP" == "$VOTING_IP" ]]; do
 		CHECK_CONNECTION
 		CHECK_HEALTH
@@ -188,8 +184,7 @@ PRIMARY_SERVER(){ ##############################################################
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
-	MSG=$(printf "SECONDARY ${NODE}.${NAME}\n%s$CUR_IP start")
-	SEND_INFO
+	SEND_INFO "SECONDARY ${NODE}.${NAME}\n%s$CUR_IP start"
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	REASON=''
@@ -221,17 +216,17 @@ SECONDARY_SERVER(){ ############################################################
 		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
-		MSG="Can't set identity on remote server, Error: $command_output"; SEND_ALARM
+		SEND_ALARM "Can't set identity on remote server, Error: $command_output"
 		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana 2>&1)
   		command_exit_status=$?
     		if [ $command_exit_status -eq 0 ]; then
 			echo -e "$(TIME) restart solana on REMOTE server in NO_VOTING mode" | tee -a ~/guard.log
       		else
-			MSG="Can't restart solana on REMOTE server, Error: $command_output"; SEND_ALARM
+			SEND_ALARM "Can't restart solana on REMOTE server, Error: $command_output"
 			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
 				return
 			fi
-			MSG="Can't ping REMOTE server"; SEND_ALARM
+			SEND_ALARM "Can't ping REMOTE server"
 		fi
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
@@ -272,7 +267,7 @@ SECONDARY_SERVER(){ ############################################################
 	systemctl start telegraf
 	# systemctl start jito-relayer.service
 	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
-	SEND_ALARM
+	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	# solana-validator --ledger $LEDGER monitor
 	# ssh REMOTE $SOL_BIN/solana-validator --ledger $LEDGER monitor
 	# ssh REMOTE $SOL_BIN/solana catchup ~/solana/validator_link.json --our-localhost
@@ -283,7 +278,7 @@ GET_VOTING_IP
 argument=$1 # read script argument
 primary_mode=''
 if [[ $argument =~ ^[0-9]+$ ]] && [ "$argument" -gt 0 ]; then
-    behind_threshold=$argument # 
+    	behind_threshold=$argument # 
 	echo -e "$RED behind threshold = $behind_threshold  \033[0m"
 else
     	behind_threshold="0"
@@ -340,8 +335,7 @@ echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 secon
 command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$CUR_IP' > $HOME/remote_ip" 2>&1) # send 'current IP' to remote server
 command_exit_status=$?
 if [ $command_exit_status -ne 0 ]; then
-    MSG="$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
-    SEND_ALARM
+    SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
 fi
 
 while true  ###  main cycle   #################################################
