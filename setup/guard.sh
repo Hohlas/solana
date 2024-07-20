@@ -112,7 +112,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		behind_warning=0
 	else
 		let behind_warning=behind_warning+1
-		echo "$(TIME) Behind=$BEHIND" >> ~/guard.log  # log every warning_message
+		echo "$(TIME) Behind=$BEHIND" | tee -a ~/guard.log  # log every warning_message
 		CLR=$RED
 		HEALTH="$BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
@@ -160,21 +160,17 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
     # connection losses counter
     if [ "$connection" = false ]; then
         let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
-        echo "$(TIME) connection failed, attempt $DISCONNECT_COUNTER" >> ~/guard.log
-        echo "$(TIME) connection failed, attempt "$DISCONNECT_COUNTER
+        echo "$(TIME) connection failed, attempt $DISCONNECT_COUNTER" | tee -a ~/guard.log
     else
         DISCONNECT_COUNTER=0
     fi
     # connection loss for 15 seconds (5sec * 3)
     if [ $DISCONNECT_COUNTER -ge 3 ]; then
-        echo "$(TIME) CONNECTION LOSS"
         # bash "$CONNECTION_LOSS_SCRIPT" # no need to vote_off in offline
-        echo "$(TIME) RESTART SOLANA" >> ~/guard.log
-        systemctl restart solana && echo -e "\033[31m restart solana \033[0m"
-        systemctl stop jito-relayer.service && echo -e "\033[31m stop jito-relayer \033[0m"
-		MSG="$SERV_TYPE ${NODE}.${NAME}: Restart solana"
-		SEND_ALARM
-		# exit
+        systemctl restart solana
+        systemctl stop jito-relayer.service
+	MSG="$SERV_TYPE ${NODE}.${NAME}: Connection loss, RESTART SOLANA"
+	SEND_ALARM
 	fi
   }
 
@@ -188,8 +184,7 @@ PRIMARY_SERVER(){ ##############################################################
 		GET_VOTING_IP
 		sleep 5
 	done
-	echo -e "$(TIME)$RED change VOTING: $VOTING_IP \033[0m         \r"
-	echo "$(TIME) change VOTING: $VOTING_IP" >> ~/guard.log
+	echo -e "$(TIME) change VOTING: $VOTING_IP  " | tee -a ~/guard.log
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
