@@ -60,7 +60,7 @@ SEND_ALARM(){
 	}
 
 
-echo " == SOLANA GUARD ==" | tee -a ~/guard.log
+echo " == SOLANA GUARD $GUARD_VER" | tee -a ~/guard.log
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
 echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
