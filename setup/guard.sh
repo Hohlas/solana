@@ -197,31 +197,29 @@ SECONDARY_SERVER(){ ############################################################
 	SEND_INFO
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
+	REASON=''
 	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $set_primary -ge 1 ]]; do
 		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
-			set_primary=2
-			echo "$(TIME) Delinquent"; echo "$(TIME) Delinquent" >> ~/guard.log
+			set_primary=2; 	REASON="Delinquent";
 		fi
 		if [[ $behind_threshold -ge 1 ]] && [[ $REMOTE_BEHIND -ge $behind_threshold ]]; then
-			set_primary=2
-			MSG="REMOTE_BEHIND>$behind_threshold"; SEND_ALARM
+			set_primary=2; 	REASON="REMOTE_BEHIND>$behind_threshold";
 		fi
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
-			set_primary=2
-			echo "$(TIME) set Permanent Primary mode"; echo "$(TIME) set Permanent Primary mode" >> ~/guard.log
+			set_primary=2; 	REASON="set Permanent Primary mode"; 
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
   		if [ "$CUR_IP" == "$VOTING_IP" ]; then
-    		return
-       	fi
+    			return
+       		fi
 		sleep 5
 	done
 		# STOP SOLANA on REMOTE server
-	MSG=$(printf "${NODE}.${NAME} change voting server ${VOTING_IP} ") # \n%s vote_off remote server
+	MSG=$(printf "${NODE}.${NAME} switch server to ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1)
 	command_exit_status=$?
 	if [ $command_exit_status -eq 0 ]; then
