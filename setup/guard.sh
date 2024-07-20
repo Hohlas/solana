@@ -224,9 +224,9 @@ SECONDARY_SERVER(){ ############################################################
 		MSG="Can't set identity on remote server, Error: $command_output"; SEND_ALARM
 		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana 2>&1)
   		command_exit_status=$?
-    	if [ $command_exit_status -eq 0 ]; then
-			echo -e "$(TIME)$RED  restart solana on REMOTE server in NO_VOTING mode \033[0m"
-      	else
+    		if [ $command_exit_status -eq 0 ]; then
+			echo -e "$(TIME) restart solana on REMOTE server in NO_VOTING mode" | tee -a ~/guard.log
+      		else
 			MSG="Can't restart solana on REMOTE server, Error: $command_output"; SEND_ALARM
 			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
 				return
@@ -259,17 +259,18 @@ SECONDARY_SERVER(){ ############################################################
 
 	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
-		TOWER_STATUS=' with tower'
-		solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
+		TOWER_STATUS=' with tower'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	else
-		TOWER_STATUS=' without tower'
-		solana-validator -l $LEDGER set-identity $VOTING_KEY;
+		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
+	fi
+	command_exit_status=$?
+	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) set identity$TOWER_STATUS OK" | tee -a ~/guard.log
+	else echo "$(TIME) set identity Error: $command_exit_status" | tee -a ~/guard.log
 	fi
 	# update telegraf
-	sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
+	# sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
 	systemctl start telegraf
 	# systemctl start jito-relayer.service
-	echo -e "$(TIME)$RED vote ON\033[0m"$TOWER_STATUS
 	MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM
 	# solana-validator --ledger $LEDGER monitor
