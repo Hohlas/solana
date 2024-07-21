@@ -4,7 +4,7 @@ PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
-GUARD_VER=v1.2.5
+GUARD_VER=v1.2.6
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
@@ -271,8 +271,8 @@ SECONDARY_SERVER(){ ############################################################
 	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	while [ $SERV_TYPE = "SECONDARY" ]; do
- 		GET_VOTING_IP
-   		echo "$(TIME) waiting primary status, current status - $SERV_TYPE"
+ 		echo "$(TIME) waiting PRIMARY status, now still $SERV_TYPE" | tee -a ~/guard.log
+   		GET_VOTING_IP
    		sleep 2
  	done
 	}
