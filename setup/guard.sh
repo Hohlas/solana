@@ -38,6 +38,7 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 GET_VOTING_IP(){
 	SERV=$USER@$(solana gossip | grep $IDENTITY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
+ 	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger $LEDGER monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP empty
 		return
   		fi
@@ -269,9 +270,7 @@ SECONDARY_SERVER(){ ############################################################
 	# systemctl start jito-relayer.service
 	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
-	# solana-validator --ledger $LEDGER monitor
-	# ssh REMOTE $SOL_BIN/solana-validator --ledger $LEDGER monitor
-	# ssh REMOTE $SOL_BIN/solana catchup ~/solana/validator_link.json --our-localhost
+	sleep 10
 	}
 
 
@@ -347,5 +346,4 @@ do
 	else
 		SECONDARY_SERVER
 	fi	
-	sleep 10
 done
