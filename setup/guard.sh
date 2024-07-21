@@ -4,7 +4,7 @@ PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
-GUARD_VER=v1.2.3
+GUARD_VER=v1.2.4
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
