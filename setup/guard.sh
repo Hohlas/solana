@@ -270,7 +270,7 @@ SECONDARY_SERVER(){ ############################################################
 	# systemctl start jito-relayer.service
 	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
-	sleep 10
+	sleep 15
 	}
 
 
