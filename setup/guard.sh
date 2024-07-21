@@ -67,11 +67,15 @@ echo " == SOLANA GUARD $GUARD_VER" | tee -a ~/guard.log
 GET_VOTING_IP
 echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
 echo "current IP=$CUR_IP" | tee -a ~/guard.log
-echo -e "IDENTITY = $GREEN$IDENTITY \033[0m" | tee -a ~/guard.log
+echo -e "IDENTITY  = $GREEN$IDENTITY \033[0m" | tee -a ~/guard.log
+echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) \033[0m" | tee -a ~/guard.log
+if [ -z "$NAME" ]; then NAME=$(hostname); fi
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
+NODE="test"
 echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[34m network=api.testnet \033[0m v$version - $client";
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
+NODE="MAIN"
 echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
 echo -e "\033[31m network=api.mainnet-beta \033[0m v$version - $client";
 fi	
