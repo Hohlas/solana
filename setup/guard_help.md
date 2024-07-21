@@ -15,7 +15,7 @@
   
 - Алерты в телегу о переключениях и отставаниях на обоих серверах.
 
-  ![telegram_alert](https://github.com/user-attachments/assets/5d8c989e-6bcb-45c4-b793-6d6f9d3ba2ba)
+  ![tg_alert_message](https://github.com/user-attachments/assets/f545f7b4-023d-4949-8339-3362b9bd2301)
   
 - Назначение приоритетного сервера для голосования запуском с аргументом 'guard p'. Голосование постоянно переключается обратно на приоритетный сервер после возвращения его состояния в норму (health, behind).
 
