@@ -50,6 +50,21 @@
 - Сравнивается IP адрес голосующей ноды с локальным IP адресом. Если они не равны, сервер переходит в статус Secondary.
 - Мониторинг состояния голосующей и резервной нод: 'health', 'behind'. 
 
+## Установка guard.sh
+Необходимо, чтобы сервис соланы всегда запускался с неголосующим ключем 'empty-validator.json'
+### генерация неголосующего ключа
+```bash
+if [ ! -f ~/solana/empty-validator.json ]; then 
+solana-keygen new -s --no-bip39-passphrase -o ~/solana/empty-validator.json
+fi
+```
+### изменение solana.service
+```bash
+--identity /root/solana/empty-validator.json \
+--authorized-voter /root/solana/validator-keypair.json \
+--vote-account /root/solana/vote.json \
+```
+
 ### загрузка последней версии guard.sh и добавление алиаса
 ```bash
 # download guard.sh
@@ -65,6 +80,12 @@ if ! grep -q "guard" $HOME/.bashrc; then
 	echo "Alias 'guard' added to .bashrc"
 fi
 source $HOME/.bashrc
+```
+при необходимости изменить пути
+```bash
+KEYS=$HOME/keys
+LEDGER=$HOME/solana/ledger
+SOLANA_SERVICE="$HOME/solana/solana.service"
 ```
 
 ### создание папки ~/keys на рамдиске и символических ссылок
@@ -84,16 +105,5 @@ fi
 ln -sf ~/keys/vote-keypair.json ~/solana/vote.json
 ln -sf ~/keys/validator-keypair.json ~/solana/validator-keypair.json
 ```
-### изменение solana.service
-```bash
---identity /root/solana/empty-validator.json \
---authorized-voter /root/solana/validator-keypair.json \
---vote-account /root/solana/vote.json \
-```
 
-### создание 'пустого' ключа
-```bash
-if [ ! -f ~/solana/empty-validator.json ]; then 
-solana-keygen new -s --no-bip39-passphrase -o ~/solana/empty-validator.json
-fi
-```
+
