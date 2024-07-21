@@ -270,7 +270,11 @@ SECONDARY_SERVER(){ ############################################################
 	# systemctl start jito-relayer.service
 	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
-	sleep 15
+	while [ SERV_TYPE = "SECONDARY" ]; do
+ 		GET_VOTING_IP
+   		echo "$(TIME) waiting primary status, current status - $SERV_TYPE"
+   		sleep 5
+ 	done
 	}
 
 
