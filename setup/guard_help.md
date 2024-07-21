@@ -86,12 +86,6 @@ fi
 --authorized-voter /root/solana/validator-keypair.json \
 --vote-account /root/solana/vote.json \
 ```
-Для работы телеграм бота требуется файл $HOME/keys/tg_bot_token вида
-```bash
-CHAT_ALARM=-1001...3684
-CHAT_INFO=-1001...2888
-BOT_TOKEN=507625......VICllWU
-```
 Создание папки ~/keys на рамдиске
 ```bash
 if [ ! -d "$HOME/keys" ]; then
@@ -105,11 +99,16 @@ else
     echo "~/keys exist"
 fi
 ```
-Создание символических ссылок на папку с ключами ~/keys
+Создание символических ссылок на папку с ключами /mnt/keys
 ```bash
 # create links
 ln -sf /mnt/keys ~/keys
 ln -sf /mnt/keys/vote-keypair.json ~/solana/vote.json
 ln -sf /mnt/keys/validator-keypair.json ~/solana/validator-keypair.json
 ```
-
+Для работы телеграм бота требуется файл ~/keys/tg_bot_token вида
+```bash
+CHAT_ALARM=-1001...3684
+CHAT_INFO=-1001...2888
+BOT_TOKEN=507625......VICllWU
+```
