@@ -4,6 +4,7 @@ PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
+GUARD_VER=1.2.3
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
@@ -35,8 +36,8 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 }
 
 GET_VOTING_IP(){
-	SERV='root@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
-	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from root@IP
+	SERV='$USER@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
+	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
 	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP empty
 		return
   		fi
@@ -231,7 +232,7 @@ SECONDARY_SERVER(){ ############################################################
 		MSG=$(printf "$MSG \n%s restart solana")
 	fi
 	# remove old tower before
-	rm $LEDGER/tower*$IDENTITY.bin 
+	rm $LEDGER/tower-1_9-$IDENTITY.bin 
 	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) remove old tower OK" | tee -a ~/guard.log
 	else echo "$(TIME) remove old tower Error: $command_exit_status" | tee -a ~/guard.log
 	fi
@@ -309,7 +310,7 @@ ssh-add $KEYS/*.ssh # Add SSH private key to the ssh-agent
 echo " 
 Host REMOTE
 HostName $REMOTE_IP
-User root
+User $USER
 Port $PORT
 IdentityFile $KEYS/*.ssh
 " > ~/.ssh/config
