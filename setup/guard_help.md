@@ -51,21 +51,7 @@
 - Мониторинг состояния голосующей и резервной нод: 'health', 'behind'. 
 
 ## Установка guard.sh
-Необходимо, чтобы сервис соланы всегда запускался с неголосующим ключем 'empty-validator.json'
-### генерация неголосующего ключа
-```bash
-if [ ! -f ~/solana/empty-validator.json ]; then 
-solana-keygen new -s --no-bip39-passphrase -o ~/solana/empty-validator.json
-fi
-```
-### изменение solana.service
-```bash
---identity /root/solana/empty-validator.json \
---authorized-voter /root/solana/validator-keypair.json \
---vote-account /root/solana/vote.json \
-```
-
-### загрузка последней версии guard.sh и добавление алиаса
+Загрузка последней версии guard.sh и добавление алиаса
 ```bash
 # download guard.sh
 LATEST_TAG_URL=https://api.github.com/repos/Hohlas/solana/releases/latest
@@ -87,8 +73,26 @@ KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
 ```
-
-### создание папки ~/keys на рамдиске и символических ссылок
+Необходимо, чтобы сервис соланы всегда запускался с неголосующим ключем 'empty-validator.json'.
+Генерация неголосующего ключа
+```bash
+if [ ! -f ~/solana/empty-validator.json ]; then 
+solana-keygen new -s --no-bip39-passphrase -o ~/solana/empty-validator.json
+fi
+```
+Изменение solana.service
+```bash
+--identity /root/solana/empty-validator.json \
+--authorized-voter /root/solana/validator-keypair.json \
+--vote-account /root/solana/vote.json \
+```
+Для работы телеграм бота создать файл $HOME/keys/tg_bot_token вида
+```bash
+CHAT_ALARM=-1001...3684
+CHAT_INFO=-1001...2888
+BOT_TOKEN=507625......VICllWU
+```
+создание папки ~/keys на рамдиске и символических ссылок
 ```bash
 if [ ! -d "$HOME/keys" ]; then
     mkdir -p /mnt/keys
