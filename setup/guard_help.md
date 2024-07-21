@@ -67,13 +67,13 @@ if ! grep -q "guard" $HOME/.bashrc; then
 fi
 source $HOME/.bashrc
 ```
-при необходимости изменить пути
+При необходимости изменить пути в guard.sh
 ```bash
 KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
 ```
-Необходимо, чтобы сервис соланы всегда запускался с неголосующим ключем 'empty-validator.json'.
+Сервис соланы всегда должен запускаться с неголосующим ключем 'empty-validator.json'.
 Генерация неголосующего ключа
 ```bash
 if [ ! -f ~/solana/empty-validator.json ]; then 
@@ -86,17 +86,16 @@ fi
 --authorized-voter /root/solana/validator-keypair.json \
 --vote-account /root/solana/vote.json \
 ```
-Для работы телеграм бота создать файл $HOME/keys/tg_bot_token вида
+Для работы телеграм бота требуется файл $HOME/keys/tg_bot_token вида
 ```bash
 CHAT_ALARM=-1001...3684
 CHAT_INFO=-1001...2888
 BOT_TOKEN=507625......VICllWU
 ```
-создание папки ~/keys на рамдиске и символических ссылок
+Создание папки ~/keys на рамдиске
 ```bash
 if [ ! -d "$HOME/keys" ]; then
     mkdir -p /mnt/keys
-    ln -sf /mnt/keys "$HOME/keys"
     chmod 600 /mnt/keys 
 	echo "# KEYS to RAMDISK 
 	tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
@@ -105,9 +104,12 @@ if [ ! -d "$HOME/keys" ]; then
 else
     echo "~/keys exist"
 fi
-# create links
-ln -sf ~/keys/vote-keypair.json ~/solana/vote.json
-ln -sf ~/keys/validator-keypair.json ~/solana/validator-keypair.json
 ```
-
+Создание символических ссылок на папку с ключами ~/keys
+```bash
+# create links
+ln -sf /mnt/keys ~/keys
+ln -sf /mnt/keys/vote-keypair.json ~/solana/vote.json
+ln -sf /mnt/keys/validator-keypair.json ~/solana/validator-keypair.json
+```
 
