@@ -36,7 +36,7 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 }
 
 GET_VOTING_IP(){
-	SERV='$USER@'$(solana gossip | grep $IDENTITY | awk '{print $1}')
+	SERV=$USER@$(solana gossip | grep $IDENTITY | awk '{print $1}')
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
 	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP empty
 		return
