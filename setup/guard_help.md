@@ -7,11 +7,11 @@
 - Взаимная проверка функционирования скриптов. Primary сервер контролирует работу скрипта на Secondary сервере, и наоборот, предотвращая случайное отключение мониторинга.
 - Мониторинг состояния нод соланы на обоих серверах: next_slot_minutes, health, behind текущего сервера, behind удаленного сервера.
 
-  ![2024-07-19_19-09-23](https://github.com/user-attachments/assets/eaa3d757-205c-4f57-a408-ca15d0f3de58)
+  ![ok1](https://github.com/user-attachments/assets/ede98b4d-320c-4381-94ec-f54c59c0977a)
   
 - Запись всех событий в лог. Фиксируются все отставания ноды.
 
-  ![log1](https://github.com/user-attachments/assets/62f053d7-a9b5-4a56-a542-152af831bd0f)
+  ![log](https://github.com/user-attachments/assets/3f14e55c-8078-4ce9-b1a2-f88d76da50bf)
   
 - Алерты в телегу о переключениях и отставаниях на обоих серверах.
 
