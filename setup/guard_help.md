@@ -57,8 +57,11 @@
 LATEST_TAG_URL=https://api.github.com/repos/Hohlas/solana/releases/latest
 TAG=$(curl -sSL "$LATEST_TAG_URL" | jq -r '.tag_name')
 curl "https://raw.githubusercontent.com/Hohlas/solana/$TAG/setup/guard.sh" > $HOME/guard.sh
-if [ $? -eq 0 ]; then echo "Downloaded guard.sh ($TAG) successfully"
-else echo "Failed to download guard.sh";
+if [ $? -eq 0 ]; then
+	echo "Downloaded guard.sh ($TAG) successfully"
+	chmod +x $HOME/guard.sh
+else
+	echo "Failed to download guard.sh";
 fi
 # set alias
 if ! grep -q "guard" $HOME/.bashrc; then
