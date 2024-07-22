@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.2.6
+GUARD_VER=v1.2.7
 #===========================================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
