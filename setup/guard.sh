@@ -276,7 +276,7 @@ SECONDARY_SERVER(){ ############################################################
 	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	while [ $SERV_TYPE = "SECONDARY" ]; do
- 		echo "$(TIME) waiting for PRIMARY status will apply, now still $SERV_TYPE" | tee -a ~/guard.log
+ 		echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
    		GET_VOTING_IP
    		sleep 2
  	done
