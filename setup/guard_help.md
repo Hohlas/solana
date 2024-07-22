@@ -15,11 +15,11 @@
   
 - Алерты в телегу о переключениях и отставаниях на обоих серверах.
 
-  ![tg_alert_message](https://github.com/user-attachments/assets/f545f7b4-023d-4949-8339-3362b9bd2301)
+  ![tg_delink](https://github.com/user-attachments/assets/8dd296c8-11ca-46d4-9f8a-920480c66795)
   
 - Назначение приоритетного сервера для голосования запуском с аргументом 'guard p'. Голосование постоянно переключается обратно на приоритетный сервер после возвращения его состояния в норму (health, behind).
 
-![permanent_primary](https://github.com/user-attachments/assets/419d5605-d125-4dee-b77b-f13576025e0a)
+![guard_p](https://github.com/user-attachments/assets/3e929797-4edf-4ac8-beb4-ad9684c649d2)
 
 - Переключение голосования при отставании основного сервера на X слотов, не дожидаясь делинка ноды. Задается аргументом 'guard X'.
  
