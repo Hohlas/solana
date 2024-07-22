@@ -180,7 +180,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
-	SEND_INFO "PRIMARY ${NODE}.${NAME}\n%s$CUR_IP start"
+	SEND_INFO "PRIMARY ${NODE}.${NAME} $CUR_IP start"
 	while [[ "$CUR_IP" == "$VOTING_IP" ]]; do
 		CHECK_CONNECTION
 		CHECK_HEALTH
@@ -191,7 +191,7 @@ PRIMARY_SERVER(){ ##############################################################
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
-	SEND_INFO "SECONDARY ${NODE}.${NAME}\n%s$CUR_IP start"
+	SEND_INFO "SECONDARY ${NODE}.${NAME} $CUR_IP start"
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	REASON=''
@@ -276,7 +276,7 @@ SECONDARY_SERVER(){ ############################################################
 	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	while [ $SERV_TYPE = "SECONDARY" ]; do
- 		echo "$(TIME) waiting PRIMARY status will apply, now still $SERV_TYPE" | tee -a ~/guard.log
+ 		echo "$(TIME) waiting for PRIMARY status will apply, now still $SERV_TYPE" | tee -a ~/guard.log
    		GET_VOTING_IP
    		sleep 2
  	done
