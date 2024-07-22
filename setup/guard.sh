@@ -216,7 +216,7 @@ SECONDARY_SERVER(){ ############################################################
 		sleep 5
 	done
 		# STOP SOLANA on REMOTE server
-	MSG=$(printf "${NODE}.${NAME} switch to ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
+	MSG=$(printf "${NODE}.${NAME} Vote OFF ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1)
 	command_exit_status=$?
 	if [ $command_exit_status -eq 0 ]; then
