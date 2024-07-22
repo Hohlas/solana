@@ -22,11 +22,10 @@
 ![guard_p](https://github.com/user-attachments/assets/3e929797-4edf-4ac8-beb4-ad9684c649d2)
 
 - Переключение голосования при отставании основного сервера на X слотов, не дожидаясь делинка ноды. Задается аргументом 'guard X'.
- 
-![behind_threshold](https://github.com/user-attachments/assets/8da43706-efb0-4270-9fc0-ee001cc06832)
-
 - Перезапуск сервиса соланы в режиме "No Voting" на основном сервере при пропадании на нем интернета.
-- Переключение сервиса 'telegraf' на обоих серверах в соответствии с их статусом Primaty/Secondary. 
+- Переключение сервиса 'telegraf' на обоих серверах в соответствии с их статусом Primaty/Secondary.
+
+  ![vote_off](https://github.com/user-attachments/assets/11967808-cf16-480c-868d-9f210c8f25e9)
 
 ## Алгоритм работы резервного сервереа Secondary
 - Мониторинг состояния резервной и голосующей нод: 'health', 'behind'.
