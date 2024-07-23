@@ -27,7 +27,7 @@ source $KEYS/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
 half1=${BOT_TOKEN%%:*}
 half2=${BOT_TOKEN#*:}
 BOT_TOKEN=$half1:$half2
-if [[ -z $BOT_TOKEN ]]; then # if $BOT_TOKEN is empty
+if [[ -z "$BOT_TOKEN" ]]; then # if $BOT_TOKEN is empty
 	echo -e "Warning! Can't read telegram bot token from $KEYS/tg_bot_token"
 	return
 fi
@@ -298,7 +298,7 @@ if [[ $primary_mode == "p" ]]; then
 	primary_mode='permanent_primary'; 
 	echo -e "start guard in $RED Permanent Primary mode\033[0m"
 fi	
-if [ "$SERV_TYPE" == "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
+if [ "$SERV_TYPE" = "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [ -f $HOME/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
 		REMOTE_IP=$(cat $HOME/remote_ip) # echo "get REMOTE_IP of SECONDARY_SERVER from $HOME/remote_ip: $REMOTE_IP"
 	else 
