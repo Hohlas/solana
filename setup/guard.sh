@@ -41,7 +41,8 @@ GET_VOTING_IP(){
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
  	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger $LEDGER monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP empty
-		return
+		echo "Warning! $VOTING_IP empty"
+  		return
   		fi
  	if [ "$CUR_IP" == "$VOTING_IP" ]; then
 		SERV_TYPE='PRIMARY'
