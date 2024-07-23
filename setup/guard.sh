@@ -37,13 +37,13 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 }
 
 GET_VOTING_IP(){
-	SERV=$USER@$(solana gossip | grep $IDENTITY | awk '{print $1}')
+	SERV="$USER@$(solana gossip | grep "$IDENTITY" | awk '{print $1}')"
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
- 	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger $LEDGER monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
-	if [[ -z $VOTING_IP ]]; then # if $VOTING_IP empty
-		echo "Warning! $VOTING_IP empty"
-  		return
-  		fi
+ 	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+	if [[ -z "$VOTING_IP" ]]; then
+        	echo "Warning! VOTING_IP is empty"
+        	return 1
+    	fi
  	if [ "$CUR_IP" == "$VOTING_IP" ]; then
 		SERV_TYPE='PRIMARY'
 	else 
