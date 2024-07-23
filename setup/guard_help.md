@@ -7,25 +7,27 @@
 - Взаимная проверка функционирования скриптов. Primary сервер контролирует работу скрипта на Secondary сервере, и наоборот, предотвращая случайное отключение мониторинга.
 - Мониторинг состояния нод соланы на обоих серверах: next_slot_minutes, health, behind текущего сервера, behind удаленного сервера.
 
-  ![ok1](https://github.com/user-attachments/assets/ede98b4d-320c-4381-94ec-f54c59c0977a)
+  ![ok_1](https://github.com/user-attachments/assets/86e854f3-dd91-467f-983d-66c5a9fc346a)
   
 - Запись всех событий в лог. Фиксируются все отставания ноды.
 
-  ![log](https://github.com/user-attachments/assets/3f14e55c-8078-4ce9-b1a2-f88d76da50bf)
+  ![log2](https://github.com/user-attachments/assets/f7b1e38e-a728-4728-8256-bb9cc657feb3)
   
 - Алерты в телегу о переключениях и отставаниях на обоих серверах.
 
-  ![tg_delink](https://github.com/user-attachments/assets/8dd296c8-11ca-46d4-9f8a-920480c66795)
+  ![tg_vote_off](https://github.com/user-attachments/assets/7aa14095-c7bf-48c2-bbe8-8d0accf653e7)
   
 - Назначение приоритетного сервера для голосования запуском с аргументом 'guard p'. Голосование постоянно переключается обратно на приоритетный сервер после возвращения его состояния в норму (health, behind).
 
-![guard_p](https://github.com/user-attachments/assets/3e929797-4edf-4ac8-beb4-ad9684c649d2)
+  ![guard_p](https://github.com/user-attachments/assets/c088160d-1385-48fd-8512-b59d225cee68)
+c444b4633)
 
 - Переключение голосования при отставании основного сервера на X слотов, не дожидаясь делинка ноды. Задается аргументом 'guard X'.
+  
+  ![guard_13](https://github.com/user-attachments/assets/be7acc25-26f4-40a0-84c8-4be7855ece3b)
+  
 - Перезапуск сервиса соланы в режиме "No Voting" на основном сервере при пропадании на нем интернета.
 - Переключение сервиса 'telegraf' на обоих серверах в соответствии с их статусом Primaty/Secondary.
-
-  ![vote_off](https://github.com/user-attachments/assets/11967808-cf16-480c-868d-9f210c8f25e9)
 
 ## Алгоритм работы резервного сервереа Secondary
 - Мониторинг состояния резервной и голосующей нод: 'health', 'behind'.
