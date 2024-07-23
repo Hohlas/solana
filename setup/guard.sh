@@ -181,7 +181,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
 	SEND_INFO "PRIMARY ${NODE}.${NAME} $CUR_IP start"
-	while [[ "$CUR_IP" == "$VOTING_IP" ]]; do
+	while [ "$SERV_TYPE" = "PRIMARY" ]; do
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
@@ -210,7 +210,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
-  		if [ "$CUR_IP" == "$VOTING_IP" ]; then
+  		if [ "$SERV_TYPE" = "PRIMARY" ]; then
     			return
        		fi
 		sleep 5
@@ -331,7 +331,7 @@ if [ $command_exit_status -ne  0 ]; then
   	return
 fi
 
-if [ "$remote_identity" == "$IDENTITY" ]; then
+if [ "$remote_identity" = "$IDENTITY" ]; then
 	echo -e "$GREEN SSH connection succesful \033[0m" | tee -a ~/guard.log
 else
     	echo -e "$RED Remote server connection Error \033[0m"
@@ -350,7 +350,7 @@ fi
 while true  ###  main cycle   #################################################
 do
 	GET_VOTING_IP
-	if [ "$CUR_IP" == "$VOTING_IP" ]; then
+	if [ "$SERV_TYPE" = "PRIMARY" ]; then
 		PRIMARY_SERVER
 	else
 		SECONDARY_SERVER
