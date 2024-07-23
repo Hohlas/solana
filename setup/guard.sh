@@ -44,7 +44,7 @@ GET_VOTING_IP(){
         	echo "Warning! VOTING_IP is empty"
         	return 1
     	fi
- 	if [ "$CUR_IP" == "$VOTING_IP" ]; then
+ 	if [ "$CUR_IP" = "$VOTING_IP" ]; then
 		SERV_TYPE='PRIMARY'
 	else 
 		SERV_TYPE='SECONDARY'
