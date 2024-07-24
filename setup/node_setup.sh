@@ -92,6 +92,7 @@ echo "alias shred_keys='find /root/keys -type f -exec shred -u {} \;'" >> $HOME/
 echo "alias get_tag='source ~/sol_git/setup/get_tag.sh'" >> $HOME/.bashrc
 echo "alias node_install='source ~/sol_git/setup/install.sh'" >> $HOME/.bashrc
 echo "alias node_update='source ~/sol_git/setup/update.sh'" >> $HOME/.bashrc
+echo "alias finder='source ~/sol_git/setup/finder.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 source $HOME/.bashrc
