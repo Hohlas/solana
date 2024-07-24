@@ -133,7 +133,7 @@ ulimit -n # check ulimit
 ### alias
 ```bash
 git_clone
-node_set | node_reset
+node_set | node_reset | finder
 get_tag | node_install | node_update
 check | logs | next | monitor | catch
 guard | vote_on | vote_off | ssh_agent
