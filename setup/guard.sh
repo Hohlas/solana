@@ -41,7 +41,7 @@ GET_VOTING_IP(){
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
  	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 	if [[ -z "$VOTING_IP" ]]; then
-        	echo "Warning! VOTING_IP is empty"
+        	echo "$(TIME) Warning! VOTING_IP is empty" | tee -a ~/guard.log
         	return 1
     	fi
  	if [ "$CUR_IP" = "$VOTING_IP" ]; then
@@ -109,7 +109,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	else
 		CLR=$RED
 		let health_warning=health_warning+1
-		echo "$(TIME) Health: $HEALTH" >> ~/guard.log  # log every warning_message
+		echo "$(TIME) Health: $HEALTH    " | tee -a ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
 			health_warning=-12
 			SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
