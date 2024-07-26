@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.2.9
+GUARD_VER=v1.2.10
 #===========================================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -37,7 +37,20 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 }
 
 GET_VOTING_IP(){
-	SERV="$USER@$(solana gossip | grep "$IDENTITY" | awk '{print $1}')"
+	local gossip_output
+    	local server_address
+	gossip_output=$(solana gossip 2>/dev/null)
+	if [ $? -ne 0 ]; then
+        	echo "$(TIME) Error: Failed to execute 'solana gossip'" | tee -a ~/guard.log >&2
+        	return 1
+    	fi
+	server_address=$(echo "$gossip_output" | grep "$IDENTITY" | awk '{print $1}')
+	if [ -z "$server_address" ]; then
+        	echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log >&2
+        	return 1
+    	fi
+
+	SERV="$USER@$server_address"
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
  	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 	if [[ -z "$VOTING_IP" ]]; then
