@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.2.10
+GUARD_VER=v1.2.11
 #===========================================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -97,6 +97,7 @@ fi
 
 health_warning=0
 behind_warning=0
+REMOTE_BEHIND_COUNTER=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	RPC_SLOT=$(solana slot -u $rpcURL)
@@ -144,8 +145,10 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
 	if (( $REMOTE_BEHIND >= 1 )); then 
+		let REMOTE_BEHIND_COUNTER=REMOTE_BEHIND_COUNTER+1
 		REMOTE_HEALTH="$RED $REMOTE_BEHIND"; 
 	else 
+		REMOTE_BEHIND_COUNTER=0
 		REMOTE_HEALTH="$GREEN ok"; 
 	fi
 	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0mmin,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m $primary_mode        \r "
@@ -216,7 +219,7 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $Delinquent == true ]]; then
 			set_primary=2; 	REASON="Delinquent";
 		fi
-		if [[ $behind_threshold -ge 1 ]] && [[ $REMOTE_BEHIND -ge $behind_threshold ]]; then
+		if [[ $behind_threshold -ge 1 ]] && [[ $REMOTE_BEHIND_COUNTER -ge $behind_threshold ]]; then
 			set_primary=2; 	REASON="Behind>$behind_threshold";
 		fi
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
@@ -230,7 +233,7 @@ SECONDARY_SERVER(){ ############################################################
 		sleep 5
 	done
 		# STOP SOLANA on REMOTE server
-	MSG=$(printf "${NODE}.${NAME}: VoteOFF ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
+	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1)
 	command_exit_status=$?
 	if [ $command_exit_status -eq 0 ]; then
