@@ -220,7 +220,7 @@ SECONDARY_SERVER(){ ############################################################
 			set_primary=2; 	REASON="Delinquent";
 		fi
 		if [[ $behind_threshold -ge 1 ]] && [[ $REMOTE_BEHIND_COUNTER -ge $behind_threshold ]]; then
-			set_primary=2; 	REASON="Behind>$behind_threshold";
+			set_primary=2; 	REASON="Behind too long";
 		fi
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
 			set_primary=2; 	REASON="set Permanent Primary mode"; 
