@@ -22,10 +22,10 @@ fi
 # echo "v$version - $client, IP:$CUR_IP"
 
 if [[ $current_validator == $empty ]]; then 
-echo -e ' tower to '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
+#echo -e ' tower to '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
 VAL_CLR=$GRAY # set gray color
 elif [[ $current_validator == $PUB_KEY ]]; then 
-echo -e ' tower from '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
+#echo -e ' tower from '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
 VAL_CLR=$GREEN # set green color
 else
 echo -e "\033[31m current_validator="$current_validator"  unknown status, CUR_IP:$CUR_IP\033[0m";
