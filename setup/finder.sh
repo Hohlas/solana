@@ -1,6 +1,6 @@
 #!/bin/bash
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
-echo "Node=$NODE"
+echo -e " Node=\033[32m $NODE \033[0m"
 cd ~/solana-snapshot-finder && python3 -m venv venv && source ./venv/bin/activate
 systemctl daemon-reload
 
