@@ -116,18 +116,11 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi
 
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
-	if [[ $? -ne 0 ]] || [[ -z "$VALIDATORS_LIST" ]]; then
- 		let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
-		echo "$(TIME) Error in validators list request, DISCONNECT_COUNTER=$DISCONNECT_COUNTER" | tee -a ~/guard.log
-	else
-        	DISCONNECT_COUNTER=0	
-	fi
+	if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
  
  	# check health
  	HEALTH=$(curl -s -m 5 http://localhost:8899/health)
-  	if [ $? -ne 0 ]; then
-    		echo "$(TIME) Error, health request = $HEALTH " | tee -a ~/guard.log
-	fi
+  	if [ $? -ne 0 ]; then echo "$(TIME) Error, health request = $HEALTH " | tee -a ~/guard.log; fi
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
 		echo "$(TIME) Health request returned empty response" | tee -a ~/guard.log
   		HEALTH="Warning!"
@@ -184,17 +177,38 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi
 	}
 
+CHECK_CONNECTION() { # self check connection every 5 seconds ####################################
+    connection=false
+    for site in "${SITES[@]}"; do
+        ping -c1 $site &> /dev/null # ping every site once
+        if [ $? -eq 0 ]; then
+            connection=true # good connection
+            break
+        fi
+    done
+    # connection losses counter
+    if [ "$connection" = false ]; then
+        let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
+        echo "$(TIME) connection failed, attempt $DISCONNECT_COUNTER" | tee -a ~/guard.log
+    else
+        DISCONNECT_COUNTER=0
+    fi
+    # connection loss for 15 seconds (5sec * 3)
+    if [ $DISCONNECT_COUNTER -ge 3 ]; then
+        # bash "$CONNECTION_LOSS_SCRIPT" # no need to vote_off in offline
+        systemctl restart solana
+        systemctl stop jito-relayer.service
+	SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Connection loss, RESTART SOLANA"
+	fi
+  }
+
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
 	SEND_INFO "PRIMARY ${NODE}.${NAME} $CUR_IP start"
 	while [ "$SERV_TYPE" = "PRIMARY" ]; do
 		CHECK_HEALTH
 		GET_VOTING_IP
-  		if [ $DISCONNECT_COUNTER -ge 3 ]; then
-                	SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Connection loss, RESTART SOLANA"
-		 	systemctl restart solana
-        		systemctl stop jito-relayer.service
-		fi
+  		CHECK_CONNECTION
 		sleep 5
 	done
 	echo -e "$(TIME) change VOTING: $VOTING_IP  " | tee -a ~/guard.log
