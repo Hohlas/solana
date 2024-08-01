@@ -13,8 +13,8 @@ ln -sf ~/sol_git/telegram_bot/tg_bot_token ~/keys/tg_bot_token
 # curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/tg_bot_token > ~/keys/tg_bot_token
 
 # update .bashrc, key links, grafana name
-ln -sf ~/keys/${NAME,,}_${NODE}_vote.json ~/solana/vote.json
-ln -sf ~/keys/${NAME,,}_${NODE}_validator.json ~/solana/validator-keypair.json
+ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote.json
+ln -sf ~/keys/${NAME,,}_${NODE,,}_validator.json ~/solana/validator-keypair.json
 ln -sf ~/keys/${NAME,,}_private.pem ~/solana/private.pem
 ln -sf ~/keys/${NAME,,}_public.pem ~/solana/public.pem
 ln -sf ~/keys/${NAME,,}_relayer-keypair.json ~/solana/relayer-keypair.json
