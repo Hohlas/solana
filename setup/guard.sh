@@ -39,7 +39,7 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 GET_VOTING_IP(){
 	local gossip_output
     	local server_address
-	gossip_output=$(solana gossip 2>/dev/null)
+	gossip_output=$(timeout 5 solana gossip 2>/dev/null)
 	if [ $? -ne 0 ]; then
         	echo "$(TIME) Error: Failed to execute 'solana gossip'" | tee -a ~/guard.log >&2
         	return 1
@@ -101,11 +101,12 @@ REMOTE_BEHIND_COUNTER=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL)
-	if [[ $? -ne 0 ]]; then echo "$(TIME) Error retrieving slot " | tee -a ~/guard.log; fi
-	LOCAL_SLOT=$(solana slot -u localhost)
+	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot request" | tee -a ~/guard.log; fi
+	LOCAL_SLOT=$(timeout 5 solana slot -u localhost)
+ 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot request" | tee -a ~/guard.log; fi
 	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
-	if [[ $? -ne 0 ]]; then echo "$(TIME) Error retrieving leader schedule " | tee -a ~/guard.log; fi
+	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
 	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
 	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
