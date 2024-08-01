@@ -114,8 +114,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 	if [[ $? -ne 0 ]] || [[ -z "$VALIDATORS_LIST" ]]; then
+ 		let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
 		echo "$(TIME) Error in validators list request, DISCONNECT_COUNTER=$DISCONNECT_COUNTER" | tee -a ~/guard.log
-		let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
 	else
         	DISCONNECT_COUNTER=0	
 	fi
