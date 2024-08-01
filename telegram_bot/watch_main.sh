@@ -7,11 +7,13 @@ CLUSTER=m
 #если хочешь 1 ноду то в скобках указывается только один pub,vote,ip,TEXT и т.д. Добавить можно сколько угодно нод но каждый новый параметр через пробел!  
 PUB_KEY=(5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC)
 VOTE=(5WVvtQDDd3Gsdm3eyDrRAczP9greGmdBjNoyD93iYw9F 3FLezD8GJgnawEHhZcsjdPxZVar9FzqEdViusQ5ZdSwe 9esjPxaUdD7yg4yDrBkP3jLipcAGVjpLDXsddF89avzW)
-IP=(185.242.112.85 185.242.112.138 185.242.112.76)
-# telegram bot token, chat id,text,alarm text...
-BOT_TOKEN=5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU
-CHAT_ALARM=-1001611695684
-CHAT_INFO=-1001548522888
+IP=(149.50.110.199 149.50.110.94 149.50.110.231)
+#==== tg_bot_token ====
+# CHAT_ALARM=-100...684
+# CHAT_INFO=-100...888
+# BOT_TOKEN=507...lWU
+#======================
+source $KEYS/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
 NODE_NAME=("BUKA" "HOHLA" "VALERA")
 BALANCEWARN=(1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
