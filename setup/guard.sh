@@ -113,7 +113,10 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi
  
  	# check health
- 	HEALTH=$(curl -s http://localhost:8899/health)
+ 	HEALTH=$(curl -s -m 5 http://localhost:8899/health)
+  	if [ $? -ne 0 ]; then
+    		echo "$(TIME) Error, health request = $HEALTH " | tee -a ~/guard.log
+	fi
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
 		HEALTH="Warning!"
 	fi
