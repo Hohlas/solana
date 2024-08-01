@@ -114,7 +114,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 	if [[ $? -ne 0 ]] || [[ -z "$VALIDATORS_LIST" ]]; then
-		echo "$(TIME) Error in validators list request, attempt $DISCONNECT_COUNTER" | tee -a ~/guard.log
+		echo "$(TIME) Error in validators list request, DISCONNECT_COUNTER=$DISCONNECT_COUNTER" | tee -a ~/guard.log
 		let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
 	else
         	DISCONNECT_COUNTER=0	
@@ -203,7 +203,9 @@ SECONDARY_SERVER(){ ############################################################
 	set_primary=0 # 
 	REASON=''
 	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $set_primary -ge 1 ]]; do
-		JSON=$(solana validators --url $rpcURL --output json-compact 2>/dev/null | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
+		CHECK_HEALTH #  self check node health
+  		GET_VOTING_IP
+  		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
@@ -215,8 +217,6 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
 			set_primary=2; 	REASON="set Permanent Primary mode"; 
 		fi	
-		CHECK_HEALTH #  self check node health
-  		GET_VOTING_IP
   		if [ "$SERV_TYPE" = "PRIMARY" ]; then
     			return
        		fi
