@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.3.1
+GUARD_VER=v1.3.2
 #===========================================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -102,28 +102,23 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	# check behind slots
  	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL)
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error retrieving slot " | tee -a ~/guard.log; fi
- 	LOCAL_SLOT=$(solana slot -u localhost)
+	LOCAL_SLOT=$(solana slot -u localhost)
 	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error retrieving leader schedule " | tee -a ~/guard.log; fi
- 	slots_remaining=$((my_slot-RPC_SLOT))
+	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
-	
- 	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
+	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
 		TME_CLR=$RED
 	else	
 		TME_CLR=$GREEN
 	fi
-
-	VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
-	if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
  
  	# check health
  	HEALTH=$(curl -s -m 5 http://localhost:8899/health)
   	if [ $? -ne 0 ]; then echo "$(TIME) Error, health request = $HEALTH " | tee -a ~/guard.log; fi
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
-		echo "$(TIME) Health request returned empty response" | tee -a ~/guard.log
-  		HEALTH="Warning!"
+		HEALTH="Warning!"
 	fi
 	if [[ $HEALTH == "ok" ]]; then
 		health_warning=0
@@ -177,6 +172,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi
 	}
 
+
 CHECK_CONNECTION() { # self check connection every 5 seconds ####################################
     connection=false
     for site in "${SITES[@]}"; do
@@ -206,9 +202,9 @@ PRIMARY_SERVER(){ ##############################################################
 	#echo -e "\n = PRIMARY  SERVER ="
 	SEND_INFO "PRIMARY ${NODE}.${NAME} $CUR_IP start"
 	while [ "$SERV_TYPE" = "PRIMARY" ]; do
+		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-  		CHECK_CONNECTION
 		sleep 5
 	done
 	echo -e "$(TIME) change VOTING: $VOTING_IP  " | tee -a ~/guard.log
@@ -220,9 +216,9 @@ SECONDARY_SERVER(){ ############################################################
 	set_primary=0 # 
 	REASON=''
 	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $set_primary -ge 1 ]]; do
-		CHECK_HEALTH #  self check node health
-  		GET_VOTING_IP
-  		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
+		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
+		if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
+		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
@@ -234,6 +230,8 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
 			set_primary=2; 	REASON="set Permanent Primary mode"; 
 		fi	
+		CHECK_HEALTH #  self check node health
+  		GET_VOTING_IP
   		if [ "$SERV_TYPE" = "PRIMARY" ]; then
     			return
        		fi
