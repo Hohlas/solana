@@ -39,20 +39,20 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 GET_VOTING_IP(){
 	local gossip_output
     	local server_address
-	gossip_output=$(timeout 5 solana gossip 2>/dev/null)
+	gossip_output=$(timeout 5 solana gossip 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then
-        	echo "$(TIME) Error: Failed to execute 'solana gossip'" >> ~/guard.log >&2
+        	echo "$(TIME) Error: Failed to execute 'solana gossip'" >> ~/guard.log
         	return 1
     	fi
 	server_address=$(echo "$gossip_output" | grep "$IDENTITY" | awk '{print $1}')
 	if [ -z "$server_address" ]; then
-        	echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log >&2
+        	echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log
         	return 1
     	fi
 
 	SERV="$USER@$server_address"
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
- 	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+ 	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>> ~/guard.log | grep -m1 Identity | awk -F': ' '{print $2}')
 	if [[ -z "$VOTING_IP" ]]; then
         	echo "$(TIME) Warning! VOTING_IP is empty" | tee -a ~/guard.log
         	return 1
@@ -100,13 +100,13 @@ behind_warning=0
 REMOTE_BEHIND_COUNTER=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
- 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL)
+ 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot request" >> ~/guard.log; fi
-	LOCAL_SLOT=$(timeout 5 solana slot -u localhost)
+	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
  	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot request" >> ~/guard.log; fi
 	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
-	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
-	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
+	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
+	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" >> ~/guard.log; fi
 	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
 	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
