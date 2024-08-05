@@ -114,14 +114,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	# next slot time
 	next_slot_seconds=$(tail -n 100 ~/solana/solana.log | awk '/'$validator_key'.+within slot/ {
     	slots_remaining = ($18 - $12);
-    	next_slot_seconds_data = int(slots_remaining * 0.459);  # Округляем до целого значения
-    	print next_slot_seconds_data;  # Выводим значение
+    	next_slot_seconds = int(slots_remaining * 0.459);  # Округляем до целого значения
+    	print next_slot_seconds;  # Выводим значение
     	exit;  # Выходим после первого совпадения
 	}')
-	if [[ -z "$next_slot_seconds_data" ]]; then
-		echo "$(TIME) can't define next_slot_seconds" >> ~/guard.log
-  	else
-   		next_slot_seconds=$next_slot_seconds_data
+	if [[ -z "$next_slot_seconds" ]]; then
+		echo "can't define next_slot_seconds" >> ~/guard.log
 	fi
 	next_slot_minutes=$(printf "%d" $((next_slot_seconds / 60)))  
 	next_slot_seconds_remainder=$(printf "%d" $((next_slot_seconds % 60)))  
