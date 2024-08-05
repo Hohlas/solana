@@ -82,7 +82,7 @@ SEND_ALARM(){
 	}
 
 
-echo " == SOLANA GUARD $GUARD_VER" | tee -a ~/guard.log
+echo -e " == SOLANA GUARD $GREEN$GUARD_VER \033[0m" | tee -a ~/guard.log
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
 echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
@@ -112,17 +112,11 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
 	
 	# next slot time
-	next_slot_seconds=$(tail -n 100 ~/solana/solana.log | awk '/'$validator_key'.+within slot/ {
-    	slots_remaining = ($18 - $12);
-    	next_slot_seconds = int(slots_remaining * 0.459);  # Округляем до целого значения
-    	print next_slot_seconds;  # Выводим значение
-    	exit;  # Выходим после первого совпадения
-	}')
-	# if [[ -z "$next_slot_seconds" ]]; then echo "$(TIME) can't define next_slot_seconds = $next_slot_seconds" >> ~/guard.log; fi # too often
-	next_slot_minutes=$(printf "%d" $((next_slot_seconds / 60)))  
-	next_slot_seconds_remainder=$(printf "%d" $((next_slot_seconds % 60)))  
-	next_slot_time=$(printf "%02d:%02d" $next_slot_minutes $next_slot_seconds_remainder) # mm:ss
-	if [[ $next_slot_seconds -lt 60 ]]; then # next_slot_seconds<60
+	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
+	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
+	slots_remaining=$((my_slot-RPC_SLOT))
+	next_slot_time=$((($slots_remaining * 459) / 60000))
+	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
 		TME_CLR=$RED
 	else	
 		TME_CLR=$GREEN
@@ -243,7 +237,7 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $behind_threshold -ge 1 ]] && [[ $REMOTE_BEHIND_COUNTER -ge $behind_threshold ]]; then
 			set_primary=2; 	REASON="Behind too long";
 		fi
-		if [[ $primary_mode == "permanent_primary" && next_slot_seconds -ge 60 ]]; then
+		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
 			set_primary=2; 	REASON="set Permanent Primary mode"; 
 		fi	
 		CHECK_HEALTH #  self check node health
