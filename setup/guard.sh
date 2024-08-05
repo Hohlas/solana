@@ -95,7 +95,7 @@ NODE="test"
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
 NODE="MAIN"
 fi
-echo " $NODE'.'$NAME $version - $client"
+echo " $NODE.$NAME $version-$client"
 
 health_warning=0
 behind_warning=0
