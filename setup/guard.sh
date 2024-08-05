@@ -119,7 +119,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
     	exit;  # Выходим после первого совпадения
 	}')
 	if [[ -z "$next_slot_seconds" ]]; then
-		echo "can't define next_slot_seconds" >> ~/guard.log
+		echo "$(TIME) can't define next_slot_seconds = $next_slot_seconds" >> ~/guard.log
 	fi
 	next_slot_minutes=$(printf "%d" $((next_slot_seconds / 60)))  
 	next_slot_seconds_remainder=$(printf "%d" $((next_slot_seconds % 60)))  
