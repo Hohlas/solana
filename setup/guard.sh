@@ -53,6 +53,11 @@ GET_VOTING_IP(){
 	SERV="$USER@$server_address"
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
  	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>> ~/guard.log | grep -m1 Identity | awk -F': ' '{print $2}')
+	if [ $? -ne 0 ]; then
+        	echo "$(TIME) Error define local_validator" >> ~/guard.log
+        	return 1
+    	fi
+  
 	if [[ -z "$VOTING_IP" ]]; then
         	echo "$(TIME) Warning! VOTING_IP is empty" | tee -a ~/guard.log
         	return 1
