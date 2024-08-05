@@ -159,10 +159,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 
  	# check guard running on remote server
  	current_time=$(date +%s)
-	command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$BEHIND' > $HOME/remote_behind" 2>&1)
+	command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$BEHIND' > $HOME/remote_behind" 2>> ~/guard.log)
 	command_exit_status=$?
 	if [ $command_exit_status -ne 0 ] && [ $((current_time - connection_alarm_time)) -ge 120  ]; then
-		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
+		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
+  		echo "command_output=$command_output" >> ~/guard.log
+    		echo "command_exit_status=$command_exit_status" >> ~/guard.log
 		connection_alarm_time=$current_time
 		fi
  	last_modified=$(date -r "$HOME/remote_behind" +%s)
