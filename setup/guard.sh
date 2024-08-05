@@ -153,7 +153,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
-	if (( $REMOTE_BEHIND >= 1 )); then 
+	if [[ $REMOTE_BEHIND -ge 1 ]]; then 
 		let REMOTE_BEHIND_COUNTER=REMOTE_BEHIND_COUNTER+1
 		REMOTE_HEALTH="$RED $REMOTE_BEHIND"; 
 	else 
