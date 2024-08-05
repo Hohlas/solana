@@ -106,21 +106,18 @@ REMOTE_BEHIND_COUNTER=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL 2>> ~/guard.log)
-	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot request" >> ~/guard.log; fi
+	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; fi
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
- 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot request" >> ~/guard.log; fi
+ 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
 	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
 	
 	# next slot time
-	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3)
+	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
 	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
-	if [[ $next_slot_time -lt 2 ]]; then # next_slot_time<2 
-		TME_CLR=$RED
-	else	
-		TME_CLR=$GREEN
-	fi
+	if [[ $next_slot_time -lt 0 ]]; then next_slot_time='none'; fi 
+	if [[ $next_slot_time -lt 2 ]]; then TME_CLR=$RED; else TME_CLR=$GREEN; fi
  
  	# check health
  	HEALTH=$(curl -s -m 5 http://localhost:8899/health)
@@ -237,7 +234,7 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $behind_threshold -ge 1 ]] && [[ $REMOTE_BEHIND_COUNTER -ge $behind_threshold ]]; then
 			set_primary=2; 	REASON="Behind too long";
 		fi
-		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 2 ]]; then
+		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 1 ]]; then
 			set_primary=2; 	REASON="set Permanent Primary mode"; 
 		fi	
 		CHECK_HEALTH #  self check node health
