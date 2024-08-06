@@ -13,13 +13,13 @@ CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 VOTE_IP=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
-echo -e "\033[34m "$NODE'.'$NAME" \033[0m";
-echo -e "\033[34m network=api.testnet \033[0m v$version - $client";
+NODE="test"
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
-echo -e "\033[31m "$NODE'.'$NAME" \033[0m";
-echo -e "\033[31m network=api.mainnet-beta \033[0m v$version - $client";
-fi	
-# echo "v$version - $client, IP:$CUR_IP"
+NODE="MAIN"
+fi
+echo " $NODE.$NAME $version-$client"
+
+
 
 if [[ $current_validator == $empty ]]; then 
 #echo -e ' tower to '`whoami`'@'$CUR_IP"$GRAY  # run it on another server\033[0m"
