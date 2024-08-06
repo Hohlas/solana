@@ -93,7 +93,7 @@ if [ -z "$NAME" ]; then NAME=$(hostname); fi
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 NODE="test"
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
-NODE="MAIN"
+NODE="main"
 fi
 echo " $NODE.$NAME $version-$client"
 

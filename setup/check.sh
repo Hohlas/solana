@@ -15,7 +15,7 @@ VOTE_IP=$(solana gossip | grep $PUB_KEY | awk '{print $1}')
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 NODE="test"
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
-NODE="MAIN"
+NODE="main"
 fi
 echo " $NODE.$NAME $version-$client"
 
