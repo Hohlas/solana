@@ -26,8 +26,6 @@ elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then
 	NODE="main"; fi
 
 
-
-
 if [[ $current_validator == $EMPTY_ADDR ]]; then VAL_CLR=$GRAY # set gray color
 elif [[ $current_validator == $VOTING_ADDR ]]; then VAL_CLR=$GREEN # set green color
 else
@@ -42,14 +40,14 @@ minutes_remaining=$((($slots_remaining * 459) / 60000))
 score=$(solana validators --sort=credits -r -n | grep $VOTING_ADDR | awk '{print $1}'); 
 if [[ $minutes_remaining -lt 2 ]]; then TME_CLR=$RED
 else TME_CLR=$GREEN; fi
-echo -e " == SOLANA CHECK $GREEN$CHECK_VER $CLEAR"
+echo -e " == SOLANA CHECK $GREEN$CHECK_VER \033[0m"
 echo " $NODE.$NAME $version-$client"
 echo -e " next:$TME_CLR$minutes_remaining$CLEARmin,  score=$score"
 echo '--'
 echo -e " vote account:      $VOTE_ACC_ADDR"
-echo -e " epmty_keypair:     $GRAY$EMPTY_ADDR $CLEAR"   # gray color
-echo -e " validator-keypair: $GREEN$VOTING_ADDR $CLEAR" # green color
-echo -e " current validator: $VAL_CLR$current_validator $CLEAR"
+echo -e " epmty_keypair:     $GRAY$EMPTY_ADDR \033[0m"   
+echo -e " validator-keypair: $GREEN$VOTING_ADDR \033[0m"
+echo -e " current validator: $VAL_CLR$current_validator \033[0m"
 echo '--'
 
 if [ "$CUR_IP" == "$VOTE_IP" ]; then STATUS=$GREEN" on current server \033[0m";
