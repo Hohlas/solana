@@ -40,7 +40,7 @@ minutes_remaining=$((($slots_remaining * 459) / 60000))
 score=$(solana validators --sort=credits -r -n | grep $VOTING_ADDR | awk '{print $1}'); 
 if [[ $minutes_remaining -lt 2 ]]; then TME_CLR=$RED
 else TME_CLR=$GREEN; fi
-echo -e " == SOLANA CHECK $GREEN$CHECK_VER \033[0m"
+echo " == SOLANA CHECK $CHECK_VER"
 echo " $NODE.$NAME $version-$client"
 echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$score"
 echo '--'
