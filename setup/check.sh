@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================
-CHECK_VER=v1.3.5
+CHECK_VER=v1.3.6
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
 #===========================================
@@ -11,14 +11,14 @@ VOTE_ACC_KEY=$(grep -oP '(?<=--vote-account\s).*' "$SOLANA_SERVICE" | tr -d '\\'
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
-CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
-VOTE_IP=$(solana gossip | grep $VOTING_KEY | awk '{print $1}')
 current_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
-GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
-
 EMPTY_ADDR=$(solana address -k $EMPTY_KEY)
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 VOTE_ACC_ADDR=$(solana address -k $VOTE_ACC_KEY)
+CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
+VOTE_IP=$(solana gossip | grep $VOTING_ADDR | awk '{print $1}')
+GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; CLEAR=$'\033[0m'
+
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 	NODE="test";
