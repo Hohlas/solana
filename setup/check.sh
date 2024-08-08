@@ -42,7 +42,7 @@ if [[ $minutes_remaining -lt 2 ]]; then TME_CLR=$RED
 else TME_CLR=$GREEN; fi
 echo -e " == SOLANA CHECK $GREEN$CHECK_VER \033[0m"
 echo " $NODE.$NAME $version-$client"
-echo -e " next:$TME_CLR$minutes_remaining$CLEARmin,  score=$score"
+echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$score"
 echo '--'
 echo -e " vote account:      $VOTE_ACC_ADDR"
 echo -e " epmty_keypair:     $GRAY$EMPTY_ADDR \033[0m"   
