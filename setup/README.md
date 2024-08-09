@@ -171,7 +171,7 @@ nano /etc/telegraf/telegraf.conf  # add config
 ```
 ### price service
 ```bash
-sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
+sed -i "/^solanaPrice=/c\solanaPrice=$(curl -s 'https://api.margus.one/solana/price/'| jq -r .price)" /root/solanamonitoring/monitor.sh
 systemctl restart telegraf
 ```
 
