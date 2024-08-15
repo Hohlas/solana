@@ -109,8 +109,7 @@ SSH(){
 	if [ -z "$command_output" ]; then 
 		echo "$(TIME) SSH command_output empty" >> ~/guard.log
 	fi
-	echo $command_output  
-}
+	}
 
 echo -e " == SOLANA GUARD $GREEN$GUARD_VER \033[0m" | tee -a ~/guard.log
 #source ~/sol_git/setup/check.sh
@@ -186,7 +185,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		REMOTE_BEHIND_COUNTER=0
 		REMOTE_HEALTH="$GREEN ok"; 
 	fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m $primary_mode        \r "
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m $primary_mode        \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
