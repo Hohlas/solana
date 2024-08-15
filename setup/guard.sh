@@ -378,7 +378,7 @@ fi
 if [ "$remote_identity" = "$IDENTITY" ]; then
 	echo -e "$GREEN SSH connection succesful \033[0m" | tee -a ~/guard.log
 else
-    	echo -e "$RED Remote server connection Error \033[0m"
+    	echo -e "$RED Warning! Servers node identity are different \033[0m"
 	echo "Current Identity = $IDENTITY,"
 	echo "Remote Identity  = $remote_identity"
 fi
