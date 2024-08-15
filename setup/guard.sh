@@ -106,9 +106,6 @@ SSH(){
       		ssh_alarm_time=$current_time
     	fi
   	fi
-	if [ -z "$command_output" ]; then 
-		echo "$(TIME) SSH command_output empty" >> ~/guard.log
-	fi
 	}
 
 echo -e " == SOLANA GUARD $GREEN$GUARD_VER \033[0m" | tee -a ~/guard.log
