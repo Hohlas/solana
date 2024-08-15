@@ -372,8 +372,7 @@ IdentityFile $KEYS/*.ssh
 # check SSH connection to remote server
 remote_identity=$(SSH "$SOL_BIN/solana address")
 if [ $command_exit_status -ne  0 ]; then
-	echo -e "$RED SSH connection not available, Error: $remote_identity  \033[0m"
-  	exit 1 
+	echo -e "$RED SSH connection not available, Error: $remote_identity  \033[0m" 
 fi
 
 if [ "$remote_identity" = "$IDENTITY" ]; then
@@ -382,7 +381,6 @@ else
     	echo -e "$RED Remote server connection Error \033[0m"
 	echo "Current Identity = $IDENTITY,"
 	echo "Remote Identity  = $remote_identity"
-	exit 1 
 fi
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
