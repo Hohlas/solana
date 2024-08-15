@@ -370,14 +370,16 @@ SSH "$SOL_BIN/solana address"
 remote_identity=$command_output
 if [ $command_exit_status -ne  0 ]; then
 	echo -e "$RED SSH connection not available  \033[0m" 
+	return
 fi
 
 if [ "$remote_identity" = "$IDENTITY" ]; then
 	echo -e "$GREEN SSH connection succesful \033[0m" | tee -a ~/guard.log
 else
-    	echo -e "$RED Warning! Servers node identity are different \033[0m"
-	echo "Current Identity = $IDENTITY,"
+    echo -e "$RED Warning! Servers identity are different \033[0m"
+	echo "Current Identity = $IDENTITY"
 	echo "Remote Identity  = $remote_identity"
+	return
 fi
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
