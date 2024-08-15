@@ -23,14 +23,22 @@ GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
 # CHAT_INFO=-100...888
 # BOT_TOKEN=507...lWU
 #======================
-source $KEYS/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+if [ -f "$KEYS/tg_bot_token" ]; then
+	if [ -r "$KEYS/tg_bot_token" ]; then
+    	source "$KEYS/tg_bot_token" # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+  	else
+    	echo "Error: $KEYS/tg_bot_token exists but is not readable" >&2
+  	fi
+else
+  	echo "Error: $KEYS/tg_bot_token does not exist" >&2
+fi
+
 half1=${BOT_TOKEN%%:*}
 half2=${BOT_TOKEN#*:}
-BOT_TOKEN=$half1:$half2
-if [[ -z "$BOT_TOKEN" ]]; then # if $BOT_TOKEN is empty
-	echo -e "Warning! Can't read telegram bot token from $KEYS/tg_bot_token"
-	return
+if [[ -z "$half1" || -z "$half2" ]]; then
+  	echo -e "Warning! Can't read telegram bot token from $KEYS/tg_bot_token"
 fi
+BOT_TOKEN="$half1:$half2"
 
 TIME() {
 TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
@@ -86,13 +94,16 @@ SSH(){
   	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> ~/guard.log)
   	command_exit_status=$?
   	if [ $command_exit_status -ne 0 ]; then
-    	echo "command_output=$command_output" >> ~/guard.log
-    	echo "command_exit_status=$command_exit_status" >> ~/guard.log
+    	echo "SSH: command_output=$command_output" >> ~/guard.log
+    	echo "SSH: command_exit_status=$command_exit_status" >> ~/guard.log
     	if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
       		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
       		ssh_alarm_time=$current_time
     	fi
   	fi
+	if [ -z "$command_output" ]; then 
+		echo "SSH command_output empty" >> ~/guard.log
+	fi
 	echo $command_output  
 }
 
