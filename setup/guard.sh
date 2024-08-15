@@ -88,7 +88,7 @@ SEND_ALARM(){
 	echo "$(TIME) $message" >> ~/guard.log
  	echo -e "$(TIME) $RED $message \033[0m"
 	}
-command_exit_status=0 # set global variable
+command_exit_status=0; command_output='' # set global variable
 SSH(){
 	local ssh_command="$1"
   	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> ~/guard.log)
@@ -369,9 +369,10 @@ IdentityFile $KEYS/*.ssh
 " > ~/.ssh/config
 
 # check SSH connection to remote server
-remote_identity=$(SSH "$SOL_BIN/solana address")
+SSH "$SOL_BIN/solana address"
+remote_identity=$command_output
 if [ $command_exit_status -ne  0 ]; then
-	echo -e "$RED SSH connection not available, Error: $remote_identity  \033[0m" 
+	echo -e "$RED SSH connection not available  \033[0m" 
 fi
 
 if [ "$remote_identity" = "$IDENTITY" ]; then
