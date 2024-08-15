@@ -80,7 +80,21 @@ SEND_ALARM(){
 	echo "$(TIME) $message" >> ~/guard.log
  	echo -e "$(TIME) $RED $message \033[0m"
 	}
-
+command_exit_status=0 # set global variable
+SSH(){
+	local ssh_command="$1"
+  	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> ~/guard.log)
+  	command_exit_status=$?
+  	if [ $command_exit_status -ne 0 ]; then
+    	echo "command_output=$command_output" >> ~/guard.log
+    	echo "command_exit_status=$command_exit_status" >> ~/guard.log
+    	if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
+      		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
+      		ssh_alarm_time=$current_time
+    	fi
+  	fi
+	echo $command_output  
+}
 
 echo -e " == SOLANA GUARD $GREEN$GUARD_VER \033[0m" | tee -a ~/guard.log
 #source ~/sol_git/setup/check.sh
@@ -160,14 +174,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 
  	# check guard running on remote server
  	current_time=$(date +%s)
-	command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$BEHIND' > $HOME/remote_behind" 2>> ~/guard.log)
-	command_exit_status=$?
-	if [ $command_exit_status -ne 0 ] && [ $((current_time - connection_alarm_time)) -ge 120  ]; then
-		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
-  		echo "command_output=$command_output" >> ~/guard.log
-    		echo "command_exit_status=$command_exit_status" >> ~/guard.log
-		connection_alarm_time=$current_time
-		fi
+	SSH "echo '$BEHIND' > $HOME/remote_behind"
  	last_modified=$(date -r "$HOME/remote_behind" +%s)
 	time_diff=$((current_time - last_modified)) #; echo "last: $time_diff seconds"
 	if [ $time_diff -ge 300 ] && [ $((current_time - connection_alarm_time)) -ge 120  ]; then
@@ -243,25 +250,22 @@ SECONDARY_SERVER(){ ############################################################
 	done
 		# STOP SOLANA on REMOTE server
 	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
-	command_output=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1)
-	command_exit_status=$?
+	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
 		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
-		SEND_ALARM "Can't set identity on remote server, Error: $command_output"
-		command_output=$(ssh -o ConnectTimeout=5 REMOTE systemctl restart solana 2>&1)
-  		command_exit_status=$?
-    		if [ $command_exit_status -eq 0 ]; then
-			echo -e "$(TIME) restart solana on REMOTE server in NO_VOTING mode" | tee -a ~/guard.log
-      		else
-			SEND_ALARM "Can't restart solana on REMOTE server, Error: $command_output"
+		SEND_ALARM "Can't set identity on remote server"
+		SSH "systemctl restart solana 2>&1"
+    	if [ $command_exit_status -eq 0 ]; then
+			MSG=$(printf "$MSG \n%s restart solana on remote server")
+      	else
+			SEND_ALARM "Can't restart solana on REMOTE server"
 			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
 				return
 			fi
 			SEND_ALARM "Can't ping REMOTE server"
 		fi
-		MSG=$(printf "$MSG \n%s restart solana")
 	fi
 	# remove old tower before
 	rm $LEDGER/tower-1_9-$IDENTITY.bin 
@@ -276,11 +280,10 @@ SECONDARY_SERVER(){ ############################################################
 	else echo "$(TIME) copy tower from $SERV Error: $command_exit_status" | tee -a ~/guard.log
 	fi
 	# stop telegraf service on remote server
-	ssh -o ConnectTimeout=5 REMOTE systemctl stop telegraf
-	command_exit_status=$?
+	SSH "systemctl stop telegraf"
 	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) stop telegraf on remote server OK" | tee -a ~/guard.log
 	elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) stop telegraf on remote server timeout exceed" | tee -a ~/guard.log
- 	else echo "$(TIME) stop telegraf on remote server Error: $command_exit_status" | tee -a ~/guard.log
+ 	else echo "$(TIME) stop telegraf on remote server Error" | tee -a ~/guard.log
 	fi
  	# echo "  stop jito-relayer on REMOTE server"
 	# ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
@@ -350,8 +353,7 @@ IdentityFile $KEYS/*.ssh
 " > ~/.ssh/config
 
 # check SSH connection to remote server
-remote_identity=$(ssh -o ConnectTimeout=5 REMOTE $SOL_BIN/solana address 2>&1)
-command_exit_status=$?
+remote_identity=$(SSH "$SOL_BIN/solana address")
 if [ $command_exit_status -ne  0 ]; then
 	echo -e "$RED SSH connection not available, Error: $remote_identity  \033[0m"
   	exit 1 
@@ -367,11 +369,7 @@ else
 fi
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
-command_output=$(ssh -o ConnectTimeout=5 REMOTE "echo '$CUR_IP' > $HOME/remote_ip" 2>&1) # send 'current IP' to remote server
-command_exit_status=$?
-if [ $command_exit_status -ne 0 ]; then
-    SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP, Error: $command_output"
-fi
+SSH "echo '$CUR_IP' > $HOME/remote_ip" # send 'current IP' to remote server
 
 while true  ###  main cycle   #################################################
 do
