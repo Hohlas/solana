@@ -269,15 +269,16 @@ SECONDARY_SERVER(){ ############################################################
 	fi
 	# remove old tower before
 	rm $LEDGER/tower-1_9-$IDENTITY.bin 
-	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) remove old tower OK" | tee -a ~/guard.log
-	else echo "$(TIME) remove old tower Error: $command_exit_status" | tee -a ~/guard.log
+	remove_status=$?
+	if [ $remove_status -eq 0 ]; then echo "$(TIME) remove old tower OK" | tee -a ~/guard.log
+	else echo "$(TIME) remove old tower Error: $remove_status" | tee -a ~/guard.log
 	fi
 	# copy tower from remote server
 	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
-	command_exit_status=$?
-	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) copy tower from $SERV OK" | tee -a ~/guard.log
-	elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) copy tower from $SERV timeout exceed" | tee -a ~/guard.log
-	else echo "$(TIME) copy tower from $SERV Error: $command_exit_status" | tee -a ~/guard.log
+	copy_status=$?
+	if [ $copy_status -eq 0 ]; then echo "$(TIME) copy tower from $SERV OK" | tee -a ~/guard.log
+	elif [ $copy_status -eq 124 ]; then echo "$(TIME) copy tower from $SERV timeout exceed" | tee -a ~/guard.log
+	else echo "$(TIME) copy tower from $SERV Error: $copy_status" | tee -a ~/guard.log
 	fi
 	# stop telegraf service on remote server
 	SSH "systemctl stop telegraf"
@@ -294,9 +295,9 @@ SECONDARY_SERVER(){ ############################################################
 	else
 		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	fi
-	command_exit_status=$?
-	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) set identity$TOWER_STATUS OK" | tee -a ~/guard.log
-	else echo "$(TIME) set identity Error: $command_exit_status" | tee -a ~/guard.log
+	set_identity_status=$?
+	if [ $set_identity_status -eq 0 ]; then echo "$(TIME) set identity$TOWER_STATUS OK" | tee -a ~/guard.log
+	else echo "$(TIME) set identity Error: $set_identity_status" | tee -a ~/guard.log
 	fi
 	# update telegraf
 	# sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
