@@ -50,7 +50,7 @@ echo -e " validator-keypair: $GREEN$VOTING_ADDR \033[0m"
 echo -e " current validator: $VAL_CLR$current_validator \033[0m"
 echo '--'
 
-if [ "$CUR_IP" == "$VOTE_IP" ]; then STATUS=$GREEN" on current server \033[0m";
+if [ "$CUR_IP" == "$VOTE_IP" ]; then STATUS=" on current server \033[0m";
 else                              STATUS=$GRAY" on "$VOTE_IP" \033[0m"; 
 fi
 
