@@ -94,15 +94,20 @@ SSH(){
   	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> ~/guard.log)
   	command_exit_status=$?
   	if [ $command_exit_status -ne 0 ]; then
-    	echo "SSH: command_output=$command_output" >> ~/guard.log
-    	echo "SSH: command_exit_status=$command_exit_status" >> ~/guard.log
-    	if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
+    	echo "$(TIME) SSH Error: command_output=$command_output" >> ~/guard.log
+    	echo "$(TIME) SSH Error: command_exit_status=$command_exit_status" | tee -a ~/guard.log
+    	if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
+			echo "$(TIME) remote server ping OK" >> ~/guard.log
+		else
+			echo "$(TIME) remote server did not ping" | tee -a ~/guard.log
+		fi
+		if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
       		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
       		ssh_alarm_time=$current_time
     	fi
   	fi
 	if [ -z "$command_output" ]; then 
-		echo "SSH command_output empty" >> ~/guard.log
+		echo "$(TIME) SSH command_output empty" >> ~/guard.log
 	fi
 	echo $command_output  
 }
