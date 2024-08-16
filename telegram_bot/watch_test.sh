@@ -59,7 +59,7 @@ do
         fi
     BALANCE_TEMP=$($SOLANA_PATH balance ${PUB_KEY[$index]} -u$CLUSTER | awk '{print $1}')
     BALANCE=$(printf "%.2f" $BALANCE_TEMP) 
-    score=$(solana validators --sort=credits -r -n | grep ${PUB_KEY[$index]} | awk '{print $1}'); 
+    score=$($SOLANA_PATH -u$CLUSTER validators --sort=credits -r -n | grep ${PUB_KEY[$index]} | awk '{print $1}'); 
     INFO="${INFO}"$'\n'"${NODE_NAME[$index]}"": $skip | $score"
 done
     echo "${INFO}"
