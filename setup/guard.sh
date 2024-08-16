@@ -97,9 +97,9 @@ SSH(){
     	echo "$(TIME) SSH Error: command_output=$command_output" >> ~/guard.log
     	echo "$(TIME) SSH Error: command_exit_status=$command_exit_status" | tee -a ~/guard.log
     	if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
-			echo "$(TIME) remote server ping OK" >> ~/guard.log
+			echo "$(TIME) remote server $REMOTE_IP ping OK" | tee -a ~/guard.log
 		else
-			echo "$(TIME) remote server did not ping" | tee -a ~/guard.log
+			echo "$(TIME) remote server $REMOTE_IP did not ping" | tee -a ~/guard.log
 		fi
 		if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
       		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
