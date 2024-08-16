@@ -274,12 +274,14 @@ SECONDARY_SERVER(){ ############################################################
       	else
 			SEND_ALARM "Can't restart solana on REMOTE server"
 			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
+   				echo "$(TIME) Remote server ping OK, so can't start voting in current situation" | tee -a ~/guard.log
 				return
 			fi
 			SEND_ALARM "Can't ping REMOTE server"
 		fi
 	fi
 	# remove old tower before
+ 	echo "$(TIME) Let's start voting on current server" | tee -a ~/guard.log
 	rm $LEDGER/tower-1_9-$IDENTITY.bin 
 	remove_status=$?
 	if [ $remove_status -eq 0 ]; then echo "$(TIME) remove old tower OK" | tee -a ~/guard.log
