@@ -11,6 +11,8 @@ sudo apt update && sudo apt upgrade -y && sudo apt install jq cron iputils-ping 
 echo "download telegram scripts"
 #curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/watch_main.sh > ~/solana/watch_main.sh && chmod +x ~/solana/watch_main.sh
 #curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/watch_test.sh > ~/solana/watch_test.sh && chmod +x ~/solana/watch_test.sh
+chmod +x ~/sol_git/telegram_bot/watch_test.sh
+chmod +x ~/sol_git/telegram_bot/watch_main.sh
 echo "create cron task"
 crontab -l >$HOME/tmp.txt  # copy crontab to tmp.txt
 echo "MAILTO=''
