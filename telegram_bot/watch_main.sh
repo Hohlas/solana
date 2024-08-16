@@ -13,7 +13,7 @@ IP=(149.50.110.199 149.50.110.94 149.50.110.231)
 # CHAT_INFO=-100...888
 # BOT_TOKEN=507...lWU
 #======================
-source $KEYS/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
 NODE_NAME=("BUKA" "HOHLA" "VALERA")
 BALANCEWARN=(1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
@@ -59,14 +59,14 @@ do
         fi
     BALANCE_TEMP=$($SOLANA_PATH balance ${PUB_KEY[$index]} -u$CLUSTER | awk '{print $1}')
     BALANCE=$(printf "%.2f" $BALANCE_TEMP) 
-    INFO="${INFO}"$'\n'"${NODE_NAME[$index]}"": $skip / $Credits"
+    score=$(solana validators --sort=credits -r -n | grep ${PUB_KEY[$index]} | awk '{print $1}'); 
+    INFO="${INFO}"$'\n'"${NODE_NAME[$index]}"": $skip | $score"
 done
     echo "${INFO}"
     RESPONSE_EPOCH=$($SOLANA_PATH epoch-info -u$CLUSTER > ~/temp.txt)
     EPOCH=$(cat ~/temp.txt | grep "Epoch:" | awk '{print $2}')
     EPOCH_PERCENT=$(printf "%.2f" $(cat ~/temp.txt | grep "Epoch Completed Percent" | awk '{print $4}' | grep -oE "[0-9]*|[0-9]*.[0-9]*" | awk 'NR==1 {print; exit}'))"%"
-    END_EPOCH=$(echo $(cat ~/temp.txt | grep "Epoch Completed Time" | grep -o '(.*)' | sed "s/^(//" | awk '{$NF="";sub(/[ \t]+$/,"")}1'))    
+    END_EPOCH=$(echo $(cat ~/temp.txt | grep "Epoch Completed Time" | grep -o '(.*)' | sed "s/^(//; s/ remaining)//; s/ \([0-9]*s\)//"))   
 curl --header 'Content-Type: application/json' --request 'POST' --data '{"chat_id":"'"$CHAT_INFO"'","text":"<b>'"${INFO}"' '"\n AvgSkip: "$Average""' </b> <code>
-['"$EPOCH"'] | ['"$EPOCH_PERCENT"']
 End: '"$END_EPOCH"'</code>", "parse_mode": "html"}' "https://api.telegram.org/bot$BOT_TOKEN/sendMessage"
     fi
