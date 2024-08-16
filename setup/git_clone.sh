@@ -6,3 +6,5 @@ git reset --hard origin/main # сбросить локальную ветку д
 else git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
+chmod +x ~/sol_git/telegram_bot/watch_test.sh
+chmod +x ~/sol_git/telegram_bot/watch_main.sh
