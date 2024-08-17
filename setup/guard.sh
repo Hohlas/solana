@@ -275,6 +275,7 @@ SECONDARY_SERVER(){ ############################################################
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
 		SEND_ALARM "Can't set identity on remote server"
+  		echo "$(TIME) Try to restart solana on remote server" | tee -a ~/guard.log
 		SSH "systemctl restart solana 2>&1"
     	if [ $command_exit_status -eq 0 ]; then
 			MSG=$(printf "$MSG \n%s restart solana on remote server")
