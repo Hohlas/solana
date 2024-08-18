@@ -248,7 +248,7 @@ SECONDARY_SERVER(){ ############################################################
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	REASON=''
-	until [[ $NODE_FINE=='true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
+	until [[ $NODE_FINE == 'true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
 		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
