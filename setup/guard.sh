@@ -153,12 +153,13 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
 		HEALTH="Warning!"
 	fi
-	if [[ $HEALTH == "ok" ]]; then
+	
+ 	if [[ $HEALTH == "ok" ]]; then
  		if [[ $health_warning -eq 0 ]]; then NODE_FINE='true'; else NODE_FINE='false'; fi
 		health_warning=0
 		CLR=$GREEN
 	else
-		CLR=$RED
+		NODE_FINE='false'
 		let health_warning=health_warning+1
 		echo "$(TIME) Health: $HEALTH    " | tee -a ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
@@ -169,11 +170,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	
 	# check behind
 	if [[ $BEHIND -lt 1 && $BEHIND -gt -100 ]]; then # -100<BEHIND<1 
- 		if [[ $behind_warning -eq 0 && $NODE_FINE='true' ]]; then NODE_FINE='true'; else NODE_FINE='false'; fi
+ 		if [[ $behind_warning -eq 0 && $NODE_FINE=='true' ]]; then NODE_FINE='true'; else NODE_FINE='false'; fi
 		behind_warning=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
-		let behind_warning=behind_warning+1
+		NODE_FINE='false'
+  		let behind_warning=behind_warning+1
 		echo "$(TIME) Behind=$BEHIND    " | tee -a ~/guard.log  # log every warning_message
 		BEHIND_PRN="$RED$BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
