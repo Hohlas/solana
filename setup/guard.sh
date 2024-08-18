@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.3.6
+GUARD_VER=v1.3.7
 #===========================================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -191,8 +191,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
     		let remote_behind_warning=remote_behind_warning+1
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
- 	if [[ $NODE_FINE == 'true' ]]; then CONFIRMED_HEALTH="$GREEN OK\033[0m"; else CONFIRMED_HEALTH="$RED warn\033[0m"; fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health$CONFIRMED_HEALTH $primary_mode        \r"
+ 	if [[ $NODE_FINE == 'true' ]]; then HEALTH_PRN="$GREEN OK\033[0m"; else HEALTH_PRN="$RED warn\033[0m"; fi
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health$HEALTH_PRN $primary_mode        \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
