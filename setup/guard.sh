@@ -272,7 +272,7 @@ SECONDARY_SERVER(){ ############################################################
 	done
 		# STOP SOLANA on REMOTE server
   	echo "$(TIME) Let's stop voting on remote server " | tee -a ~/guard.log
-   	echo "$(TIME) HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary " | tee -a ~/guard.log
+   	echo "$(TIME) NODE_FINE=$NODE_FINE, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary " | tee -a ~/guard.log
 	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
@@ -335,7 +335,7 @@ SECONDARY_SERVER(){ ############################################################
 	while [ $SERV_TYPE = "SECONDARY" ]; do
  		echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
    		GET_VOTING_IP
-     		CHECK_HEALTH
+     		# CHECK_HEALTH
    		sleep 2
  	done
 	}
