@@ -130,7 +130,7 @@ echo " $NODE.$NAME $version-$client"
 
 health_warning=0
 behind_warning=0
-REMOTE_BEHIND_COUNTER=0
+remote_behind_warning=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL 2>> ~/guard.log)
@@ -154,6 +154,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		HEALTH="Warning!"
 	fi
 	if [[ $HEALTH == "ok" ]]; then
+ 		if [[ $health_warning -eq 0 ]]; then NODE_FINE='true'; else NODE_FINE='false'; fi
 		health_warning=0
 		CLR=$GREEN
 	else
@@ -167,32 +168,29 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 	
 	# check behind
-	if [[ $BEHIND -lt 1 ]]; then # if BEHIND<1 
+	if [[ $BEHIND -lt 1 && $BEHIND -gt -100 ]]; then # -100<BEHIND<1 
+ 		if [[ $behind_warning -eq 0 && $NODE_FINE='true' ]]; then NODE_FINE='true'; else NODE_FINE='false'; fi
 		behind_warning=0
+  		BEHIND_PRN="$GREEN$BEHIND"
 	else
 		let behind_warning=behind_warning+1
 		echo "$(TIME) Behind=$BEHIND    " | tee -a ~/guard.log  # log every warning_message
-		CLR=$RED
-		HEALTH="$BEHIND"
+		BEHIND_PRN="$RED$BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
 			behind_warning=-12 # sent next message after  12*5 seconds
 	 		SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
-	if [[ $REMOTE_BEHIND -ge 1 ]]; then 
-		let REMOTE_BEHIND_COUNTER=REMOTE_BEHIND_COUNTER+1
-		REMOTE_HEALTH="$RED $REMOTE_BEHIND"; 
-	else 
-		REMOTE_BEHIND_COUNTER=0
-		REMOTE_HEALTH="$GREEN ok";
-  		if [[ $REMOTE_BEHIND -gt -100 ]]; then 
-    			REMOTE_HEALTH="$GREEN $REMOTE_BEHIND"
-       		else
-    			REMOTE_HEALTH="$RED $REMOTE_BEHIND"
-       		fi
+	if [[ $REMOTE_BEHIND -lt 1 && $REMOTE_BEHIND -gt -100 ]]; then # -100<REMOTE_BEHIND<1
+		remote_behind_warning=0
+  		REMOTE_BEHIND_PRN="$GREEN$REMOTE_BEHIND"	
+  	else	
+    		let remote_behind_warning=remote_behind_warning+1
+		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m $primary_mode        \r"
+ 	if [[ $NODE_FINE=='true' ]]; then CONFIRMED_HEALTH="$GREEN'OK'\033[0m"; else CONFIRMED_HEALTH="$RED'warn'\033[0m"; fi
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m,$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, Health=$CONFIRMED_HEALTH, $primary_mode        \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
@@ -248,7 +246,7 @@ SECONDARY_SERVER(){ ############################################################
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	REASON=''
-	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $BEHIND -gt -100 && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
+	until [[ $NODE_FINE=='true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
 		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
@@ -257,7 +255,7 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $Delinquent == true ]]; then
 			set_primary=2; 	REASON="Delinquent";
 		fi
-		if [[ $behind_threshold -ge 1 ]] && [[ $REMOTE_BEHIND_COUNTER -ge $behind_threshold ]]; then
+		if [[ $behind_threshold -ge 1 ]] && [[ $remote_behind_warning -ge $behind_threshold ]]; then
 			set_primary=2; 	REASON="Behind too long";
 		fi
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 1 ]]; then
