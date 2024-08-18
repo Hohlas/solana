@@ -235,7 +235,7 @@ PRIMARY_SERVER(){ ##############################################################
 		GET_VOTING_IP
 		sleep 5
 	done
-	echo -e "$(TIME) change VOTING: $VOTING_IP  " | tee -a ~/guard.log
+	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
