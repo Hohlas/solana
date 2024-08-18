@@ -185,7 +185,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		REMOTE_HEALTH="$RED $REMOTE_BEHIND"; 
 	else 
 		REMOTE_BEHIND_COUNTER=0
-		REMOTE_HEALTH="$GREEN ok"; 
+		REMOTE_HEALTH="$GREEN ok";
+  		if [[ $REMOTE_BEHIND -gt -100 ]]; then 
+    			REMOTE_HEALTH="$GREEN $REMOTE_BEHIND"
+       		else
+    			REMOTE_HEALTH="$RED $REMOTE_BEHIND"
+       		fi
 	fi
 	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m,${CLR} $HEALTH\033[0m,$REMOTE_HEALTH\033[0m $primary_mode        \r"
 
@@ -243,7 +248,7 @@ SECONDARY_SERVER(){ ############################################################
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	REASON=''
-	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $set_primary -ge 1 ]]; do
+	until [[ $HEALTH == "ok" && $BEHIND -lt 1 && $BEHIND -gt -100 && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
 		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
@@ -330,6 +335,7 @@ SECONDARY_SERVER(){ ############################################################
 	while [ $SERV_TYPE = "SECONDARY" ]; do
  		echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
    		GET_VOTING_IP
+     		CHECK_HEALTH
    		sleep 2
  	done
 	}
