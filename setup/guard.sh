@@ -191,7 +191,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
     		let remote_behind_warning=remote_behind_warning+1
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
- 	if [[ $NODE_FINE=='true' ]]; then CONFIRMED_HEALTH="$GREEN OK\033[0m"; else CONFIRMED_HEALTH="$RED warn\033[0m"; fi
+ 	if [[ $NODE_FINE == 'true' ]]; then CONFIRMED_HEALTH="$GREEN OK\033[0m"; else CONFIRMED_HEALTH="$RED warn\033[0m"; fi
 	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health$CONFIRMED_HEALTH $NODE_FINE $primary_mode        \r"
 
  	# check guard running on remote server
