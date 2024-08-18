@@ -170,7 +170,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	
 	# check behind
 	if [[ $BEHIND -lt 1 && $BEHIND -gt -100 ]]; then # -100<BEHIND<1 
- 		if [[ $behind_warning -eq 0 && $NODE_FINE=='true' ]]; then NODE_FINE='true'; else NODE_FINE='false'; fi
+ 		if [[ $behind_warning -gt 0 ]]; then NODE_FINE='false'; fi
 		behind_warning=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
