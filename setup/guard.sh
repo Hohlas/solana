@@ -99,11 +99,11 @@ SSH(){
     	if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
 			echo "$(TIME) remote server $REMOTE_IP ping OK" | tee -a ~/guard.log
 		else
-			echo "$(TIME) remote server $REMOTE_IP did not ping" | tee -a ~/guard.log
+			echo "$(TIME) Error: remote server $REMOTE_IP did not ping" | tee -a ~/guard.log
 			if ping -c 3 -W 3 "www.google.com" > /dev/null 2>&1; then
 				echo "$(TIME) google ping OK" | tee -a ~/guard.log
 			else
-				echo "$(TIME) google did not ping too" | tee -a ~/guard.log
+				echo "$(TIME) Error: google did not ping too" | tee -a ~/guard.log
 			fi
 		fi
 		if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
