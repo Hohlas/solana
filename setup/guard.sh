@@ -143,7 +143,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	# next slot time
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
-	slots_remaining=$((my_slot-RPC_SLOT))
+	if [[ -n "$RPC_SLOT" && -n "$my_slot" ]]; then slots_remaining=$((my_slot-RPC_SLOT)); fi
 	next_slot_time=$((($slots_remaining * 459) / 60000))
 	#if [[ $next_slot_time -lt 0 ]]; then next_slot_time='none'; fi 
 	if [[ $next_slot_time -lt 2 ]]; then TIME_PRN="$RED$next_slot_time"; else TIME_PRN="$GREEN$next_slot_time"; fi
