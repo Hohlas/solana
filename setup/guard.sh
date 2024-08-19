@@ -258,11 +258,15 @@ SECONDARY_SERVER(){ ############################################################
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then 
 			echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; 
-		elif [ -n "$VALIDATORS_LIST" ]; then	
-			JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
-			LastVote=$(echo "$JSON" | jq -r '.lastVote')
-			Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+			continue 
 		fi
+		if [ -z "$VALIDATORS_LIST" ]; then 
+			echo "$(TIME) Error: validators list emty" | tee -a ~/guard.log;
+			continue 
+		fi
+		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
+		LastVote=$(echo "$JSON" | jq -r '.lastVote')
+		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
 			set_primary=2; 	REASON="Delinquent";
 		fi
