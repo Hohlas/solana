@@ -17,7 +17,7 @@ SITES=("www.google.com" "www.bing.com")
 configDir="$HOME/.config/solana"
 SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
 DISCONNECT_COUNTER=0
-GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'
+GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'
 #==== tg_bot_token ====
 # CHAT_ALARM=-100...684
 # CHAT_INFO=-100...888
@@ -198,7 +198,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
  	if [[ $CHECK_UP == 'true' ]]; then CHECK_PRN="$GREEN OK\033[0m"; else CHECK_PRN="$RED warn\033[0m"; fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health $HEALTH_PRN\033[0m, check$CHECK_PRN\033[0m $primary_mode        \r"
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health $HEALTH_PRN\033[0m, check$CHECK_PRN $YELLOW$primary_mode\033[0m      \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
@@ -367,7 +367,7 @@ else
 fi
 if [[ $primary_mode == "p" ]]; then 
 	primary_mode='permanent_primary'; 
-	echo -e "start guard in $RED Permanent Primary mode\033[0m"
+	echo -e "start guard in $YELLOW Permanent Primary mode\033[0m"
 fi	
 if [ "$SERV_TYPE" = "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [ -f $HOME/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
