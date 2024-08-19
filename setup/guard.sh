@@ -138,7 +138,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; fi
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
  	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
-	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]] then BEHIND=$((RPC_SLOT - LOCAL_SLOT)); fi
+	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then BEHIND=$((RPC_SLOT - LOCAL_SLOT)); fi
 	
 	# next slot time
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
