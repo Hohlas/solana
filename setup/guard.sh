@@ -155,7 +155,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi
 	
 	if [[ $health_warning -eq 0 && $behind_warning -eq 0 ]]; then # check 'health' & 'behind' from last requests
-		CHECK_UP='true'; fi # 'health' and 'behind' must be fine twice: last and current requests
+		CHECK_UP='true' # 'health' and 'behind' must be fine twice: last and current requests
 	else 	
 		CHECK_UP='false' 
 	fi	
