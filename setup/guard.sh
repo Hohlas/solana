@@ -256,10 +256,13 @@ SECONDARY_SERVER(){ ############################################################
 	REASON=''
 	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
-		if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
-		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
-		LastVote=$(echo "$JSON" | jq -r '.lastVote')
-		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+		if [ $? -ne 0 ]; then 
+			echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; 
+		elif [ -n "$VALIDATORS_LIST" ]; then	
+			JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
+			LastVote=$(echo "$JSON" | jq -r '.lastVote')
+			Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+		fi
 		if [[ $Delinquent == true ]]; then
 			set_primary=2; 	REASON="Delinquent";
 		fi
