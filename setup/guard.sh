@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.3.7
+GUARD_VER=v1.3.8
 #===========================================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -101,9 +101,9 @@ SSH(){
 		else
 			echo "$(TIME) Error: remote server $REMOTE_IP did not ping" | tee -a ~/guard.log
 			if ping -c 3 -W 3 "www.google.com" > /dev/null 2>&1; then
-				echo "$(TIME) google ping OK" | tee -a ~/guard.log
+				echo "$(TIME) Google ping OK" | tee -a ~/guard.log
 			else
-				echo "$(TIME) Error: google did not ping too" | tee -a ~/guard.log
+				echo "$(TIME) Error: Google did not ping too" | tee -a ~/guard.log
 			fi
 		fi
 		if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
@@ -144,24 +144,29 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
 	slots_remaining=$((my_slot-RPC_SLOT))
 	next_slot_time=$((($slots_remaining * 459) / 60000))
-	if [[ $next_slot_time -lt 0 ]]; then next_slot_time='none'; fi 
-	if [[ $next_slot_time -lt 2 ]]; then TME_CLR=$RED; else TME_CLR=$GREEN; fi
+	#if [[ $next_slot_time -lt 0 ]]; then next_slot_time='none'; fi 
+	if [[ $next_slot_time -lt 2 ]]; then TIME_PRN="$RED$next_slot_time"; else TIME_PRN="$GREEN$next_slot_time"; fi
  
  	# check health
  	HEALTH=$(curl -s -m 5 http://localhost:8899/health)
-  	if [ $? -ne 0 ]; then echo "$(TIME) Error, health request = $HEALTH " | tee -a ~/guard.log; fi
+  	if [ $? -ne 0 ]; then echo "$(TIME) Error, health request=$HEALTH " | tee -a ~/guard.log; fi
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
 		HEALTH="Warning!"
 	fi
 	
+	if [[ $health_warning -eq 0 && $behind_warning -eq 0 ]]; then # check 'health' & 'behind' from last requests
+		CHECK_UP='true'; fi # 'health' and 'behind' must be fine twice: last and current requests
+	else 	
+		CHECK_UP='false' 
+	fi	
  	if [[ $HEALTH == "ok" ]]; then
- 		if [[ $health_warning -eq 0 ]]; then NODE_FINE='true'; else NODE_FINE='false'; fi
 		health_warning=0
-		CLR=$GREEN
+		HEALTH_PRN="$GREEN$HEALTH"
 	else
-		NODE_FINE='false'
+		CHECK_UP='false' 
+		HEALTH_PRN="$RED$HEALTH"
 		let health_warning=health_warning+1
-		echo "$(TIME) Health: $HEALTH    " | tee -a ~/guard.log  # log every warning_message
+		echo "$(TIME) Health=$HEALTH, health_warning=$health_warning, CHECK_UP=$CHECK_UP    " | tee -a ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
 			health_warning=-12
 			SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
@@ -169,12 +174,11 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 	
 	# check behind
-	if [[ $BEHIND -lt 1 && $BEHIND -gt -100 ]]; then # -100<BEHIND<1 
- 		if [[ $behind_warning -gt 0 ]]; then NODE_FINE='false'; fi
+	if [[ $BEHIND -lt 1 && $BEHIND -gt -100 ]]; then # must be: -100<BEHIND<1 
 		behind_warning=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
-		NODE_FINE='false'
+		CHECK_UP='false'
   		let behind_warning=behind_warning+1
 		echo "$(TIME) Behind=$BEHIND    " | tee -a ~/guard.log  # log every warning_message
 		BEHIND_PRN="$RED$BEHIND"
@@ -191,8 +195,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
     		let remote_behind_warning=remote_behind_warning+1
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
- 	if [[ $NODE_FINE == 'true' ]]; then HEALTH_PRN="$GREEN OK\033[0m"; else HEALTH_PRN="$RED warn\033[0m"; fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TME_CLR$next_slot_time\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health$HEALTH_PRN $primary_mode        \r"
+ 	if [[ $CHECK_UP == 'true' ]]; then CHECK_PRN="$GREEN OK\033[0m"; else CHECK_PRN="$RED warn\033[0m"; fi
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health$HEALTH_PRN\033[0m, check$CHECK_PRN\033[0m $primary_mode        \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
@@ -248,7 +252,7 @@ SECONDARY_SERVER(){ ############################################################
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	REASON=''
-	until [[ $NODE_FINE == 'true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
+	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; fi
 		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
@@ -272,7 +276,7 @@ SECONDARY_SERVER(){ ############################################################
 	done
 		# STOP SOLANA on REMOTE server
   	echo "$(TIME) Let's stop voting on remote server " | tee -a ~/guard.log
-   	echo "$(TIME) NODE_FINE=$NODE_FINE, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary " | tee -a ~/guard.log
+   	echo "$(TIME) CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary " | tee -a ~/guard.log
 	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
