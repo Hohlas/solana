@@ -133,11 +133,12 @@ behind_warning=0
 remote_behind_warning=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
- 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL 2>> ~/guard.log)
-	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; fi
+ 	Request_OK='true'
+	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL 2>> ~/guard.log)
+	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; fi
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
- 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
-	BEHIND=$((RPC_SLOT - LOCAL_SLOT))
+ 	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
+	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]] then BEHIND=$((RPC_SLOT - LOCAL_SLOT)); fi
 	
 	# next slot time
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
@@ -148,8 +149,9 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ $next_slot_time -lt 2 ]]; then TIME_PRN="$RED$next_slot_time"; else TIME_PRN="$GREEN$next_slot_time"; fi
  
  	# check health
- 	HEALTH=$(curl -s -m 5 http://localhost:8899/health)
-  	if [ $? -ne 0 ]; then echo "$(TIME) Error, health request=$HEALTH " | tee -a ~/guard.log; fi
+ 	REQUEST=$(curl -s -m 5 http://localhost:8899/health)
+  	if [ $? -ne 0 ]; then echo "$(TIME) Error, health request=$HEALTH " | tee -a ~/guard.log; 
+	else HEALTH=$REQUEST; fi
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
 		HEALTH="Warning!"
 	fi
