@@ -340,7 +340,7 @@ SECONDARY_SERVER(){ ############################################################
 	while [ $SERV_TYPE = "SECONDARY" ]; do
  		# echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
    		GET_VOTING_IP
-     		# CHECK_HEALTH
+     	CHECK_HEALTH
    		sleep 2
  	done
 	}
