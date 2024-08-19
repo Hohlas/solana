@@ -196,7 +196,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
  	if [[ $CHECK_UP == 'true' ]]; then CHECK_PRN="$GREEN OK\033[0m"; else CHECK_PRN="$RED warn\033[0m"; fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health$HEALTH_PRN\033[0m, check$CHECK_PRN\033[0m $primary_mode        \r"
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health $HEALTH_PRN\033[0m, check$CHECK_PRN\033[0m $primary_mode        \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
