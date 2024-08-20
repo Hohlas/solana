@@ -255,6 +255,7 @@ SECONDARY_SERVER(){ ############################################################
 	set_primary=0 # 
 	REASON=''
 	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
+		sleep 5
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then 
 			echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; 
@@ -279,9 +280,8 @@ SECONDARY_SERVER(){ ############################################################
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
   		if [ "$SERV_TYPE" = "PRIMARY" ]; then
-    			return
-       		fi
-		sleep 5
+    		return
+       	fi
 	done
 		# STOP SOLANA on REMOTE server
   	echo "$(TIME) Let's stop voting on remote server " | tee -a ~/guard.log
