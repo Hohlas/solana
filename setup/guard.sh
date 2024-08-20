@@ -131,6 +131,7 @@ echo " $NODE.$NAME $version-$client"
 health_warning=0
 behind_warning=0
 remote_behind_warning=0
+slots_remaining=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	Request_OK='true'
