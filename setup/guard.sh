@@ -270,10 +270,10 @@ SECONDARY_SERVER(){ ############################################################
 		LastVote=$(echo "$JSON" | jq -r '.lastVote')
 		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
 		if [[ $Delinquent == true ]]; then
-			set_primary=2; 	REASON="Delinquent";
+			set_primary=2; 	REASON="Delinquent"; echo "$(TIME) Warning! Delinquent detected! " | tee -a ~/guard.log;
 		fi
 		if [[ $behind_threshold -ge 1 ]] && [[ $remote_behind_warning -ge $behind_threshold ]]; then
-			set_primary=2; 	REASON="Behind too long";
+			set_primary=2; 	REASON="Behind too long"; echo "$(TIME) Warning! Behind detected! " | tee -a ~/guard.log;
 		fi
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 1 ]]; then
 			set_primary=2; 	REASON="set Permanent Primary mode"; 
