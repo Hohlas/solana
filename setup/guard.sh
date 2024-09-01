@@ -177,7 +177,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 	
 	# check behind
-	if [[ $BEHIND -lt 1 && $BEHIND -gt -100 ]]; then # must be: -100<BEHIND<1 
+	if [[ $BEHIND -lt 1 && $BEHIND -gt -1000 ]]; then # must be: -1000<BEHIND<1 
 		behind_warning=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
@@ -191,7 +191,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
-	if [[ $REMOTE_BEHIND -lt 1 && $REMOTE_BEHIND -gt -100 ]]; then # -100<REMOTE_BEHIND<1
+	if [[ $REMOTE_BEHIND -lt 1 && $REMOTE_BEHIND -gt -1000 ]]; then # -1000<REMOTE_BEHIND<1
 		remote_behind_warning=0
   		REMOTE_BEHIND_PRN="$GREEN$REMOTE_BEHIND"	
   	else	
@@ -255,7 +255,7 @@ SECONDARY_SERVER(){ ############################################################
 	# waiting remote server fail and selfcheck health
 	set_primary=0 # 
 	REASON=''
-	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do #  -100 < BEHIND < 1
+	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do # 
 		sleep 5
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then 
