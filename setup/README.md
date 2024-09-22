@@ -10,6 +10,8 @@ sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux hto
 ```bash
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/ledger
+mkdir -p /mnt/disk3/accounts_index
+mkdir -p /mnt/disk3/accounts_hash_cache
 # disk3 / System
 mkdir -p /mnt/keys
 chmod 600 /mnt/keys 
