@@ -38,10 +38,16 @@ mount -a
 
 ### system_disk + disk1 + disk2
 ```bash
-mount /dev/nvme1n1p1 /mnt/disk1
-echo '/dev/nvme1n1p1 /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
-mount /dev/nvme2n1p1 /mnt/disk2
-echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+DISK1_NVME=/dev/nvme1n1p1
+DISK2_NVME=/dev/nvme2n1p1
+DISK3_NVME=/dev/nvme3n1p1
+
+mount $DISK1_NVME /mnt/disk1
+echo "$DISK1_NVME /mnt/disk1 ext4 defaults 0 1" | sudo tee -a /etc/fstab
+mount $DISK2_NVME /mnt/disk2
+echo "$DISK2_NVME /mnt/disk2 ext4 defaults 0 1" | sudo tee -a /etc/fstab
+mount $DISK3_NVME /mnt/disk3
+echo "$DISK3_NVME /mnt/disk3 ext4 defaults 0 1" | sudo tee -a /etc/fstab
 mount -a
 ```
 
