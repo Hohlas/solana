@@ -4,6 +4,8 @@ echo -e '\n\e[42m Install Solana Node \e[0m\n'
 mkdir -p ~/solana
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/ledger
+mkdir -p /mnt/disk3/accounts_index
+mkdir -p /mnt/disk3/accounts_hash_cache
 
 if [ ! -d "$HOME/keys" ]; then
     mkdir -p /mnt/keys
