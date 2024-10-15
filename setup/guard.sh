@@ -58,12 +58,13 @@ GET_VOTING_IP(){
         	echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log
         	return 1
     	fi
+     	# temporary voting IP addr method
 	voting_ip_address=$(echo "$gossip_output" | grep "$VOTING_ADDR" | awk '{print $1}')
 	if [ -z "$voting_ip_address" ]; then
         	echo "$(TIME) Error: Failed to find voting IP for VOTING_ADDR $VOTING_ADDR" | tee -a ~/guard.log
         	return 1
     	fi
- 	echo "voting_ip_address=$voting_ip_address"
+ 	# echo "voting_ip_address=$voting_ip_address"
   
 	SERV="$USER@$server_address"
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
