@@ -9,6 +9,7 @@ SOLANA_SERVICE="$HOME/solana/solana.service"
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
+VOTING_ADDR=$(solana address -k $VOTING_KEY)
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
@@ -57,7 +58,13 @@ GET_VOTING_IP(){
         	echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log
         	return 1
     	fi
-
+	voting_address=$(echo "$gossip_output" | grep "$VOTING_ADDR" | awk '{print $1}')
+	if [ -z "$server_address" ]; then
+        	echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log
+        	return 1
+    	fi
+ 	echo "voting_address=$voting_address"
+  
 	SERV="$USER@$server_address"
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
  	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
