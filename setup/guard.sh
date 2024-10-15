@@ -18,6 +18,7 @@ SITES=("www.google.com" "www.bing.com")
 configDir="$HOME/.config/solana"
 SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
 DISCONNECT_COUNTER=0
+BEHIND_OK_VAL=3 # behind, that seemed ordinary
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'
 #==== tg_bot_token ====
 # CHAT_ALARM=-100...684
@@ -185,7 +186,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 	
 	# check behind
-	if [[ $BEHIND -lt 1 && $BEHIND -gt -1000 ]]; then # must be: -1000<BEHIND<1 
+	if [[ $BEHIND -le $BEHIND_OK_VAL && $BEHIND -gt -1000 ]]; then # must be: -1000<BEHIND<1 
 		behind_warning=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
