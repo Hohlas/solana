@@ -48,42 +48,62 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 
 GET_VOTING_IP(){
 	local gossip_output
-    	local server_address
-	gossip_output=$(timeout 5 solana gossip 2>> ~/guard.log)
-	if [ $? -ne 0 ]; then
-        	echo "$(TIME) Error: Failed to execute 'solana gossip'" >> ~/guard.log
-        	return 1
-    	fi
-	server_address=$(echo "$gossip_output" | grep "$IDENTITY" | awk '{print $1}')
-	if [ -z "$server_address" ]; then
-        	echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log
-        	return 1
-    	fi
-     	# temporary 'voting IP addr' detection method (not used)
-	voting_ip_address=$(echo "$gossip_output" | grep "$VOTING_ADDR" | awk '{print $1}')
-	if [ -z "$voting_ip_address" ]; then
-        	echo "$(TIME) Error: Failed to find voting IP for VOTING_ADDR $VOTING_ADDR" | tee -a ~/guard.log
-        	return 1
-    	fi
- 	# echo "voting_ip_address=$voting_ip_address"
+    local server_address
+	declare -A ip_count # ассоциативный массив для хранения количества появлений каждого IP-адреса
+	declare -a different_ips # Массив для хранения всех уникальных IP-адресов
+ 	
+  	for i in {1..25}; do # Выполняем 25 запросов
+  		voting_ip=$(solana gossip | grep "$IDENTITY" | awk '{print $1}')
+    	# Увеличиваем счётчик для данного IP
+  		if [[ -n "$voting_ip" ]]; then # Если voting_ip не пустой
+    		((ip_count["$voting_ip"]++))
+  		fi
+  		sleep 0.4 # Maximum number of requests per 10 seconds per IP for a single RPC: 40
+	done
+	# Находим IP с максимальным количеством появлений
+	most_frequent_ip=""
+	max_count=0
+	
+	for ip in "${!ip_count[@]}"; do
+  		if (( ip_count["$ip"] > max_count )); then
+    		max_count=${ip_count["$ip"]}
+    		most_frequent_ip=$ip
+  		fi
+  		different_ips+=("$ip") # Добавляем уникальный IP в массив
+	done
+	# Проверяем, есть ли отличающийся IP-адрес
+	if [[ ${#different_ips[@]} -gt 1 ]]; then
+  		echo "different voting IPs:"
+  		for ip in "${different_ips[@]}"; do
+    		if [[ "$ip" != "$most_frequent_ip" ]]; then
+      			echo "$ip"
+    		fi
+  		done
+	fi
   
+	server_address="$most_frequent_ip"
+	if [ -z "$server_address" ]; then
+        echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log
+        return 1
+    fi
+     
 	SERV="$USER@$server_address"
 	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
  	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 	if [ $? -ne 0 ]; then
-        	echo "$(TIME) Error define local_validator" >> ~/guard.log
-        	return 1
-    	fi
+        echo "$(TIME) Error define local_validator" >> ~/guard.log
+        return 1
+    fi
   
 	if [[ -z "$VOTING_IP" ]]; then
-        	echo "$(TIME) Warning! VOTING_IP is empty" | tee -a ~/guard.log
-        	return 1
-    	fi
+        echo "$(TIME) Warning! VOTING_IP is empty" | tee -a ~/guard.log
+        return 1
+    fi
  	if [ "$CUR_IP" = "$VOTING_IP" ]; then
 		SERV_TYPE='PRIMARY'
 	else 
 		SERV_TYPE='SECONDARY'
-    	fi
+    fi
 	}
 SEND_INFO(){
 	local message="$1"
