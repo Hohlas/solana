@@ -54,7 +54,11 @@ GET_VOTING_IP(){
  	
   	for i in {1..20}; do # Выполняем 25 запросов
   		voting_ip=$(solana gossip | grep "$IDENTITY" | awk '{print $1}')
-    	# Увеличиваем счётчик для данного IP
+    	if [[ $? -ne 0 ]]; then
+        	echo "$(TIME) Error: Failed to execute solana gossip" | tee -a ~/guard.log
+        	return 1 # Выход из функции при ошибке
+    	fi
+	 	# Увеличиваем счётчик для данного IP
   		if [[ -n "$voting_ip" ]]; then # Если voting_ip не пустой
     		((ip_count["$voting_ip"]++))
   		fi
