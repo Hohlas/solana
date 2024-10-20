@@ -52,7 +52,7 @@ GET_VOTING_IP(){
 	declare -A ip_count # ассоциативный массив для хранения количества появлений каждого IP-адреса
 	declare -a different_ips # Массив для хранения всех уникальных IP-адресов
  	
-  	for i in {1..20}; do # Выполняем 25 запросов
+  	for i in {1..20}; do # Выполняем 20 запросов
   		voting_ip=$(solana gossip | grep "$IDENTITY" | awk '{print $1}')
     	if [[ $? -ne 0 ]]; then
         	echo "$(TIME) Error: Failed to execute solana gossip" | tee -a ~/guard.log
@@ -62,7 +62,7 @@ GET_VOTING_IP(){
   		if [[ -n "$voting_ip" ]]; then # Если voting_ip не пустой
     		((ip_count["$voting_ip"]++))
   		fi
-  		sleep 0.4 # Maximum number of requests per 10 seconds per IP for a single RPC: 40
+  		sleep 0.5 # Maximum number of requests per 10 seconds per IP for a single RPC: 40
 	done
 	# Находим IP с максимальным количеством появлений
 	most_frequent_ip=""
@@ -288,7 +288,7 @@ SECONDARY_SERVER(){ ############################################################
 	set_primary=0 # 
 	REASON=''
 	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do # 
-		# sleep 5
+		sleep 0.5
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then 
 			echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; 
