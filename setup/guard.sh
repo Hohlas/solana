@@ -48,11 +48,11 @@ TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 
 GET_VOTING_IP(){
 	local gossip_output
-    local server_address
+    	local server_address
 	declare -A ip_count # ассоциативный массив для хранения количества появлений каждого IP-адреса
 	declare -a different_ips # Массив для хранения всех уникальных IP-адресов
  	
-  	for i in {1..25}; do # Выполняем 25 запросов
+  	for i in {1..20}; do # Выполняем 25 запросов
   		voting_ip=$(solana gossip | grep "$IDENTITY" | awk '{print $1}')
     	# Увеличиваем счётчик для данного IP
   		if [[ -n "$voting_ip" ]]; then # Если voting_ip не пустой
@@ -273,7 +273,7 @@ PRIMARY_SERVER(){ ##############################################################
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-		sleep 5
+		# sleep 5
 	done
 	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
 	}
@@ -284,7 +284,7 @@ SECONDARY_SERVER(){ ############################################################
 	set_primary=0 # 
 	REASON=''
 	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do # 
-		sleep 5
+		# sleep 5
 		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
 		if [ $? -ne 0 ]; then 
 			echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; 
