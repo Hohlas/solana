@@ -73,10 +73,9 @@ GET_VOTING_IP(){
 	done
 	# Проверяем, есть ли отличающийся IP-адрес
 	if [[ ${#different_ips[@]} -gt 1 ]]; then
-  		echo "different voting IPs:"
   		for ip in "${different_ips[@]}"; do
     		if [[ "$ip" != "$most_frequent_ip" ]]; then
-      			echo "$ip"
+      			echo "Different voting IPs: $ip" | tee -a ~/guard.log
     		fi
   		done
 	fi
