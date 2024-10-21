@@ -137,7 +137,7 @@ RPC_REQUEST() {
 		echo "$(TIME) Warning! Different answers[$percentage%]: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log	
   		if [[ $percentage -lt 70 ]]; then 
 			REQUEST_ANSWER="";
-   			echo -e "$(TIME) REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
+   			echo -e "$(TIME) Error: REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
 	  		fi
 	fi	
 	# echo "$REQUEST_ANSWER"
@@ -150,6 +150,10 @@ RPC_REQUEST() {
 GET_VOTING_IP(){
     # Получаем IP-адрес голосующего валидатора 
 	RPC_REQUEST "IP"  
+ 	if [ -z "$REQUEST_ANSWER" ]; then
+		echo "$(TIME) Error: VOTING_IP emty" | tee -a ~/guard.log;
+		return 1 
+	fi
 	VOTING_IP=$REQUEST_ANSWER
     SERV="$USER@$VOTING_IP"
     # Получаем локальный валидатор
