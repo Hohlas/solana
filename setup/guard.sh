@@ -151,7 +151,7 @@ GET_VOTING_IP(){
     # Получаем IP-адрес голосующего валидатора 
 	RPC_REQUEST "IP"  
  	if [ -z "$REQUEST_ANSWER" ]; then
-		echo "$(TIME) Error: VOTING_IP emty" | tee -a ~/guard.log;
+		echo "$(TIME) Error: VOTING_IP empty, keep previous value" | tee -a ~/guard.log;
 		return 1 
 	fi
 	VOTING_IP=$REQUEST_ANSWER
