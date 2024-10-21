@@ -129,7 +129,7 @@ RPC_REQUEST() {
 		REQUEST_ANSWER="$most_frequent_answer"
 		echo "$(TIME) Most frequent request answer: $REQUEST_ANSWER" | tee -a ~/guard.log	
 	fi	
-	echo "$REQUEST_ANSWER"
+	# echo "$REQUEST_ANSWER"
 	}
 
 
