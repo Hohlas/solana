@@ -11,8 +11,8 @@ VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\
 IDENTITY=$(solana address) 
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 rpcURL1=$(solana config get | grep "RPC URL" | awk '{print $3}')
-rpcURL2="https://mainnet.helius-rpc.com/?api-key=309eb1ce-ef77-47c8-ad89-8a94d59a1c2a" # Helius RPC
-version=$(solana --version | awk '{print $2}')
+# rpcURL2 берется из файлла tg_bot_token. Нужен в качестве альтернативного RPC для сравнения значений
+version=$(solana --version | awk '{print $2}')ec
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
@@ -28,14 +28,17 @@ GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'
 #======================
 if [ -f "$KEYS/tg_bot_token" ]; then
 	if [ -r "$KEYS/tg_bot_token" ]; then
-    	source "$KEYS/tg_bot_token" # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+    	source "$KEYS/tg_bot_token" # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN, rpc_url
   	else
     	echo "Error: $KEYS/tg_bot_token exists but is not readable" >&2
   	fi
 else
   	echo "Error: $KEYS/tg_bot_token does not exist" >&2
 fi
-
+if [[ -z "$rpcURL2" ]]; then
+    rpcURL2=$rpcURL1 # Присваиваем значение rpcURL2, чтобы не было ошибки
+	echo -e "$RED Warning! rpcURL2 is not defined in $KEYS/tg_bot_token ! \033[0m"
+fi
 half1=${BOT_TOKEN%%:*}
 half2=${BOT_TOKEN#*:}
 if [[ -z "$half1" || -z "$half2" ]]; then
