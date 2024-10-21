@@ -97,6 +97,7 @@ RPC_REQUEST() {
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
+		sleep 2
     else    
 		echo "$(TIME) RPCs returned different data: REQUEST1=$REQUEST1, REQUEST2=$REQUEST2" | tee -a ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
@@ -323,7 +324,7 @@ PRIMARY_SERVER(){ ##############################################################
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-		sleep 5
+  		sleep 2
 	done
 	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
 	}
@@ -334,7 +335,6 @@ SECONDARY_SERVER(){ ############################################################
 	set_primary=0 # 
 	REASON=''
 	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do # 
-		sleep 5
 		RPC_REQUEST "DELINK"
 		Delinquent=$REQUEST_ANSWER
 		if [[ $Delinquent == true ]]; then
@@ -419,7 +419,6 @@ SECONDARY_SERVER(){ ############################################################
  		# echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
    		GET_VOTING_IP
      	CHECK_HEALTH
-   		sleep 2
  	done
 	}
 
