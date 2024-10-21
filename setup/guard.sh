@@ -132,7 +132,7 @@ RPC_REQUEST() {
     	else 
       		CLR1=$RED; CLR2=$GREEN;
     	fi 
-    	echo -e "$(TIME) Warning! Different answers: RPC1=$CLR1$REQUEST1\033[0m, RPC2=$CLR2$REQUEST2\033[0m" | tee -a ~/guard.log
+    	echo -e "$(TIME) Warning! Different answers: RPC1=$CLR1$REQUEST1\033[0m, RPC2=$CLR2$REQUEST2\033[0m"
 		echo "$(TIME) Most frequent request answer: $REQUEST_ANSWER" >> ~/guard.log	
 	fi	
 	# echo "$REQUEST_ANSWER"
