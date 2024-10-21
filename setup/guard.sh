@@ -97,7 +97,7 @@ RPC_REQUEST() {
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
-		sleep 2
+		sleep 5
     else    
 		echo "$(TIME) RPCs returned different data: REQUEST1=$REQUEST1, REQUEST2=$REQUEST2" | tee -a ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
@@ -108,7 +108,7 @@ RPC_REQUEST() {
 
 			[[ -n "$REQUEST1" ]] && ((request_count["$REQUEST1"]++)) # Увеличиваем счётчики 
 			[[ -n "$REQUEST2" ]] && ((request_count["$REQUEST2"]++)) # для каждого вызова
-			sleep 0.5 # Интервал между запросами
+			sleep 1 # Интервал между запросами
 		done
 
 		# Находим наиболее частый ответ
