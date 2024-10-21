@@ -135,6 +135,10 @@ RPC_REQUEST() {
     	fi 
     	echo -e "$(TIME) Warning! Different answers[$percentage%]: RPC1=$CLR1$REQUEST1\033[0m, RPC2=$CLR2$REQUEST2\033[0m"
 		echo "$(TIME) Warning! Different answers[$percentage%]: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log	
+  		if [[ $percentage -lt 70 ]]; then 
+			REQUEST_ANSWER="";
+   			echo -e "$(TIME) REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
+	  		fi
 	fi	
 	# echo "$REQUEST_ANSWER"
 	}
