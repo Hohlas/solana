@@ -134,7 +134,7 @@ RPC_REQUEST() {
       		CLR1=$RED; CLR2=$GREEN;
     	fi 
     	echo -e "$(TIME) Warning! Different answers[$percentage%]: RPC1=$CLR1$REQUEST1\033[0m, RPC2=$CLR2$REQUEST2\033[0m"
-		echo "$(TIME) Warning! Different answers[$percentage%]: RPC1=$REQUEST1, RPC2=$REQUEST2 >> ~/guard.log	
+		echo "$(TIME) Warning! Different answers[$percentage%]: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log	
 	fi	
 	# echo "$REQUEST_ANSWER"
 	}
