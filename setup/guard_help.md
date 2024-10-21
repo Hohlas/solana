@@ -116,7 +116,9 @@ ln -sf /mnt/keys/validator-keypair.json ~/solana/validator-keypair.json
 CHAT_ALARM=-1001...3684
 CHAT_INFO=-1001...2888
 BOT_TOKEN=507625......VICllWU
+rpcURL2="https://mainnet.helius-rpc.com/..." # Helius RPC
 ```
 Ключи private_key.ssh от обоих серверов должны находиться в папках ~/keys.
 В первый раз скрипт резервного сервера должен запускаться перед запуском на основном сервере. 
 При этом на основной сервер копируется файл с IP адресом резервного. Даллее порядок запуска не имеет значения.  
+В этот же файл необходимо добавить второй РПЦ, например отсюда https://dashboard.helius.dev 
