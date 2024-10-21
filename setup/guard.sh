@@ -11,6 +11,7 @@ VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\
 IDENTITY=$(solana address) 
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
+rpcURL="https://mainnet.helius-rpc.com/?api-key=309eb1ce-ef77-47c8-ad89-8a94d59a1c2a" # Helius RPC
 version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
@@ -43,71 +44,33 @@ fi
 BOT_TOKEN="$half1:$half2"
 
 TIME() {
-TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
-}
+	TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
+	}
 
 GET_VOTING_IP(){
-	local gossip_output
-    	local server_address
-	declare -A ip_count # ассоциативный массив для хранения количества появлений каждого IP-адреса
-	declare -a different_ips # Массив для хранения всех уникальных IP-адресов
- 	
-  	for i in {1..20}; do # Выполняем 20 запросов
-  		voting_ip=$(solana gossip | grep "$IDENTITY" | awk '{print $1}')
-    	if [[ $? -ne 0 ]]; then
-        	echo "$(TIME) Error: Failed to execute solana gossip" | tee -a ~/guard.log
-        	return 1 # Выход из функции при ошибке
-    	fi
-	 	# Увеличиваем счётчик для данного IP
-  		if [[ -n "$voting_ip" ]]; then # Если voting_ip не пустой
-    		((ip_count["$voting_ip"]++))
-  		fi
-  		sleep 0.5 # Maximum number of requests per 10 seconds per IP for a single RPC: 40
-	done
-	# Находим IP с максимальным количеством появлений
-	most_frequent_ip=""
-	max_count=0
-	
-	for ip in "${!ip_count[@]}"; do
-  		if (( ip_count["$ip"] > max_count )); then
-    		max_count=${ip_count["$ip"]}
-    		most_frequent_ip=$ip
-  		fi
-  		different_ips+=("$ip") # Добавляем уникальный IP в массив
-	done
-	# Проверяем, есть ли отличающийся IP-адрес
-	if [[ ${#different_ips[@]} -gt 1 ]]; then
-  		for ip in "${different_ips[@]}"; do
-    		if [[ "$ip" != "$most_frequent_ip" ]]; then
-      			echo "Different voting IPs: $ip" | tee -a ~/guard.log
-    		fi
-  		done
-	fi
-  
-	server_address="$most_frequent_ip"
-	if [ -z "$server_address" ]; then
-        echo "$(TIME) Error: Failed to find server address for identity $IDENTITY" | tee -a ~/guard.log
+    # Получаем IP-адрес валидатора с помощью solana gossip
+    VOTING_IP=$(timeout 5 solana gossip --url $rpcURL 2>> ~/guard.log | grep "$IDENTITY" | awk '{print $1}')
+    if [[ $? -ne 0 || -z "$VOTING_IP" ]]; then
+        echo "$(TIME) Error: Failed to execute 'solana gossip' or VOTING_IP is empty" >> ~/guard.log
         return 1
     fi
-     
-	SERV="$USER@$server_address"
-	VOTING_IP=$(echo "$SERV" | cut -d'@' -f2) # cut IP from $USER@IP
- 	local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
-	if [ $? -ne 0 ]; then
-        echo "$(TIME) Error define local_validator" >> ~/guard.log
+    SERV="$USER@$VOTING_IP"
+    
+    # Получаем локальный валидатор
+    local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+    if [[ $? -ne 0 ]]; then
+        echo "$(TIME) Error defining local_validator" >> ~/guard.log
         return 1
     fi
   
-	if [[ -z "$VOTING_IP" ]]; then
-        echo "$(TIME) Warning! VOTING_IP is empty" | tee -a ~/guard.log
-        return 1
-    fi
- 	if [ "$CUR_IP" = "$VOTING_IP" ]; then
-		SERV_TYPE='PRIMARY'
-	else 
-		SERV_TYPE='SECONDARY'
+    # Проверяем текущий IP и устанавливаем тип сервера
+    if [[ "$CUR_IP" == "$VOTING_IP" ]]; then
+        SERV_TYPE='PRIMARY'
+    else 
+        SERV_TYPE='SECONDARY'
     fi
 	}
+
 SEND_INFO(){
 	local message="$1"
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
@@ -277,7 +240,7 @@ PRIMARY_SERVER(){ ##############################################################
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-		# sleep 5
+		sleep 5
 	done
 	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
 	}
@@ -288,8 +251,8 @@ SECONDARY_SERVER(){ ############################################################
 	set_primary=0 # 
 	REASON=''
 	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do # 
-		sleep 0.5
-		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>/dev/null)
+		sleep 5
+		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>> ~/guard.log)
 		if [ $? -ne 0 ]; then 
 			echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; 
 			continue 
