@@ -10,8 +10,8 @@ EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
-rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
-rpcURL="https://mainnet.helius-rpc.com/?api-key=309eb1ce-ef77-47c8-ad89-8a94d59a1c2a" # Helius RPC
+rpcURL1=$(solana config get | grep "RPC URL" | awk '{print $3}')
+rpcURL2="https://mainnet.helius-rpc.com/?api-key=309eb1ce-ef77-47c8-ad89-8a94d59a1c2a" # Helius RPC
 version=$(solana --version | awk '{print $2}')
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
@@ -47,22 +47,102 @@ TIME() {
 	TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 	}
 
+
+REQUEST_IP(){
+	local RPC_URL="$1"
+	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
+	if [ $? -ne 0 ]; then 
+		echo "$(TIME) Error in gossip request for RPC $RPC_URL" | tee -a ~/guard.log
+		return 1
+	fi
+	if [ -z "$VALIDATOR_REQUEST" ]; then
+		echo "$(TIME) Error: validator request emty" | tee -a ~/guard.log;
+		return 1 
+	fi	
+	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
+	}
+REQUEST_DELINK(){
+	local RPC_URL="$1"
+	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
+	if [ $? -ne 0 ]; then 
+		echo "$(TIME) Error in validators list request for RPC $RPC_URL" | tee -a ~/guard.log; 
+		return 1 
+	fi
+	if [ -z "$VALIDATORS_LIST" ]; then 
+		echo "$(TIME) Error: validators list emty" | tee -a ~/guard.log;
+		return 1 
+	fi	
+	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
+	LastVote=$(echo "$JSON" | jq -r '.lastVote')
+	echo "$JSON" | jq -r '.delinquent'
+	}
+REQUEST_ANSWER=""
+RPC_REQUEST() {
+    local REQUEST_TYPE="$1"
+    local REQUEST1 REQUEST2
+
+
+    if [[ "$REQUEST_TYPE" == "IP" ]]; then
+		FUNCTION_NAME="REQUEST_IP" 
+	elif [[ "$REQUEST_TYPE" == "DELINK" ]]; then
+        FUNCTION_NAME="REQUEST_DELINK"
+    fi    	
+	
+	REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # вопрос_2
+	REQUEST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
+	
+	# Сравнение результатов
+    if [[ "$REQUEST1" == "$REQUEST2" ]]; then
+        REQUEST_ANSWER="$REQUEST1"
+    else    
+		echo "$(TIME) RPCs returned different data: REQUEST1=$REQUEST1, REQUEST2=$REQUEST2" | tee -a ~/guard.log
+		# Если результаты разные, опрашиваем в цикле 10 раз
+		declare -A request_count
+		for i in {1..10}; do 
+			REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
+			REQUEST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
+
+			[[ -n "$REQUEST1" ]] && ((request_count["$REQUEST1"]++)) # Увеличиваем счётчики 
+			[[ -n "$REQUEST2" ]] && ((request_count["$REQUEST2"]++)) # для каждого вызова
+			sleep 0.5 # Интервал между запросами
+		done
+
+		# Находим наиболее частый ответ
+		most_frequent_answer=""
+		max_count=0
+
+		for answer in "${!request_count[@]}"; do
+			if (( request_count["$answer"] > max_count )); then
+				max_count=${request_count["$answer"]}
+				most_frequent_answer=$answer
+			fi
+		done
+
+		if [[ -z "$most_frequent_answer" ]]; then
+			echo "$(TIME) Error: No valid request answer found after retries." | tee -a ~/guard.log
+			return 1
+		fi	
+		REQUEST_ANSWER="$most_frequent_answer"
+		echo "$(TIME) Most frequent request answer: $REQUEST_ANSWER" | tee -a ~/guard.log	
+	fi	
+	echo "$REQUEST_ANSWER"
+	}
+
+
+
+
+
 GET_VOTING_IP(){
-    # Получаем IP-адрес валидатора с помощью solana gossip
-    VOTING_IP=$(timeout 5 solana gossip --url $rpcURL 2>> ~/guard.log | grep "$IDENTITY" | awk '{print $1}')
-    if [[ $? -ne 0 || -z "$VOTING_IP" ]]; then
-        echo "$(TIME) Error: Failed to execute 'solana gossip' or VOTING_IP is empty" >> ~/guard.log
-        return 1
-    fi
+    # Получаем IP-адрес голосующего валидатора 
+	RPC_REQUEST "IP"  
+	VOTING_IP=$REQUEST_ANSWER
     SERV="$USER@$VOTING_IP"
-    
     # Получаем локальный валидатор
     local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
     if [[ $? -ne 0 ]]; then
         echo "$(TIME) Error defining local_validator" >> ~/guard.log
         return 1
     fi
-  
     # Проверяем текущий IP и устанавливаем тип сервера
     if [[ "$CUR_IP" == "$VOTING_IP" ]]; then
         SERV_TYPE='PRIMARY'
@@ -252,18 +332,8 @@ SECONDARY_SERVER(){ ############################################################
 	REASON=''
 	until [[ $CHECK_UP == 'true' && $set_primary -ge 1 ]]; do # 
 		sleep 5
-		VALIDATORS_LIST=$(timeout 5 solana validators --url $rpcURL --output json 2>> ~/guard.log)
-		if [ $? -ne 0 ]; then 
-			echo "$(TIME) Error in validators list request" | tee -a ~/guard.log; 
-			continue 
-		fi
-		if [ -z "$VALIDATORS_LIST" ]; then 
-			echo "$(TIME) Error: validators list emty" | tee -a ~/guard.log;
-			continue 
-		fi
-		JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
-		LastVote=$(echo "$JSON" | jq -r '.lastVote')
-		Delinquent=$(echo "$JSON" | jq -r '.delinquent')
+		RPC_REQUEST "DELINK"
+		Delinquent=$REQUEST_ANSWER
 		if [[ $Delinquent == true ]]; then
 			set_primary=2; 	REASON="Delinquent"; echo "$(TIME) Warning! Delinquent detected! " | tee -a ~/guard.log;
 		fi
