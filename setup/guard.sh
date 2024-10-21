@@ -99,7 +99,7 @@ RPC_REQUEST() {
         REQUEST_ANSWER="$REQUEST1"
 		sleep 5
     else    
-		echo "$(TIME) RPCs returned different data: REQUEST1=$REQUEST1, REQUEST2=$REQUEST2" >> ~/guard.log
+		echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
 		declare -A request_count
 		for i in {1..10}; do 
@@ -132,7 +132,7 @@ RPC_REQUEST() {
     	else 
       		CLR1=$RED; CLR2=$GREEN;
     	fi 
-    	echo -e "$(TIME) Warning! Different answers: RPC1=$CLR1$REQUEST1\033[0m, RPC2=$CLR2$REQUEST2\033[0m"
+    	echo -e "$(TIME) Warning! Different answers[$max_count]: RPC1=$CLR1$REQUEST1\033[0m, RPC2=$CLR2$REQUEST2\033[0m"
 		echo "$(TIME) Most frequent request answer: $REQUEST_ANSWER" >> ~/guard.log	
 	fi	
 	# echo "$REQUEST_ANSWER"
