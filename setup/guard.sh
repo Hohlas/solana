@@ -99,15 +99,15 @@ RPC_REQUEST() {
         REQUEST_ANSWER="$REQUEST1"
 		sleep 5
     else    
-		echo "$(TIME) RPCs returned different data: REQUEST1=$REQUEST1, REQUEST2=$REQUEST2" | tee -a ~/guard.log
+		echo "$(TIME) RPCs returned different data: REQUEST1=$REQUEST1, REQUEST2=$REQUEST2" >> ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
 		declare -A request_count
 		for i in {1..10}; do 
-			REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
-			REQUEST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
+			RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
+			RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
 
-			[[ -n "$REQUEST1" ]] && ((request_count["$REQUEST1"]++)) # Увеличиваем счётчики 
-			[[ -n "$REQUEST2" ]] && ((request_count["$REQUEST2"]++)) # для каждого вызова
+			[[ -n "$RQST1" ]] && ((request_count["$RQST1"]++)) # Увеличиваем счётчики 
+			[[ -n "$RQST2" ]] && ((request_count["$RQST2"]++)) # для каждого вызова
 			sleep 1 # Интервал между запросами
 		done
 
@@ -127,7 +127,13 @@ RPC_REQUEST() {
 			return 1
 		fi	
 		REQUEST_ANSWER="$most_frequent_answer"
-		echo "$(TIME) Most frequent request answer: $REQUEST_ANSWER" | tee -a ~/guard.log	
+  		if [[ "$REQUEST1" == "$REQUEST_ANSWER" ]]; then 
+       		CLR1=$GREEN; CLR2=$RED;
+    	else 
+      		CLR1=$RED; CLR2=$GREEN;
+    	fi 
+    	echo -e "$(TIME) Warning! Different answers: RPC1=$CLR1$REQUEST1\033[0m, RPC2=$CLR2$REQUEST2\033[0m" | tee -a ~/guard.log
+		echo "$(TIME) Most frequent request answer: $REQUEST_ANSWER" >> ~/guard.log	
 	fi	
 	# echo "$REQUEST_ANSWER"
 	}
