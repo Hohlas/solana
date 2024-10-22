@@ -104,11 +104,11 @@ RPC_REQUEST() {
 		declare -A request_count
 		for i in {1..10}; do 
 			RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
+   			sleep 0.5
 			RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
-
+			sleep 0.5
 			[[ -n "$RQST1" ]] && ((request_count["$RQST1"]++)) # Увеличиваем счётчики 
 			[[ -n "$RQST2" ]] && ((request_count["$RQST2"]++)) # для каждого вызова
-			sleep 1 # Интервал между запросами
 		done
 
 		# Находим наиболее частый ответ
