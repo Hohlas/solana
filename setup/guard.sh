@@ -37,7 +37,7 @@ else
 fi
 if [[ -z "$rpcURL2" ]]; then
     rpcURL2=$rpcURL1 # Присваиваем значение rpcURL2, чтобы не было ошибки
-	echo -e "$RED Warning! rpcURL2 is not defined in $KEYS/tg_bot_token ! \033[0m"
+	echo -e "$RED Warning! rpcURL2 is not defined in $KEYS/tg_bot_token ! $CLEAR"
 fi
 half1=${BOT_TOKEN%%:*}
 half2=${BOT_TOKEN#*:}
@@ -133,7 +133,7 @@ RPC_REQUEST() {
     	else 
       		CLR1=$RED; CLR2=$GREEN;
     	fi 
-    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=$CLR1$REQUEST1$CLEAR RPC2=$CLR2$REQUEST2$CLEAR"
+    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=$CLR1$REQUEST1$CLEAR, RPC2=$CLR2$REQUEST2$CLEAR"
 		echo "$(TIME) Warning! Different answers[$percentage%]: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log	
   		if [[ $percentage -lt 70 ]]; then 
 			REQUEST_ANSWER="";
@@ -174,13 +174,13 @@ SEND_INFO(){
 	local message="$1"
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
 	echo "$(TIME) $message" >> ~/guard.log
- 	echo -e "$(TIME) $message \033[0m"
+ 	echo -e "$(TIME) $message $CLEAR"
 	}
 SEND_ALARM(){
 	local message="$1"
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$message" > /dev/null
 	echo "$(TIME) $message" >> ~/guard.log
- 	echo -e "$(TIME) $RED $message \033[0m"
+ 	echo -e "$(TIME) $RED $message $CLEAR"
 	}
 command_exit_status=0; command_output='' # set global variable
 SSH(){
@@ -207,13 +207,13 @@ SSH(){
   	fi
 	}
 
-echo -e " == SOLANA GUARD $GREEN$GUARD_VER \033[0m" | tee -a ~/guard.log
+echo -e " == SOLANA GUARD $GREEN$GUARD_VER $CLEAR" | tee -a ~/guard.log
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
 echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
 echo "current IP=$CUR_IP" | tee -a ~/guard.log
-echo -e "IDENTITY  = $GREEN$IDENTITY \033[0m" | tee -a ~/guard.log
-echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) \033[0m" | tee -a ~/guard.log
+echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a ~/guard.log
+echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) $CLEAR" | tee -a ~/guard.log
 if [ -z "$NAME" ]; then NAME=$(hostname); fi
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 NODE="test"
@@ -292,8 +292,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
     		let remote_behind_warning=remote_behind_warning+1
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
- 	if [[ $CHECK_UP == 'true' ]]; then CHECK_PRN="$GREEN OK\033[0m"; else CHECK_PRN="$RED warn\033[0m"; fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN\033[0m, behind:$BEHIND_PRN\033[0m,$REMOTE_BEHIND_PRN\033[0m, health $HEALTH_PRN\033[0m, check$CHECK_PRN $YELLOW$primary_mode\033[0m      \r"
+ 	if [[ $CHECK_UP == 'true' ]]; then CHECK_PRN="$GREEN OK$CLEAR"; else CHECK_PRN="$RED warn$CLEAR"; fi
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN$CLEAR, behind:$BEHIND_PRN$CLEAR,$REMOTE_BEHIND_PRN$CLEAR, health $HEALTH_PRN$CLEAR, check$CHECK_PRN $YELLOW$primary_mode$CLEAR      \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
@@ -373,7 +373,7 @@ SECONDARY_SERVER(){ ############################################################
 	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
-		echo -e "\033[32m  set empty identity on REMOTE server successful \033[0m" 
+		echo -e "\033[32m  set empty identity on REMOTE server successful $CLEAR" 
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
 		SEND_ALARM "Can't set identity on remote server"
@@ -443,14 +443,14 @@ argument=$1 # read script argument
 primary_mode=''
 if [[ $argument =~ ^[0-9]+$ ]] && [ "$argument" -gt 0 ]; then
     	behind_threshold=$argument # 
-	echo -e "$RED behind threshold = $behind_threshold  \033[0m"
+	echo -e "$RED behind threshold = $behind_threshold  $CLEAR"
 else
     	behind_threshold="0"
 	primary_mode=$argument 
 fi
 if [[ $primary_mode == "p" ]]; then 
 	primary_mode='permanent_primary'; 
-	echo -e "start guard in $YELLOW Permanent Primary mode\033[0m"
+	echo -e "start guard in $YELLOW Permanent Primary mode$CLEAR"
 fi	
 if [ "$SERV_TYPE" = "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [ -f $HOME/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
@@ -482,14 +482,14 @@ IdentityFile $KEYS/*.ssh
 SSH "$SOL_BIN/solana address"
 remote_identity=$command_output
 if [ $command_exit_status -ne  0 ]; then
-	echo -e "$RED SSH connection not available  \033[0m" 
+	echo -e "$RED SSH connection not available  $CLEAR" 
 	return
 fi
 
 if [ "$remote_identity" = "$IDENTITY" ]; then
-	echo -e "$GREEN SSH connection succesful \033[0m" | tee -a ~/guard.log
+	echo -e "$GREEN SSH connection succesful $CLEAR" | tee -a ~/guard.log
 else
-    echo -e "$RED Warning! Servers identity are different \033[0m"
+    echo -e "$RED Warning! Servers identity are different $CLEAR"
 	echo "Current Identity = $IDENTITY"
 	echo "Remote Identity  = $remote_identity"
 	return
