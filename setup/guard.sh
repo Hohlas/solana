@@ -241,7 +241,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ -n "$RPC_SLOT" && -n "$my_slot" ]]; then slots_remaining=$((my_slot-RPC_SLOT)); fi
 	next_slot_time=$((($slots_remaining * 459) / 60000))
 	#if [[ $next_slot_time -lt 0 ]]; then next_slot_time='none'; fi 
-	if [[ $next_slot_time -lt 2 ]]; then TIME_PRN="$RED$next_slot_time"; else TIME_PRN="$GREEN$next_slot_time"; fi
+	if [[ $next_slot_time -lt 2 ]]; then TIME_PRN="$RED$next_slot_time"; else TIME_PRN="$BLUE$next_slot_time"; fi
  
  	# check health
  	REQUEST=$(curl -s -m 5 http://localhost:8899/health)
