@@ -37,7 +37,7 @@ else
 fi
 if [[ -z "$rpcURL2" ]]; then
     rpcURL2=$rpcURL1 # Присваиваем значение rpcURL2, чтобы не было ошибки
-	echo -e "$RED Warning! rpcURL2 is not defined in $KEYS/tg_bot_token ! $CLEAR"
+	echo -e "Warning! $RED rpcURL2 is not defined in $KEYS/tg_bot_token ! $CLEAR"
 fi
 
 TIME() {
@@ -208,6 +208,8 @@ echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
 echo "current IP=$CUR_IP" | tee -a ~/guard.log
 echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a ~/guard.log
 echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) $CLEAR" | tee -a ~/guard.log
+echo -e "RPC1:$BLUE rpcURL1$CLEAR" | tee -a ~/guard.log
+echo -e "RPC2:$BLUE rpcURL2$CLEAR" | tee -a ~/guard.log
 if [ -z "$NAME" ]; then NAME=$(hostname); fi
 if [ $rpcURL1 = https://api.testnet.solana.com ]; then 
 NODE="test"
@@ -244,13 +246,15 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
 	if [[ "$my_slot" =~ ^-?[0-9]+$ && "$RPC_SLOT" =~ ^-?[0-9]+$ ]]; then  # переменные являются числами
     	slots_remaining=$((my_slot - RPC_SLOT))
+	 	NEXT_CLR=$BLUE
 	elif [[ "$SLOTS_UNTIL_EPOCH_END" =~ ^-?[0-9]+$ ]]; then # переменная является числом
     	slots_remaining=$SLOTS_UNTIL_EPOCH_END
+		NEXT_CLR=$YELLOW
 	else 
     	slots_remaining=0		
 	fi
 	next_slot_time=$((($slots_remaining * 459) / 60000))
-	if [[ $next_slot_time -lt 2 ]]; then TIME_PRN="$RED$next_slot_time"; else TIME_PRN="$BLUE$next_slot_time"; fi
+	if [[ $next_slot_time -lt 2 ]]; then NEXT_CLR=$RED; fi
  
  	# check health
  	REQUEST=$(curl -s -m 5 http://localhost:8899/health)
@@ -294,15 +298,15 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
-	if [[ $REMOTE_BEHIND -lt 1 && $REMOTE_BEHIND -gt -1000 ]]; then # -1000<REMOTE_BEHIND<1
+	if [[ $REMOTE_BEHIND -le $BEHIND_OK_VAL && $REMOTE_BEHIND -gt -1000 ]]; then # -1000<REMOTE_BEHIND<1
 		remote_behind_warning=0
   		REMOTE_BEHIND_PRN="$GREEN$REMOTE_BEHIND"	
   	else	
-    		let remote_behind_warning=remote_behind_warning+1
+    	let remote_behind_warning=remote_behind_warning+1
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
  	if [[ $CHECK_UP == 'true' ]]; then CHECK_PRN="$GREEN OK$CLEAR"; else CHECK_PRN="$RED warn$CLEAR"; fi
-	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$TIME_PRN$CLEAR, behind:$BEHIND_PRN$CLEAR,$REMOTE_BEHIND_PRN$CLEAR, health $HEALTH_PRN$CLEAR, check$CHECK_PRN $YELLOW$primary_mode$CLEAR      \r"
+	echo -ne "$(TZ=Europe/Moscow date +"%H:%M:%S")  $SERV_TYPE ${NODE}.${NAME}, next:$NEXT_CLR$next_slot_time$CLEAR, behind:$BEHIND_PRN$CLEAR,$REMOTE_BEHIND_PRN$CLEAR, health $HEALTH_PRN$CLEAR, check$CHECK_PRN $YELLOW$primary_mode$CLEAR      \r"
 
  	# check guard running on remote server
  	current_time=$(date +%s)
@@ -454,7 +458,7 @@ if [[ $argument =~ ^[0-9]+$ ]] && [ "$argument" -gt 0 ]; then
     	behind_threshold=$argument # 
 	echo -e "$RED behind threshold = $behind_threshold  $CLEAR"
 else
-    	behind_threshold="0"
+    behind_threshold="0"
 	primary_mode=$argument 
 fi
 if [[ $primary_mode == "p" ]]; then 
