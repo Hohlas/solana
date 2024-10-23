@@ -21,11 +21,12 @@ SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | a
 DISCONNECT_COUNTER=0
 BEHIND_OK_VAL=3 # behind, that seemed ordinary
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
-#==== tg_bot_token ====
+# ==== tg_bot_token ====
+# rpcURL2="https://mainnet.helius-rpc.com/..."
 # CHAT_ALARM=-100...684
 # CHAT_INFO=-100...888
 # BOT_TOKEN=507...lWU
-#======================
+# ======================
 if [ -f "$KEYS/tg_bot_token" ]; then
 	if [ -r "$KEYS/tg_bot_token" ]; then
     	source "$KEYS/tg_bot_token" # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN, rpc_url
