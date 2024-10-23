@@ -1,11 +1,17 @@
 #!/bin/bash
 GUARD_VER=v1.4.2
-#===========================================
+#=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
-#===========================================
+BEHIND_WARNING=false # send telegramm warning missage, when behind
+BEHIND_OK_VAL=3 # behind, that seemed ordinary
+# rpcURL2="https://mainnet.helius-rpc.com..." # Helius RPC
+# CHAT_ALARM=-1001..5684
+# CHAT_INFO=-1001..2888
+# BOT_TOKEN=50762..CllWU
+#======================================================
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
@@ -19,22 +25,16 @@ SITES=("www.google.com" "www.bing.com")
 configDir="$HOME/.config/solana"
 SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
 DISCONNECT_COUNTER=0
-BEHIND_OK_VAL=3 # behind, that seemed ordinary
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
-# ==== tg_bot_token ====
-# rpcURL2="https://mainnet.helius-rpc.com/..."
-# CHAT_ALARM=-100...684
-# CHAT_INFO=-100...888
-# BOT_TOKEN=507...lWU
 # ======================
-if [ -f "$KEYS/tg_bot_token" ]; then
-	if [ -r "$KEYS/tg_bot_token" ]; then
-    	source "$KEYS/tg_bot_token" # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN, rpc_url
+if [ -f "$HOME/guard.cfg" ]; then
+	if [ -r "$HOME/guard.cfg" ]; then
+    	source "$HOME/guard.cfg" # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN, rpc_url
   	else
-    	echo "Error: $KEYS/tg_bot_token exists but is not readable" >&2
+    	echo "Error: $HOME/guard.cfg exists but is not readable" >&2
   	fi
 else
-  	echo "Error: $KEYS/tg_bot_token does not exist" >&2
+  	echo "Error: $HOME/guard.cfg does not exist, set default settings" >&2
 fi
 if [[ -z "$rpcURL2" ]]; then
     rpcURL2=$rpcURL1 # Присваиваем значение rpcURL2, чтобы не было ошибки
@@ -298,7 +298,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		BEHIND_PRN="$RED$BEHIND"
 		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
 			behind_warning=-12 # sent next message after  12*5 seconds
-	 		SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"
+	 		if [[ $BEHIND_WARNING == 'true' ]]; then SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND";
+			else SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"; fi
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
