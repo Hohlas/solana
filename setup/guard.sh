@@ -11,7 +11,7 @@ VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\
 IDENTITY=$(solana address) 
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 rpcURL1=$(solana config get | grep "RPC URL" | awk '{print $3}')
-# rpcURL2 берется из файлла tg_bot_token. Нужен в качестве альтернативного RPC для сравнения значений
+rpcURL2="" # берется из файлла tg_bot_token. Нужен в качестве альтернативного RPC для сравнения значений
 version=$(solana --version | awk '{print $2}')ec
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
