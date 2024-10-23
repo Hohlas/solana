@@ -29,7 +29,11 @@ GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$
 # ======================
 if [ -f "$HOME/guard.cfg" ]; then
 	if [ -r "$HOME/guard.cfg" ]; then
-    	source "$HOME/guard.cfg" # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN, rpc_url
+    	source "$HOME/guard.cfg" # get settings
+     	KEYS=$(echo "$KEYS" | tr -d '\r') # Удаление символа \r, если он есть
+		LEDGER=$(echo "$LEDGER" | tr -d '\r') # Удаление символа \r, если он есть
+      	SOLANA_SERVICE=$(echo "$SOLANA_SERVICE" | tr -d '\r') # Удаление символа \r, если он есть
+	   	BOT_TOKEN=$(echo "$BOT_TOKEN" | tr -d '\r') # Удаление символа \r, если он есть
   	else
     	echo "Error: $HOME/guard.cfg exists but is not readable" >&2
   	fi
