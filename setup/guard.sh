@@ -38,7 +38,7 @@ else
 fi
 if [[ -z "$rpcURL2" ]]; then
     rpcURL2=$rpcURL1 # Присваиваем значение rpcURL2, чтобы не было ошибки
-	echo -e "Warning! $RED rpcURL2 is not defined in $KEYS/tg_bot_token ! $CLEAR"
+	echo -e "Warning! $RED rpcURL2 is not defined in $HOME/guard.cfg ! $CLEAR"
 fi
 
 TIME() {
@@ -501,7 +501,7 @@ SSH "$SOL_BIN/solana address"
 remote_identity=$command_output
 if [ $command_exit_status -ne  0 ]; then
 	echo -e "$RED SSH connection not available  $CLEAR" 
-	return
+	exit 0
 fi
 
 if [ "$remote_identity" = "$IDENTITY" ]; then
@@ -510,7 +510,7 @@ else
     echo -e "$RED Warning! Servers identity are different $CLEAR"
 	echo "Current Identity = $IDENTITY"
 	echo "Remote Identity  = $remote_identity"
-	return
+	exit 0
 fi
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
