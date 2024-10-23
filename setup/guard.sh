@@ -215,9 +215,9 @@ echo "current IP=$CUR_IP" | tee -a ~/guard.log
 echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a ~/guard.log
 echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) $CLEAR" | tee -a ~/guard.log
 if [ -z "$NAME" ]; then NAME=$(hostname); fi
-if [ $rpcURL = https://api.testnet.solana.com ]; then 
+if [ $rpcURL1 = https://api.testnet.solana.com ]; then 
 NODE="test"
-elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
+elif [ $rpcURL1 = https://api.mainnet-beta.solana.com ]; then 
 NODE="main"
 fi
 echo " $NODE.$NAME $version-$client"
@@ -229,7 +229,7 @@ slots_remaining=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	Request_OK='true'
-	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL 2>> ~/guard.log)
+	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; fi
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
  	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
