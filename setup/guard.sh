@@ -208,8 +208,8 @@ echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
 echo "current IP=$CUR_IP" | tee -a ~/guard.log
 echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a ~/guard.log
 echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) $CLEAR" | tee -a ~/guard.log
-echo -e "RPC1:$BLUE rpcURL1$CLEAR" | tee -a ~/guard.log
-echo -e "RPC2:$BLUE rpcURL2$CLEAR" | tee -a ~/guard.log
+echo -e "RPC1:$BLUE$rpcURL1$CLEAR" | tee -a ~/guard.log
+echo -e "RPC2:$BLUE$rpcURL2$CLEAR" | tee -a ~/guard.log
 if [ -z "$NAME" ]; then NAME=$(hostname); fi
 if [ $rpcURL1 = https://api.testnet.solana.com ]; then 
 NODE="test"
@@ -234,17 +234,17 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then
-    	echo "$(date) Error retrieving epoch info" >> ~/guard.log
-    	exit 1
-	fi
-	SLOTS_IN_EPOCH=$(echo "$EPOCH_INFO" | jq '.slotsInEpoch')
-	SLOT_INDEX=$(echo "$EPOCH_INFO" | jq '.slotIndex')
-	SLOTS_UNTIL_EPOCH_END=$(echo "$SLOTS_IN_EPOCH - $SLOT_INDEX" | bc)
- 
+    	echo "$(date) Error retrieving epoch info: $EPOCH_INFO" >> ~/guard.log
+	 	SLOTS_UNTIL_EPOCH_END=0
+	else
+		SLOTS_IN_EPOCH=$(echo "$EPOCH_INFO" | jq '.slotsInEpoch')
+		SLOT_INDEX=$(echo "$EPOCH_INFO" | jq '.slotIndex')
+		SLOTS_UNTIL_EPOCH_END=$(echo "$SLOTS_IN_EPOCH - $SLOT_INDEX" | bc)
+ 	fi
 	# next slot time
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
-	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
-	if [[ "$my_slot" =~ ^-?[0-9]+$ && "$RPC_SLOT" =~ ^-?[0-9]+$ ]]; then  # переменные являются числами
+	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
+	if [[ $Request_OK == 'true' && "$my_slot" =~ ^-?[0-9]+$ && "$RPC_SLOT" =~ ^-?[0-9]+$ ]]; then  # переменные являются числами
     	slots_remaining=$((my_slot - RPC_SLOT))
 	 	NEXT_CLR=$BLUE
 	elif [[ "$SLOTS_UNTIL_EPOCH_END" =~ ^-?[0-9]+$ ]]; then # переменная является числом
@@ -258,8 +258,11 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  
  	# check health
  	REQUEST=$(curl -s -m 5 http://localhost:8899/health)
-  	if [ $? -ne 0 ]; then echo "$(TIME) Error, health request=$HEALTH " | tee -a ~/guard.log; 
-	else HEALTH=$REQUEST; fi
+  	if [ $? -ne 0 ]; then 
+   		echo "$(TIME) Error, health request=$HEALTH " | tee -a ~/guard.log; 
+	else 
+ 		HEALTH=$REQUEST; 
+   	fi
 	if [[ -z $HEALTH ]]; then # if $HEALTH is empty (must be 'ok')
 		HEALTH="Warning!"
 	fi
