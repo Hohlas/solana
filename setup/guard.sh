@@ -39,12 +39,6 @@ if [[ -z "$rpcURL2" ]]; then
     rpcURL2=$rpcURL1 # Присваиваем значение rpcURL2, чтобы не было ошибки
 	echo -e "$RED Warning! rpcURL2 is not defined in $KEYS/tg_bot_token ! $CLEAR"
 fi
-half1=${BOT_TOKEN%%:*}
-half2=${BOT_TOKEN#*:}
-if [[ -z "$half1" || -z "$half2" ]]; then
-  	echo -e "Warning! Can't read telegram bot token from $KEYS/tg_bot_token"
-fi
-BOT_TOKEN="$half1:$half2"
 
 TIME() {
 	TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
