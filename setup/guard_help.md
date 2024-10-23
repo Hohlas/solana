@@ -111,14 +111,19 @@ ln -sf /mnt/keys ~/keys
 ln -sf /mnt/keys/vote-keypair.json ~/solana/vote.json
 ln -sf /mnt/keys/validator-keypair.json ~/solana/validator-keypair.json
 ```
-Для работы телеграм бота требуется файл ~/keys/tg_bot_token вида
+Настройки находятся в файле ~/guard.cfg
 ```bash
+PORT='22' # remote server ssh port
+KEYS=$HOME/keys
+LEDGER=$HOME/solana/ledger
+SOLANA_SERVICE=$HOME/solana/solana.service
+BEHIND_OK_VAL=3 # behind, that seemed ordinary
+BEHIND_WARNING=true
 rpcURL2="https://mainnet.helius-rpc.com/..." # Helius RPC
-CHAT_ALARM=-1001...3684
-CHAT_INFO=-1001...2888
-BOT_TOKEN=507625......VICllWU
+CHAT_ALARM=-100..684
+CHAT_INFO=-100..888
+BOT_TOKEN=507625...VICllWU
 ```
-Бот Токен должен находиться в конце файла, после него не должно быть пробелов и строк.
 Ключи private_key.ssh от обоих серверов должны находиться в папках ~/keys.
 В первый раз скрипт резервного сервера должен запускаться перед запуском на основном сервере. 
 При этом на основной сервер копируется файл с IP адресом резервного. Даллее порядок запуска не имеет значения.  
