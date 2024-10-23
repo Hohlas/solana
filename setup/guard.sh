@@ -228,11 +228,25 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
  	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
 	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then BEHIND=$((RPC_SLOT - LOCAL_SLOT)); fi
-	
+
+	# epoch info
+	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
+	if [[ $? -ne 0 ]]; then
+    	echo "$(date) Error retrieving epoch info" >> ~/guard.log
+    	exit 1
+	fi
+	SLOTS_IN_EPOCH=$(echo "$EPOCH_INFO" | jq '.slotsInEpoch')
+	SLOT_INDEX=$(echo "$EPOCH_INFO" | jq '.slotIndex')
+	SLOTS_UNTIL_EPOCH_END=$(echo "$SLOTS_IN_EPOCH - $SLOT_INDEX" | bc)
+ 
 	# next slot time
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
-	if [[ -n "$RPC_SLOT" && -n "$my_slot" ]]; then slots_remaining=$((my_slot-RPC_SLOT)); fi
+	if [[ -n "$RPC_SLOT" && -n "$my_slot" ]]; then 
+ 		slots_remaining=$((my_slot-RPC_SLOT)); 
+	else
+		slots_remaining=$SLOTS_UNTIL_EPOCH_END
+	fi
 	next_slot_time=$((($slots_remaining * 459) / 60000))
 	#if [[ $next_slot_time -lt 0 ]]; then next_slot_time='none'; fi 
 	if [[ $next_slot_time -lt 2 ]]; then TIME_PRN="$RED$next_slot_time"; else TIME_PRN="$BLUE$next_slot_time"; fi
