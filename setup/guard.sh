@@ -58,6 +58,7 @@ REQUEST_IP(){
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
 		echo "$(TIME) Error in gossip request for RPC $RPC_URL" | tee -a ~/guard.log
+  		echo "VALIDATOR_REQUEST= $VALIDATOR_REQUEST" >> ~/guard.log
 		#return 1
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
