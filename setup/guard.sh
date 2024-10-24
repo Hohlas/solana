@@ -101,7 +101,7 @@ RPC_REQUEST() {
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
-	# sleep 3
+	sleep 1
     else    
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
