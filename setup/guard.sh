@@ -53,31 +53,26 @@ TIME() {
 
 
 REQUEST_IP(){
-	sleep 0.5; echo "$(TIME) REQUEST_IP" >> ~/guard.log;
+	sleep 0.5
 	local RPC_URL="$1"
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
 		echo "$(TIME) Error in gossip request for RPC $RPC_URL" | tee -a ~/guard.log
-  		echo "$VALIDATOR_REQUEST"
-		return 1
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
 		echo "$(TIME) Error: validator request emty" | tee -a ~/guard.log;
-		return 1 
 	fi	
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
 REQUEST_DELINK(){
-	sleep 0.5; echo "$(TIME) REQUEST_DELINK" >> ~/guard.log;
+	sleep 0.5
 	local RPC_URL="$1"
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
 		echo "$(TIME) Error in validators list request for RPC $RPC_URL" | tee -a ~/guard.log; 
-		#return 1 
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
 		echo "$(TIME) Error: validators list emty" | tee -a ~/guard.log;
-		#return 1 
 	fi	
 	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
@@ -139,9 +134,9 @@ RPC_REQUEST() {
   		if [[ $percentage -lt 70 ]]; then 
 			REQUEST_ANSWER="";
    			echo -e "$(TIME) Error: REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
-	  		fi
+	  	fi
 	fi	
-	# echo "$REQUEST_ANSWER"
+	echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  ~/guard.log
 	}
 
 
