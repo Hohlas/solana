@@ -363,7 +363,7 @@ PRIMARY_SERVER(){ ##############################################################
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-  		sleep 3
+  		sleep 1
 	done
 	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
 	}
