@@ -60,11 +60,10 @@ REQUEST_IP(){
 	local RPC_URL="$1"
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
-		LOG "Error in gossip request for RPC $RPC_URL"
-  		echo "$VALIDATOR_REQUEST"
+		echo "Error in gossip request for RPC $RPC_URL" >> ~/guard.log
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
-		LOG "Error: validator request emty"
+		echo "Error: validator request emty" >> ~/guard.log
 	fi	
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
@@ -73,11 +72,10 @@ REQUEST_DELINK(){
 	local RPC_URL="$1"
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
-		LOG "Error in validators list request for RPC $RPC_URL" 
-  		echo "$VALIDATOR_REQUEST"
+		echo "Error in validators list request for RPC $RPC_URL" >> ~/guard.log
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
-		LOG "Error: validators list emty"
+		echo "Error: validators list emty" >> ~/guard.log
 	fi	
 	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
