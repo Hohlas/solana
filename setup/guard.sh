@@ -132,7 +132,7 @@ RPC_REQUEST() {
     	else 
       		CLR1=$YELLOW; CLR2=$GREEN;
     	fi 
-    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=$CLR1$REQUEST1$CLEAR, RPC2=$CLR2$REQUEST2$CLEAR" | tee -a ~/guard.log	
+    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=$CLR1$REQUEST1$CLEAR, RPC2=$CLR2$REQUEST2$CLEAR.     " | tee -a ~/guard.log	
   		if [[ $percentage -lt 70 ]]; then 
 			REQUEST_ANSWER="";
    			echo -e "$(TIME) Error: REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
@@ -237,7 +237,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then 
  		BEHIND=$((RPC_SLOT - LOCAL_SLOT)); 
    else
-   		BEHIND=999;
+   		BEHIND="?";
    fi
 	sleep 0.5
 	# epoch info
