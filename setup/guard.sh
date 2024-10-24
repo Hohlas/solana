@@ -101,7 +101,6 @@ RPC_REQUEST() {
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
-	sleep 1
     else    
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
@@ -239,7 +238,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
  	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
 	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then BEHIND=$((RPC_SLOT - LOCAL_SLOT)); fi
-	sleep 0.2
+	sleep 0.5
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then
