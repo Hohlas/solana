@@ -50,7 +50,10 @@ fi
 TIME() {
 	TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 	}
-
+LOG() {
+    local message="$1"
+    echo "$(TIME) $message" | tee -a ~/guard.log  # Записываем в лог
+	}
 
 REQUEST_IP(){
 	sleep 0.5
