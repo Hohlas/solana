@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.4.2
+GUARD_VER=v1.4.3
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -9,6 +9,7 @@ BEHIND_WARNING=false # 'false'- send telegramm INFO missage, when behind. 'true'
 WARNING_FREQUENCY=12 # max frequency of warning messages (WARNING_FREQUENCY x 5) seconds
 BEHIND_OK_VAL=3 # behind, that seemed ordinary
 RELAYER_SERVICE=false # use restarting jito-relayer service
+configDir="$HOME/.config/solana"
 # rpcURL2="https://mainnet.helius-rpc.com..." # Helius RPC
 # CHAT_ALARM=-1001..5684
 # CHAT_INFO=-1001..2888
@@ -24,9 +25,7 @@ version=$(solana --version | awk '{print $2}')ec
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
-configDir="$HOME/.config/solana"
 SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
-DISCONNECT_COUNTER=0
 GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
 # ======================
 if [ -f "$HOME/guard.cfg" ]; then
@@ -53,6 +52,7 @@ TIME() {
 
 
 REQUEST_IP(){
+	sleep 0.5
 	local RPC_URL="$1"
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
@@ -66,6 +66,7 @@ REQUEST_IP(){
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
 REQUEST_DELINK(){
+	sleep 0.5
 	local RPC_URL="$1"
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
@@ -98,16 +99,14 @@ RPC_REQUEST() {
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
-		sleep 5
+		sleep 3
     else    
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
 		declare -A request_count
 		for i in {1..10}; do 
 			RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
-   			sleep 0.5
 			RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
-			sleep 0.5
 			[[ -n "$RQST1" ]] && ((request_count["$RQST1"]++)) # Увеличиваем счётчики 
 			[[ -n "$RQST2" ]] && ((request_count["$RQST2"]++)) # для каждого вызова
 		done
@@ -225,10 +224,11 @@ NODE="main"
 fi
 echo " $NODE.$NAME $version-$client"
 
-health_warning=0
-behind_warning=0
-remote_behind_warning=0
+health_counter=0
+behind_counter=0
+remote_behind_counter=0
 slots_remaining=0
+disconnect_counter=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	Request_OK='true'
@@ -237,7 +237,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
  	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
 	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then BEHIND=$((RPC_SLOT - LOCAL_SLOT)); fi
-
+	sleep 0.2
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then
@@ -274,46 +274,46 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		HEALTH="Warning!"
 	fi
 	
-	if [[ $health_warning -eq 0 && $behind_warning -eq 0 ]]; then # check 'health' & 'behind' from last requests
+	if [[ $health_counter -eq 0 && $behind_counter -eq 0 ]]; then # check 'health' & 'behind' from last requests
 		CHECK_UP='true' # 'health' and 'behind' must be fine twice: last and current requests
 	else 	
 		CHECK_UP='false' 
 	fi	
  	if [[ $HEALTH == "ok" ]]; then
-		health_warning=0
+		health_counter=0
 		HEALTH_PRN="$GREEN$HEALTH"
 	else
 		CHECK_UP='false' 
 		HEALTH_PRN="$RED$HEALTH"
-		let health_warning=health_warning+1
-		echo "$(TIME) Health=$HEALTH, health_warning=$health_warning, CHECK_UP=$CHECK_UP    " | tee -a ~/guard.log  # log every warning_message
-		if [[ $health_warning -ge 1 ]]; then # 
-			health_warning=-$WARNING_FREQUENCY
+		let health_counter=health_counter+1
+		echo "$(TIME) Health=$HEALTH, health_counter=$health_counter, CHECK_UP=$CHECK_UP    " | tee -a ~/guard.log  # log every warning_message
+		if [[ $health_counter -ge 1 ]]; then # 
+			health_counter=-$WARNING_FREQUENCY
 			SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
 		fi
 	fi  
 	
 	# check behind
 	if [[ $BEHIND -le $BEHIND_OK_VAL && $BEHIND -gt -1000 ]]; then # must be: -1000<BEHIND<1 
-		behind_warning=0
+		behind_counter=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
 		CHECK_UP='false'
-  		let behind_warning=behind_warning+1
+  		let behind_counter=behind_counter+1
 		echo "$(TIME) Behind=$BEHIND    " | tee -a ~/guard.log  # log every warning_message
 		BEHIND_PRN="$RED$BEHIND"
-		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge $BEHIND_OK_VAL ]]; then # 
-			behind_warning=-$WARNING_FREQUENCY # sent next message after  12*5 seconds
+		if [[ $behind_counter -ge 3 ]] && [[ $BEHIND -ge $BEHIND_OK_VAL ]]; then # 
+			behind_counter=-$WARNING_FREQUENCY # sent next message after  12*5 seconds
 	 		if [[ $BEHIND_WARNING == 'true' ]]; then SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND";
 			else SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"; fi
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
 	if [[ $REMOTE_BEHIND -le $BEHIND_OK_VAL && $REMOTE_BEHIND -gt -1000 ]]; then # -1000<REMOTE_BEHIND<1
-		remote_behind_warning=0
+		remote_behind_counter=0
   		REMOTE_BEHIND_PRN="$GREEN$REMOTE_BEHIND"	
   	else	
-    	let remote_behind_warning=remote_behind_warning+1
+    	let remote_behind_counter=remote_behind_counter+1
 		REMOTE_BEHIND_PRN="$RED$REMOTE_BEHIND"; 
 	fi
  	if [[ $CHECK_UP == 'true' ]]; then CHECK_PRN="$GREEN OK$CLEAR"; else CHECK_PRN="$RED warn$CLEAR"; fi
@@ -342,16 +342,15 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
     done
     # connection losses counter
     if [ "$connection" = false ]; then
-        let DISCONNECT_COUNTER=DISCONNECT_COUNTER+1
-        echo "$(TIME) connection failed, attempt $DISCONNECT_COUNTER" | tee -a ~/guard.log
+        let disconnect_counter=disconnect_counter+1
+        echo "$(TIME) connection failed, attempt $disconnect_counter" | tee -a ~/guard.log
     else
-        DISCONNECT_COUNTER=0
+        disconnect_counter=0
     fi
     # connection loss for 15 seconds (5sec * 3)
-    if [ $DISCONNECT_COUNTER -ge 3 ]; then
+    if [ $disconnect_counter -ge 3 ]; then
         # bash "$CONNECTION_LOSS_SCRIPT" # no need to vote_off in offline
         systemctl restart solana
-        systemctl stop jito-relayer.service
 	SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Connection loss, RESTART SOLANA"
 	fi
   }
@@ -363,7 +362,6 @@ PRIMARY_SERVER(){ ##############################################################
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-  		sleep 2
 	done
 	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
 	}
@@ -379,7 +377,7 @@ SECONDARY_SERVER(){ ############################################################
 		if [[ $Delinquent == true ]]; then
 			set_primary=2; 	REASON="Delinquent"; echo "$(TIME) Warning! Delinquent detected! " | tee -a ~/guard.log;
 		fi
-		if [[ $behind_threshold -ge 1 ]] && [[ $remote_behind_warning -ge $behind_threshold ]]; then
+		if [[ $behind_threshold -ge 1 ]] && [[ $remote_behind_counter -ge $behind_threshold ]]; then
 			set_primary=2; 	REASON="Behind too long"; echo "$(TIME) Warning! Behind detected! " | tee -a ~/guard.log;
 		fi
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 1 ]]; then
