@@ -101,7 +101,7 @@ RPC_REQUEST() {
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
-		sleep 3
+	# sleep 3
     else    
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
@@ -364,6 +364,7 @@ PRIMARY_SERVER(){ ##############################################################
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
+  		sleep 3
 	done
 	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
 	}
