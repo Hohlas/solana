@@ -315,7 +315,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
-	if [[ $REMOTE_BEHIND -le $BEHIND_OK_VAL && $REMOTE_BEHIND -gt -1000 ]]; then # -1000<REMOTE_BEHIND<1
+	if [[ "$BEHIND" =~ ^-?[0-9]+$ && $REMOTE_BEHIND -le $BEHIND_OK_VAL && $REMOTE_BEHIND -gt -1000 ]]; then # проверка на "число" и -1000<REMOTE_BEHIND<1
 		remote_behind_counter=0
   		REMOTE_BEHIND_PRN="$GREEN$REMOTE_BEHIND"	
   	else	
