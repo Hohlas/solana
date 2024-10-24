@@ -60,10 +60,10 @@ REQUEST_IP(){
 	local RPC_URL="$1"
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
-		echo "$(TIME) Error in gossip request for RPC $RPC_URL" | tee -a ~/guard.log
+		LOG "Error in gossip request for RPC $RPC_URL"
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
-		echo "$(TIME) Error: validator request emty" | tee -a ~/guard.log;
+		LOG "Error: validator request emty"
 	fi	
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
@@ -72,10 +72,10 @@ REQUEST_DELINK(){
 	local RPC_URL="$1"
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
-		echo "$(TIME) Error in validators list request for RPC $RPC_URL" | tee -a ~/guard.log; 
+		LOG "Error in validators list request for RPC $RPC_URL" 
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
-		echo "$(TIME) Error: validators list emty" | tee -a ~/guard.log;
+		LOG "Error: validators list emty"
 	fi	
 	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
@@ -122,7 +122,7 @@ RPC_REQUEST() {
 		done
 
 		if [[ -z "$most_frequent_answer" ]]; then
-			echo "$(TIME) Error: No valid request answer found after retries." | tee -a ~/guard.log
+			LOG "Error: No valid request answer found after retries."
 			return 1
 		fi	
 		REQUEST_ANSWER="$most_frequent_answer"
@@ -132,8 +132,7 @@ RPC_REQUEST() {
     	else 
       		CLR1=$RED; CLR2=$GREEN;
     	fi 
-    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=$CLR1$REQUEST1$CLEAR, RPC2=$CLR2$REQUEST2$CLEAR"
-		echo "$(TIME) Warning! Different answers[$percentage%]: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log	
+    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=$CLR1$REQUEST1$CLEAR, RPC2=$CLR2$REQUEST2$CLEAR" | tee -a ~/guard.log	
   		if [[ $percentage -lt 70 ]]; then 
 			REQUEST_ANSWER="";
    			echo -e "$(TIME) Error: REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
@@ -150,7 +149,7 @@ GET_VOTING_IP(){
     # Получаем IP-адрес голосующего валидатора 
 	RPC_REQUEST "IP"  
  	if [ -z "$REQUEST_ANSWER" ]; then
-		echo "$(TIME) Error: VOTING_IP empty, keep previous value" | tee -a ~/guard.log;
+		LOG "Error: VOTING_IP empty, keep previous value"
 		return 1 
 	fi
 	VOTING_IP=$REQUEST_ANSWER
@@ -158,7 +157,7 @@ GET_VOTING_IP(){
     # Получаем локальный валидатор
     #local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
     #if [[ $? -ne 0 ]]; then
-        #echo "$(TIME) Error defining local_validator" >> ~/guard.log
+        #LOG "Error defining local_validator"
         #return 1
     #fi
     # Проверяем текущий IP и устанавливаем тип сервера
@@ -188,15 +187,15 @@ SSH(){
   	command_exit_status=$?
   	if [ $command_exit_status -ne 0 ]; then
     	echo "$(TIME) SSH Error: command_output=$command_output" >> ~/guard.log
-    	echo "$(TIME) SSH Error: command_exit_status=$command_exit_status" | tee -a ~/guard.log
+    	LOG "SSH Error: command_exit_status=$command_exit_status"
     	if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
-			echo "$(TIME) remote server $REMOTE_IP ping OK" | tee -a ~/guard.log
+			LOG "remote server $REMOTE_IP ping OK"
 		else
-			echo "$(TIME) Error: remote server $REMOTE_IP did not ping" | tee -a ~/guard.log
+			LOG "Error: remote server $REMOTE_IP did not ping"
 			if ping -c 3 -W 3 "www.google.com" > /dev/null 2>&1; then
-				echo "$(TIME) Google ping OK" | tee -a ~/guard.log
+				LOG "Google ping OK"
 			else
-				echo "$(TIME) Error: Google did not ping too" | tee -a ~/guard.log
+				LOG "Error: Google did not ping too"
 			fi
 		fi
 		if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
@@ -249,7 +248,10 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	fi
 	# next slot time
 	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
-	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in leader schedule request" | tee -a ~/guard.log; fi
+	if [[ $? -ne 0 ]]; then 
+ 		Request_OK='false'; 
+   		LOG "Error in leader schedule request"; 
+   fi
 	if [[ $Request_OK == 'true' && "$my_slot" =~ ^-?[0-9]+$ && "$RPC_SLOT" =~ ^-?[0-9]+$ ]]; then  # переменные являются числами
     	slots_remaining=$((my_slot - RPC_SLOT))
 	 	NEXT_CLR=$BLUE
@@ -265,7 +267,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	# check health
  	REQUEST=$(curl -s -m 5 http://localhost:8899/health)
   	if [ $? -ne 0 ]; then 
-   		echo "$(TIME) Error, health request=$HEALTH " | tee -a ~/guard.log; 
+   		LOG "Error, health request=$HEALTH " 
 	else 
  		HEALTH=$REQUEST; 
    	fi
@@ -285,7 +287,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		CHECK_UP='false' 
 		HEALTH_PRN="$RED$HEALTH"
 		let health_counter=health_counter+1
-		echo "$(TIME) Health=$HEALTH, health_counter=$health_counter, CHECK_UP=$CHECK_UP    " | tee -a ~/guard.log  # log every warning_message
+		LOG "Health=$HEALTH, health_counter=$health_counter, CHECK_UP=$CHECK_UP    "  # log every warning_message
 		if [[ $health_counter -ge 1 ]]; then # 
 			health_counter=-$WARNING_FREQUENCY
 			SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
@@ -299,7 +301,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	else
 		CHECK_UP='false'
   		let behind_counter=behind_counter+1
-		echo "$(TIME) Behind=$BEHIND    " | tee -a ~/guard.log  # log every warning_message
+		LOG "Behind=$BEHIND    "  # log every warning_message
 		BEHIND_PRN="$RED$BEHIND"
 		if [[ $behind_counter -ge 3 ]] && [[ $BEHIND -ge $BEHIND_OK_VAL ]]; then # 
 			behind_counter=-$WARNING_FREQUENCY # sent next message after  12*5 seconds
@@ -342,7 +344,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
     # connection losses counter
     if [ "$connection" = false ]; then
         let disconnect_counter=disconnect_counter+1
-        echo "$(TIME) connection failed, attempt $disconnect_counter" | tee -a ~/guard.log
+        LOG "connection failed, attempt $disconnect_counter"
     else
         disconnect_counter=0
     fi
@@ -375,10 +377,10 @@ SECONDARY_SERVER(){ ############################################################
 		RPC_REQUEST "DELINK"
 		Delinquent=$REQUEST_ANSWER
 		if [[ $Delinquent == true ]]; then
-			set_primary=2; 	REASON="Delinquent"; echo "$(TIME) Warning! Delinquent detected! " | tee -a ~/guard.log;
+			set_primary=2; 	REASON="Delinquent"; LOG "Warning! Delinquent detected! "
 		fi
 		if [[ $behind_threshold -ge 1 ]] && [[ $remote_behind_counter -ge $behind_threshold ]]; then
-			set_primary=2; 	REASON="Behind too long"; echo "$(TIME) Warning! Behind detected! " | tee -a ~/guard.log;
+			set_primary=2; 	REASON="Behind too long"; LOG "Warning! Behind detected! "
 		fi
 		if [[ $primary_mode == "permanent_primary" && next_slot_time -ge 1 ]]; then
 			set_primary=2; 	REASON="set Permanent Primary mode"; 
@@ -390,8 +392,8 @@ SECONDARY_SERVER(){ ############################################################
        	fi
 	done
 		# STOP SOLANA on REMOTE server
-  	echo "$(TIME) Let's stop voting on remote server " | tee -a ~/guard.log
-   	echo "$(TIME) CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary " | tee -a ~/guard.log
+  	LOG "Let's stop voting on remote server "
+   	LOG "CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary "
 	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
@@ -399,38 +401,38 @@ SECONDARY_SERVER(){ ############################################################
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
 		SEND_ALARM "Can't set identity on remote server"
-  		echo "$(TIME) Try to restart solana on remote server" | tee -a ~/guard.log
+  		LOG "Try to restart solana on remote server"
 		SSH "systemctl restart solana 2>&1"
     	if [ $command_exit_status -eq 0 ]; then
 			MSG=$(printf "$MSG \n%s restart solana on remote server")
       	else
 			SEND_ALARM "Can't restart solana on REMOTE server"
 			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
-   				echo "$(TIME) Remote server ping OK, so can't start voting in current situation" | tee -a ~/guard.log
+   				LOG "Remote server ping OK, so can't start voting in current situation"
 				return
 			fi
 			SEND_ALARM "Can't ping REMOTE server"
 		fi
 	fi
 	# remove old tower before
- 	echo "$(TIME) Let's start voting on current server" | tee -a ~/guard.log
+ 	LOG "Let's start voting on current server"
 	rm $LEDGER/tower-1_9-$IDENTITY.bin 
 	remove_status=$?
-	if [ $remove_status -eq 0 ]; then echo "$(TIME) remove old tower OK" | tee -a ~/guard.log
-	else echo "$(TIME) remove old tower Error: $remove_status" | tee -a ~/guard.log
+	if [ $remove_status -eq 0 ]; then LOG "remove old tower OK"
+	else LOG "remove old tower Error: $remove_status"
 	fi
 	# copy tower from remote server
 	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
 	copy_status=$?
-	if [ $copy_status -eq 0 ]; then echo "$(TIME) copy tower from $SERV OK" | tee -a ~/guard.log
-	elif [ $copy_status -eq 124 ]; then echo "$(TIME) copy tower from $SERV timeout exceed" | tee -a ~/guard.log
-	else echo "$(TIME) copy tower from $SERV Error: $copy_status" | tee -a ~/guard.log
+	if [ $copy_status -eq 0 ]; then LOG "copy tower from $SERV OK"
+	elif [ $copy_status -eq 124 ]; then LOG "copy tower from $SERV timeout exceed"
+	else LOG "copy tower from $SERV Error: $copy_status"
 	fi
 	# stop telegraf service on remote server
 	SSH "systemctl stop telegraf"
-	if [ $command_exit_status -eq 0 ]; then echo "$(TIME) stop telegraf on remote server OK" | tee -a ~/guard.log
-	elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) stop telegraf on remote server timeout exceed" | tee -a ~/guard.log
- 	else echo "$(TIME) stop telegraf on remote server Error" | tee -a ~/guard.log
+	if [ $command_exit_status -eq 0 ]; then LOG "stop telegraf on remote server OK"
+	elif [ $command_exit_status -eq 124 ]; then LOG "stop telegraf on remote server timeout exceed"
+ 	else LOG "stop telegraf on remote server Error"
 	fi
  	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
@@ -439,24 +441,24 @@ SECONDARY_SERVER(){ ############################################################
 		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	fi
 	set_identity_status=$?
-	if [ $set_identity_status -eq 0 ]; then echo "$(TIME) set identity$TOWER_STATUS OK" | tee -a ~/guard.log
-	else echo "$(TIME) set identity Error: $set_identity_status" | tee -a ~/guard.log
+	if [ $set_identity_status -eq 0 ]; then LOG "set identity$TOWER_STATUS OK"
+	else LOG "set identity Error: $set_identity_status"
 	fi
 	# stop relayer service on remote server
  	if [[ $RELAYER_SERVICE == 'true' ]]; then 
  		SSH "systemctl stop relayer.service" 
-   		if [ $command_exit_status -eq 0 ]; then echo "$(TIME) stop relayer on remote server OK" | tee -a ~/guard.log
-		elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) stop relayer on remote server timeout exceed" | tee -a ~/guard.log
- 		else echo "$(TIME) stop relayer on remote server Error" | tee -a ~/guard.log
+   		if [ $command_exit_status -eq 0 ]; then LOG "stop relayer on remote server OK"
+		elif [ $command_exit_status -eq 124 ]; then LOG "stop relayer on remote server timeout exceed"
+ 		else LOG "stop relayer on remote server Error"
 		fi
 		systemctl start relayer.service
   		MSG=$(printf "$MSG \n%s restart relayer service")
 	fi
  	systemctl start telegraf
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
-	echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
+	LOG "waiting for PRIMARY status"
 	while [ $SERV_TYPE = "SECONDARY" ]; do
- 		# echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
+ 		# LOG "waiting for PRIMARY status"
    		GET_VOTING_IP
      	CHECK_HEALTH
  	done
