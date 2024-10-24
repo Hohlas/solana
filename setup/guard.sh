@@ -5,8 +5,10 @@ PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
-BEHIND_WARNING=false # send telegramm warning missage, when behind
+BEHIND_WARNING=false # 'false'- send telegramm INFO missage, when behind. 'true'-send ALERT message
+WARNING_FREQUENCY=12 # max frequency of warning messages (WARNING_FREQUENCY x 5) seconds
 BEHIND_OK_VAL=3 # behind, that seemed ordinary
+RELAYER_SERVICE=false # use restarting jito-relayer service
 # rpcURL2="https://mainnet.helius-rpc.com..." # Helius RPC
 # CHAT_ALARM=-1001..5684
 # CHAT_INFO=-1001..2888
@@ -286,7 +288,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		let health_warning=health_warning+1
 		echo "$(TIME) Health=$HEALTH, health_warning=$health_warning, CHECK_UP=$CHECK_UP    " | tee -a ~/guard.log  # log every warning_message
 		if [[ $health_warning -ge 1 ]]; then # 
-			health_warning=-12
+			health_warning=-$WARNING_FREQUENCY
 			SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
 		fi
 	fi  
@@ -300,8 +302,8 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
   		let behind_warning=behind_warning+1
 		echo "$(TIME) Behind=$BEHIND    " | tee -a ~/guard.log  # log every warning_message
 		BEHIND_PRN="$RED$BEHIND"
-		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge 3 ]]; then # 
-			behind_warning=-12 # sent next message after  12*5 seconds
+		if [[ $behind_warning -ge 3 ]] && [[ $BEHIND -ge $BEHIND_OK_VAL ]]; then # 
+			behind_warning=-$WARNING_FREQUENCY # sent next message after  12*5 seconds
 	 		if [[ $BEHIND_WARNING == 'true' ]]; then SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND";
 			else SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: Behind=$BEHIND"; fi
 		fi
@@ -432,10 +434,7 @@ SECONDARY_SERVER(){ ############################################################
 	elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) stop telegraf on remote server timeout exceed" | tee -a ~/guard.log
  	else echo "$(TIME) stop telegraf on remote server Error" | tee -a ~/guard.log
 	fi
- 	# echo "  stop jito-relayer on REMOTE server"
-	# ssh -o ConnectTimeout=5 REMOTE systemctl stop jito-relayer.service
-
-	# START SOLANA on LOCAL server
+ 	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
 		TOWER_STATUS=' with tower'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	else
@@ -445,11 +444,12 @@ SECONDARY_SERVER(){ ############################################################
 	if [ $set_identity_status -eq 0 ]; then echo "$(TIME) set identity$TOWER_STATUS OK" | tee -a ~/guard.log
 	else echo "$(TIME) set identity Error: $set_identity_status" | tee -a ~/guard.log
 	fi
-	# update telegraf
-	# sed -i "/^  hostname = /c\  hostname = \"$NAME\"" /etc/telegraf/telegraf.conf
-	systemctl start telegraf
-	# systemctl start jito-relayer.service
-	# MSG=$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")
+	if [[ $RELAYER_SERVICE == 'true' ]]; then 
+ 		SSH "systemctl stop relayer.service"
+		systemctl start relayer.service
+  		MSG=$(printf "$MSG \n%s restart jito-relayer service")
+	fi
+ 	systemctl start telegraf
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	echo "$(TIME) waiting for PRIMARY status" | tee -a ~/guard.log
 	while [ $SERV_TYPE = "SECONDARY" ]; do
