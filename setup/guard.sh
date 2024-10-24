@@ -61,6 +61,7 @@ REQUEST_IP(){
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
 		LOG "Error in gossip request for RPC $RPC_URL"
+  		echo "$VALIDATOR_REQUEST"
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
 		LOG "Error: validator request emty"
@@ -73,6 +74,7 @@ REQUEST_DELINK(){
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
 		LOG "Error in validators list request for RPC $RPC_URL" 
+  		echo "$VALIDATOR_REQUEST"
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
 		LOG "Error: validators list emty"
