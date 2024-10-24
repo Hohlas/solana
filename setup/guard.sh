@@ -159,11 +159,11 @@ GET_VOTING_IP(){
 	VOTING_IP=$REQUEST_ANSWER
     SERV="$USER@$VOTING_IP"
     # Получаем локальный валидатор
-    local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
-    if [[ $? -ne 0 ]]; then
-        echo "$(TIME) Error defining local_validator" >> ~/guard.log
-        return 1
-    fi
+    #local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+    #if [[ $? -ne 0 ]]; then
+        #echo "$(TIME) Error defining local_validator" >> ~/guard.log
+        #return 1
+    #fi
     # Проверяем текущий IP и устанавливаем тип сервера
     if [[ "$CUR_IP" == "$VOTING_IP" ]]; then
         SERV_TYPE='PRIMARY'
