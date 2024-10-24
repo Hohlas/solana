@@ -371,6 +371,7 @@ PRIMARY_SERVER(){ ##############################################################
   		sleep 1
 	done
 	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
+ 	sleep 20
 	}
 	
 SECONDARY_SERVER(){ ##################################################################
