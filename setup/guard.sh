@@ -128,9 +128,9 @@ RPC_REQUEST() {
 		REQUEST_ANSWER="$most_frequent_answer"
   		percentage=$(( (max_count * 100) / 20 ))
   		if [[ "$REQUEST1" == "$REQUEST_ANSWER" ]]; then 
-       		CLR1=$GREEN; CLR2=$RED;
+       		CLR1=$GREEN; CLR2=$YELLOW;
     	else 
-      		CLR1=$RED; CLR2=$GREEN;
+      		CLR1=$YELLOW; CLR2=$GREEN;
     	fi 
     	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=$CLR1$REQUEST1$CLEAR, RPC2=$CLR2$REQUEST2$CLEAR" | tee -a ~/guard.log	
   		if [[ $percentage -lt 70 ]]; then 
@@ -199,7 +199,7 @@ SSH(){
 			fi
 		fi
 		if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
-      		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: can't connect to $REMOTE_IP"
+      		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: SSH Error $REMOTE_IP"
       		ssh_alarm_time=$current_time
     	fi
   	fi
@@ -382,7 +382,7 @@ SECONDARY_SERVER(){ ############################################################
 		RPC_REQUEST "DELINK"
 		Delinquent=$REQUEST_ANSWER
 		if [[ $Delinquent == true ]]; then
-			set_primary=2; 	REASON="Delinquent"; LOG "Warning! Delinquent detected! "
+			set_primary=2; 	REASON="Delinquent"; LOG "Warning!$RED Delinquent detected! $CLEAR"
 		fi
 		if [[ $behind_threshold -ge 1 ]] && [[ $remote_behind_counter -ge $behind_threshold ]]; then
 			set_primary=2; 	REASON="Behind too long"; LOG "Warning! Behind detected! "
@@ -402,7 +402,7 @@ SECONDARY_SERVER(){ ############################################################
 	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
 	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
-		echo -e "\033[32m  set empty identity on REMOTE server successful $CLEAR" 
+		echo -e "$GREEN  set empty identity on REMOTE server successful $CLEAR" 
 		MSG=$(printf "$MSG \n%s set empty identity")
 	else
 		SEND_ALARM "Can't set identity on remote server"
