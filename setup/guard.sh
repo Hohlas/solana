@@ -60,10 +60,10 @@ REQUEST_IP(){
 	local RPC_URL="$1"
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
-		echo "Error in gossip request for RPC $RPC_URL" >> ~/guard.log
+		echo "$(TIME) Error in gossip request for RPC $RPC_URL" >> ~/guard.log
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
-		echo "Error: validator request emty" >> ~/guard.log
+		echo "$(TIME) Error: validator request emty" >> ~/guard.log
 	fi	
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
@@ -237,7 +237,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then 
  		BEHIND=$((RPC_SLOT - LOCAL_SLOT)); 
    else
-   		BEHIND="?";
+   		BEHIND=555;
    fi
 	sleep 0.5
 	# epoch info
@@ -300,7 +300,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 	
 	# check behind
-	if [[ "$BEHIND" =~ ^-?[0-9]+$ && $BEHIND -le $BEHIND_OK_VAL && $BEHIND -gt -1000 ]]; then # проверка на "число" и -1000<BEHIND<1 
+	if [[ $BEHIND -le $BEHIND_OK_VAL && $BEHIND -gt -1000 ]]; then # проверка на "число" и -1000<BEHIND<1 
 		behind_counter=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
@@ -315,7 +315,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		fi
 	fi
 	REMOTE_BEHIND=$(cat $HOME/remote_behind)
-	if [[ "$BEHIND" =~ ^-?[0-9]+$ && $REMOTE_BEHIND -le $BEHIND_OK_VAL && $REMOTE_BEHIND -gt -1000 ]]; then # проверка на "число" и -1000<REMOTE_BEHIND<1
+	if [[ $REMOTE_BEHIND -le $BEHIND_OK_VAL && $REMOTE_BEHIND -gt -1000 ]]; then # проверка на "число" и -1000<REMOTE_BEHIND<1
 		remote_behind_counter=0
   		REMOTE_BEHIND_PRN="$GREEN$REMOTE_BEHIND"	
   	else	
