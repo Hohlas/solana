@@ -34,6 +34,7 @@ if [ -f "$HOME/guard.cfg" ]; then
      	KEYS=$(echo "$KEYS" | tr -d '\r') # Удаление символа \r, если он есть
 		LEDGER=$(echo "$LEDGER" | tr -d '\r') # Удаление символа \r, если он есть
       	SOLANA_SERVICE=$(echo "$SOLANA_SERVICE" | tr -d '\r') # Удаление символа \r, если он есть
+	   	configDir=$(echo "$configDir" | tr -d '\r') # Удаление символа \r, если он есть
 	   	BOT_TOKEN=$(echo "$BOT_TOKEN" | tr -d '\r') # Удаление символа \r, если он есть
   	else
     	echo "Error: $HOME/guard.cfg exists but is not readable" >&2
