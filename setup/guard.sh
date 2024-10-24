@@ -439,10 +439,15 @@ SECONDARY_SERVER(){ ############################################################
 	if [ $set_identity_status -eq 0 ]; then echo "$(TIME) set identity$TOWER_STATUS OK" | tee -a ~/guard.log
 	else echo "$(TIME) set identity Error: $set_identity_status" | tee -a ~/guard.log
 	fi
-	if [[ $RELAYER_SERVICE == 'true' ]]; then 
- 		SSH "systemctl stop relayer.service"
+	# stop relayer service on remote server
+ 	if [[ $RELAYER_SERVICE == 'true' ]]; then 
+ 		SSH "systemctl stop relayer.service" 
+   		if [ $command_exit_status -eq 0 ]; then echo "$(TIME) stop relayer on remote server OK" | tee -a ~/guard.log
+		elif [ $command_exit_status -eq 124 ]; then echo "$(TIME) stop relayer on remote server timeout exceed" | tee -a ~/guard.log
+ 		else echo "$(TIME) stop relayer on remote server Error" | tee -a ~/guard.log
+		fi
 		systemctl start relayer.service
-  		MSG=$(printf "$MSG \n%s restart jito-relayer service")
+  		MSG=$(printf "$MSG \n%s restart relayer service")
 	fi
  	systemctl start telegraf
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
