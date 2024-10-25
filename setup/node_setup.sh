@@ -45,8 +45,8 @@ cp ~/sol_git/setup/chrony.conf /etc/chrony.conf
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
 
-source ~/sol_git/setup/install.sh $TAG
 source ~/sol_git/setup/get_tag.sh $NODE
+source ~/sol_git/setup/install.sh $TAG
 
 # create alias #
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
@@ -76,6 +76,7 @@ echo "alias yabs='curl -sL yabs.sh | bash'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 source $HOME/.bashrc
+source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
 source ~/sol_git/setup/update.sh
 
