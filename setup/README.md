@@ -8,10 +8,10 @@ sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux hto
 <summary>create and mount partitions</summary>
 
 ```bash
+mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
 mkdir -p /mnt/disk1/accounts
-mkdir -p /mnt/disk2/ledger
+mkdir -p /mnt/disk2/accounts_hash_cache
 mkdir -p /mnt/disk3/accounts_index
-mkdir -p /mnt/disk3/accounts_hash_cache
 # disk3 / System
 mkdir -p /mnt/keys
 chmod 600 /mnt/keys 
