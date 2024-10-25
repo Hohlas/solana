@@ -1,11 +1,11 @@
 #!/bin/bash
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
 # create dirs
-mkdir -p ~/solana
+mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
 mkdir -p /mnt/disk1/accounts
-mkdir -p /mnt/disk2/ledger
 mkdir -p /mnt/disk3/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache
+# mkdir -p /mnt/disk2/ledger
 
 if [ ! -d "$HOME/keys" ]; then
     mkdir -p /mnt/keys
@@ -44,7 +44,6 @@ cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
 # create links
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
-ln -sf /mnt/disk2/ledger ~/solana
 
 source ~/sol_git/setup/get_tag.sh $NODE
 source ~/sol_git/setup/install.sh $TAG
