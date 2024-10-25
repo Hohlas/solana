@@ -40,13 +40,13 @@ cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofil
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
 cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
-cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
+# cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
 # create links
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
 
-source ~/sol_git/setup/get_tag.sh $NODE
 source ~/sol_git/setup/install.sh $TAG
+source ~/sol_git/setup/get_tag.sh $NODE
 
 # create alias #
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
@@ -77,6 +77,7 @@ echo ' # --- # ' >> $HOME/.bashrc
 
 source $HOME/.bashrc
 source ~/sol_git/setup/node_set.sh
+source ~/sol_git/setup/update.sh
 
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 systemctl daemon-reload
