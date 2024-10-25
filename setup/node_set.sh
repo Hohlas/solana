@@ -9,6 +9,8 @@ else
 cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
+chmod +x ~/sol_git/telegram_bot/watch_test.sh
+chmod +x ~/sol_git/telegram_bot/watch_main.sh
 # ln -sf ~/sol_git/telegram_bot/tg_bot_token ~/keys/tg_bot_token
 # curl https://raw.githubusercontent.com/Hohlas/solana/main/telegram_bot/tg_bot_token > ~/keys/tg_bot_token
 
