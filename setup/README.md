@@ -11,7 +11,9 @@ sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux hto
 mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
 mkdir -p /mnt/disk1/accounts
 mkdir -p /mnt/disk2/accounts_hash_cache
-mkdir -p /mnt/disk3/accounts_index
+mkdir -p /mnt/disk3/accounts_index # для четырех дисков
+# ln -sf /mnt/disk2 /mnt/disk3 # для трех дисков
+
 # disk3 / System
 mkdir -p /mnt/keys
 chmod 600 /mnt/keys 
