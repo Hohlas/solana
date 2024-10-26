@@ -294,7 +294,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		HEALTH_PRN="$RED$HEALTH"
 		let health_counter=health_counter+1
 		LOG "Health=$HEALTH, health_counter=$health_counter, CHECK_UP=$CHECK_UP    "  # log every warning_message
-		if [[ $health_counter -ge 1 ]]; then # 
+		if [[ $health_counter -ge 1 && $HEALTH != "behind" ]]; then # 
 			health_counter=-$WARNING_FREQUENCY
 			SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: Health: $HEALTH"
 		fi
