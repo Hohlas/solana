@@ -243,6 +243,18 @@ python3 snapshot-finder.py --snapshot_path $HOME/solana/ledger --num_of_retries 
 systemctl daemon-reload && systemctl restart solana
 tail -f ~/solana/solana.log
 ```
+<details>
+<summary>Perfomance</summary>
+
+```bash
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check 
+```
+```bash
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
+```
+
+</details>
+
 ## LINKS
 ### grafana
 [HOHLA.MAIN](https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?orgId=1&refresh=1m&var-pubkey=AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd&var-server=HOHLA&var-inter=1m&var-netif=All&from=now-6h&to=now) | 
