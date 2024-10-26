@@ -23,18 +23,19 @@ mount /mnt/keys
 ln -sf /mnt/keys ~/keys
 ```
 ```bash
-lsblk # check MOUNTPOINTS
+lsblk -f # check MOUNTPOINTS 
 fdisk /dev/nvme1n1 #
   # d # delete 
   # n # create new. 'ENTER' by default. 
   # w # write changes
 mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
+mkswap /dev/nvme1n1p2 # format as swap
 ```
 
 ### RAID0 + disk2
 ```bash
 mount /dev/nvme2n1p1 /mnt/disk2
-echo '/dev/nvme2n1p1 /mnt/disk2 ext4 defaults 0 1' | sudo tee -a /etc/fstab
+echo '/dev/disk/by-uuid/<uuid> /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
 mount -a
 ```
 
