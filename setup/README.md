@@ -67,6 +67,17 @@ smartctl -a /dev/nvme0n1
 
 </details>
 
+<details>
+<summary>Perfomance</summary>
+
+```bash
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check 
+```
+```bash
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
+```
+
+</details>
 
 <details>
 <summary>SSH settings</summary>
@@ -243,17 +254,6 @@ python3 snapshot-finder.py --snapshot_path $HOME/solana/ledger --num_of_retries 
 systemctl daemon-reload && systemctl restart solana
 tail -f ~/solana/solana.log
 ```
-<details>
-<summary>Perfomance</summary>
-
-```bash
-cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check 
-```
-```bash
-echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
-```
-
-</details>
 
 ## LINKS
 ### grafana
