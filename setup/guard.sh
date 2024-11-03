@@ -157,11 +157,12 @@ RPC_REQUEST() {
    	if [[ $percentage -lt 70 ]]; then 
 		REQUEST_ANSWER="";
   		((Wrong_request_count++))
+		LOG "Wrong_request_count=$Wrong_request_count"
 		if [[ $Wrong_request_count -ge 5 ]]; then
             SEND_ALARM "Warning: Wrong REQUEST_ANSWER !!!"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-   		LOG "$(TIME) Error: REQUEST_ANSWER not so correct, disable it"
+   		LOG "Error: REQUEST_ANSWER not so correct, disable it"
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
    		Wrong_request_count=0
