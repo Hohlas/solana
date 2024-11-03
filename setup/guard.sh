@@ -233,19 +233,25 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	# check behind slots
  	Request_OK='true'
 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> ~/guard.log)
-	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; fi
+	if [[ $? -ne 0 ]]; then 
+ 		Request_OK='false'; 
+   		echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; 
+	fi
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
- 	if [[ $? -ne 0 ]]; then Request_OK='false'; echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; fi
+ 	if [[ $? -ne 0 ]]; then 
+  		Request_OK='false'; 
+		echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; 
+  	fi
 	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then 
  		BEHIND=$((RPC_SLOT - LOCAL_SLOT)); 
-   else
+   	else
    		BEHIND=555;
-   fi
+   	fi
 	sleep 0.5
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then
-    	echo "$(date) Error retrieving epoch info: $EPOCH_INFO" >> ~/guard.log
+    	echo "$(TIME) Error retrieving epoch info: $EPOCH_INFO" >> ~/guard.log
 	 	SLOTS_UNTIL_EPOCH_END=0
 	else
 		SLOTS_IN_EPOCH=$(echo "$EPOCH_INFO" | jq '.slotsInEpoch')
