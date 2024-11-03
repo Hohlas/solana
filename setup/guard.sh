@@ -72,10 +72,10 @@ REQUEST_DELINK(){
 	local RPC_URL="$1"
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
 	if [ $? -ne 0 ]; then 
-		echo "Error in validators list request for RPC $RPC_URL" >> ~/guard.log
+		echo "$(TIME) Error in validators list request for RPC $RPC_URL" >> ~/guard.log
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
-		echo "Error: validators list emty" >> ~/guard.log
+		echo "$(TIME) Error: validators list emty" >> ~/guard.log
 	fi	
 	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
