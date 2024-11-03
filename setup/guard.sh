@@ -54,7 +54,19 @@ LOG() {
     local message="$1"
     echo "$(TIME) $message" | tee -a ~/guard.log  # Записываем в лог
 	}
-
+SEND_INFO(){
+	local message="$1"
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
+	echo "$(TIME) $message" >> ~/guard.log
+ 	echo -e "$(TIME) $message $CLEAR"
+	}
+SEND_ALARM(){
+	local message="$1"
+	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$message" > /dev/null
+	echo "$(TIME) $message" >> ~/guard.log
+ 	echo -e "$(TIME) $RED $message $CLEAR"
+	}
+ 
 REQUEST_IP(){
 	sleep 0.5
 	local RPC_URL="$1"
@@ -183,18 +195,6 @@ GET_VOTING_IP(){
     fi
 	}
 
-SEND_INFO(){
-	local message="$1"
-	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
-	echo "$(TIME) $message" >> ~/guard.log
- 	echo -e "$(TIME) $message $CLEAR"
-	}
-SEND_ALARM(){
-	local message="$1"
-	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$message" > /dev/null
-	echo "$(TIME) $message" >> ~/guard.log
- 	echo -e "$(TIME) $RED $message $CLEAR"
-	}
 command_exit_status=0; command_output='' # set global variable
 SSH(){
 	local ssh_command="$1"
