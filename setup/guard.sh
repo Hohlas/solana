@@ -99,46 +99,47 @@ RPC_REQUEST() {
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
-    else    
+		return 
+    fi    
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log
 		# Если результаты разные, опрашиваем в цикле 10 раз
-		declare -A request_count
-		for i in {1..10}; do 
-			RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
-			RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
-			[[ -n "$RQST1" ]] && ((request_count["$RQST1"]++)) # Увеличиваем счётчики 
-			[[ -n "$RQST2" ]] && ((request_count["$RQST2"]++)) # для каждого вызова
-		done
+	declare -A request_count
+	for i in {1..10}; do 
+		RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
+		RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
+		[[ -n "$RQST1" ]] && ((request_count["$RQST1"]++)) # Увеличиваем счётчики 
+		[[ -n "$RQST2" ]] && ((request_count["$RQST2"]++)) # для каждого вызова
+	done
 
-		# Находим наиболее частый ответ
-		most_frequent_answer=""
-		max_count=0
+	# Находим наиболее частый ответ
+	most_frequent_answer=""
+	max_count=0
 
-		for answer in "${!request_count[@]}"; do
-			if (( request_count["$answer"] > max_count )); then
-				max_count=${request_count["$answer"]}
-				most_frequent_answer=$answer
-			fi
-		done
+	for answer in "${!request_count[@]}"; do
+		if (( request_count["$answer"] > max_count )); then
+			max_count=${request_count["$answer"]}
+			most_frequent_answer=$answer
+		fi
+	done
 
-		if [[ -z "$most_frequent_answer" ]]; then
-			LOG "Error: No valid request answer found after retries."
-			return 1
-		fi	
-		REQUEST_ANSWER="$most_frequent_answer"
-  		percentage=$(( (max_count * 100) / 20 ))
-  		if [[ "$REQUEST1" == "$REQUEST_ANSWER" ]]; then 
-       		CLR1=$GREEN; CLR2=$YELLOW;
-    	else 
-      		CLR1=$YELLOW; CLR2=$GREEN;
-    	fi 
-    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=[$CLR1$REQUEST1$CLEAR] RPC2=[$CLR2$REQUEST2$CLEAR]     "	
-     	echo "$(TIME) Warning! Different answers $percentage: RPC1=[$REQUEST1] RPC2=[$REQUEST2]" >> ~/guard.log
-  		if [[ $percentage -lt 70 ]]; then 
-			REQUEST_ANSWER="";
-   			echo -e "$(TIME) Error: REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
-	  	fi
+	if [[ -z "$most_frequent_answer" ]]; then
+		LOG "Error: No valid request answer found after retries."
+		return 1
 	fi	
+	REQUEST_ANSWER="$most_frequent_answer"
+  	percentage=$(( (max_count * 100) / 20 ))
+  	if [[ "$REQUEST1" == "$REQUEST_ANSWER" ]]; then 
+    	CLR1=$GREEN; CLR2=$YELLOW;
+    else 
+    	CLR1=$YELLOW; CLR2=$GREEN;
+    fi 
+    echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=[$CLR1$REQUEST1$CLEAR] RPC2=[$CLR2$REQUEST2$CLEAR]     "	
+    echo "$(TIME) Warning! Different answers $percentage: RPC1=[$REQUEST1] RPC2=[$REQUEST2]" >> ~/guard.log
+  	if [[ $percentage -lt 70 ]]; then 
+		REQUEST_ANSWER="";
+   		echo -e "$(TIME) Error: REQUEST_ANSWER not so correct, disable it" | tee -a ~/guard.log
+	fi
+		
 	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  ~/guard.log
 	}
 
