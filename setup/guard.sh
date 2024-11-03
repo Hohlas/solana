@@ -122,6 +122,8 @@ RPC_REQUEST() {
 	for i in {1..10}; do 
 		RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
 		RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
+		if [[ -z "$RQST1" ]]; then RQST1="empty"; fi
+  		if [[ -z "$RQST2" ]]; then RQST2="empty"; fi
   		echo "$(TIME) RPC1=$RQST1, RPC2=$RQST2" >> ~/guard.log
 		((request_count["$RQST1"]++)) # Увеличиваем счётчики для 
 		((request_count["$RQST2"]++)) # каждого вызова, включая пустые
