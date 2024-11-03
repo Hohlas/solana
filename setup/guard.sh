@@ -260,7 +260,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
    	else
    		BEHIND=555;
    	fi
-	sleep 5
+	sleep 6
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then
