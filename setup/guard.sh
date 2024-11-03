@@ -188,7 +188,7 @@ SSH(){
   	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> ~/guard.log)
   	command_exit_status=$?
   	if [ $command_exit_status -ne 0 ]; then
-    	echo "$(TIME) SSH Error: command_output=$command_output" >> ~/guard.log
+    	LOG "SSH Error: command_output=$command_output"
     	LOG "SSH Error: command_exit_status=$command_exit_status"
     	if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
 			LOG "remote server $REMOTE_IP ping OK"
@@ -235,12 +235,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then 
  		Request_OK='false'; 
-   		echo "$(TIME) Error in solana slot RPC request" >> ~/guard.log; 
+   		LOG "Error in solana slot RPC request"
 	fi
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
  	if [[ $? -ne 0 ]]; then 
   		Request_OK='false'; 
-		echo "$(TIME) Error in solana slot localhost request" >> ~/guard.log; 
+		LOG "Error in solana slot localhost request" 
   	fi
 	if [[ $Request_OK == 'true' && -n "$RPC_SLOT" && -n "$LOCAL_SLOT" ]]; then 
  		BEHIND=$((RPC_SLOT - LOCAL_SLOT)); 
@@ -251,7 +251,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
 	if [[ $? -ne 0 ]]; then
-    	echo "$(TIME) Error retrieving epoch info: $EPOCH_INFO" >> ~/guard.log
+    	LOG "Error retrieving epoch info: $EPOCH_INFO"
 	 	SLOTS_UNTIL_EPOCH_END=0
 	else
 		SLOTS_IN_EPOCH=$(echo "$EPOCH_INFO" | jq '.slotsInEpoch')
@@ -378,7 +378,7 @@ PRIMARY_SERVER(){ ##############################################################
 		GET_VOTING_IP
   		sleep 1
 	done
-	echo -e "$(TIME) switch PRIMARY status to $VOTING_IP  " | tee -a ~/guard.log
+	LOG "switch PRIMARY status to $VOTING_IP  "
  	sleep 20
 	}
 	
