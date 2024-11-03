@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.4.3
+GUARD_VER=v1.4.4
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -132,7 +132,7 @@ RPC_REQUEST() {
     	else 
       		CLR1=$YELLOW; CLR2=$GREEN;
     	fi 
-    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=[$CLR1$REQUEST1$CLEAR] RPC2=[$CLR2$REQUEST2$CLEAR]     " | tee -a ~/guard.log	
+    	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=[$CLR1$REQUEST1$CLEAR] RPC2=[$CLR2$REQUEST2$CLEAR]     "	
      	echo "$(TIME) Warning! Different answers $percentage: RPC1=[$REQUEST1] RPC2=[$REQUEST2]" >> ~/guard.log
   		if [[ $percentage -lt 70 ]]; then 
 			REQUEST_ANSWER="";
