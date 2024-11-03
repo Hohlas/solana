@@ -67,6 +67,7 @@ REQUEST_IP(){
 	fi	
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
+
 REQUEST_DELINK(){
 	sleep 0.5
 	local RPC_URL="$1"
@@ -81,7 +82,9 @@ REQUEST_DELINK(){
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
 	echo "$JSON" | jq -r '.delinquent'
 	}
+
 REQUEST_ANSWER=""
+Wrong_request_count=0
 RPC_REQUEST() {
     local REQUEST_TYPE="$1"
     local REQUEST1 REQUEST2
@@ -125,7 +128,7 @@ RPC_REQUEST() {
 
 	if [[ -z "$most_frequent_answer" ]]; then
  		REQUEST_ANSWER=""
-		LOG "Error: No valid request answer found after retries."
+		SEND_ALARM "Warning: REQUEST_ANSWER is empty"
 		return 1
 	fi	
 	
@@ -139,9 +142,15 @@ RPC_REQUEST() {
     echo "$(TIME) Warning! Different answers $percentage%: RPC1=[$REQUEST1] RPC2=[$REQUEST2]. max_count=$max_count, most_frequent_answer=$most_frequent_answer" >> ~/guard.log
    	if [[ $percentage -lt 70 ]]; then 
 		REQUEST_ANSWER="";
+  		((Wrong_request_count++))
+		if [[ $Wrong_request_count -ge 5 ]]; then
+            SEND_ALARM "Warning: Wrong REQUEST_ANSWER !!!"
+            Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
+        fi
    		LOG "$(TIME) Error: REQUEST_ANSWER not so correct, disable it"
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
+   		Wrong_request_count=0
 	fi
 		
 	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  ~/guard.log
