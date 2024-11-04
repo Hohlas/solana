@@ -297,10 +297,16 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		SLOTS_UNTIL_EPOCH_END=$(echo "$SLOTS_IN_EPOCH - $SLOT_INDEX" | bc)
  	fi
 	# next slot time
-	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> $LOG_FILE)
-	if [[ $? -ne 0 ]]; then 
- 		Request_OK='false'; 
-   		LOG "Error in leader schedule request"; 
+ 	output=$(timeout 5 solana leader-schedule -v 2>> $LOG_FILE)
+	if [[ $? -ne 0 ]]; then
+		LOG "Error in leader schedule request"
+  		Request_OK='false';
+	else
+		my_slot=$(echo "$output" | grep "$IDENTITY" | awk -v var="$RPC_SLOT" '$1 >= var' | head -n1 | cut -d ' ' -f3)
+  		if [[ $? -ne 0 ]]; then
+			LOG "Error processing leader schedule request output"
+   			Request_OK='false';
+	  	fi
 	fi
 	if [[ $Request_OK == 'true' && "$my_slot" =~ ^-?[0-9]+$ && "$RPC_SLOT" =~ ^-?[0-9]+$ ]]; then  # переменные являются числами
     	slots_remaining=$((my_slot - RPC_SLOT))
