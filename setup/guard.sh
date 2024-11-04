@@ -190,10 +190,6 @@ RPC_REQUEST() {
 	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  $LOG_FILE
 	}
 
-
-
-
-
 GET_VOTING_IP(){
     # Получаем IP-адрес голосующего валидатора 
 	RPC_REQUEST "IP"  
@@ -289,7 +285,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
    	else
    		BEHIND=555;
    	fi
-	sleep 6
+	sleep 1
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then
