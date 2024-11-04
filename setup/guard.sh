@@ -181,7 +181,7 @@ RPC_REQUEST() {
             SEND_ALARM "Warning: Wrong REQUEST_ANSWER !!!"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-   		LOG "Error: REQUEST_ANSWER not so correct, disable it"
+   		LOG "Error: incorrect REQUEST_ANSWER, disable it"
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
    		Wrong_request_count=0
