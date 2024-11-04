@@ -126,7 +126,7 @@ RPC_REQUEST() {
         ((rpc_index++)) # Увеличиваем индекс и 
 		if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
 		rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
-		SEND_INFO "update rpc_index=$rpc_index, RPC=$rpcURL2" # сохраняем последнее значение rpc_index в лог, чтобы восстановить при перезапуске guard
+		SEND_INFO "${NODE}.${NAME} update rpc_index=$rpc_index, RPC=$rpcURL2" # сохраняем последнее значение rpc_index в лог, чтобы восстановить при перезапуске guard
     fi
 		
 	
