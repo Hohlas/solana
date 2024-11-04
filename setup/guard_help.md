@@ -72,19 +72,7 @@ if ! grep -q "guard" $HOME/.bashrc; then
 fi
 source $HOME/.bashrc
 ```
-При необходимости изменить пути и задать телеграм токен в $HOME/guard.cfg
-```bash
-PORT='2010' # remote server ssh port
-KEYS=$HOME/keys
-LEDGER=$HOME/solana/ledger
-SOLANA_SERVICE=$HOME/solana/solana.service
-BEHIND_OK_VAL=3 # behind, that seemed ordinary
-BEHIND_WARNING=true
-rpcURL2="https://mainnet.helius-rpc.com/..." # Helius RPC
-CHAT_ALARM=-100..684
-CHAT_INFO=-100..888
-BOT_TOKEN=507625...VICllWU
-```
+
 Сервис соланы всегда должен запускаться с неголосующим ключем 'empty-validator.json'.
 Генерация неголосующего ключа
 ```bash
