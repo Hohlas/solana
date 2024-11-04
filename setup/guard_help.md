@@ -119,6 +119,10 @@ ln -sf /mnt/keys/vote-keypair.json ~/solana/vote.json
 ln -sf /mnt/keys/validator-keypair.json ~/solana/validator-keypair.json
 ```
 Настройки находятся в файле ~/guard.cfg
+Для отправки оповещений через телеграмм потребуется BOT_TOKEN.
+Поскольку РПЦ соланы иногда возвращает неверные значения IP адреса голосующей ноды добавлен [РПЦ Хелиуса](https://dashboard.helius.dev).
+Одного бесплатного аккаунта хватает на три дня, поэтому сервера берутся из списка RPC_LIST поочередно. 
+Как только один сервер перестает отвечать, скрипт начинает опрашивать слудующий по списку.
 ```bash
 PORT='22' # remote server ssh port
 KEYS=$HOME/keys
@@ -126,12 +130,15 @@ LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE=$HOME/solana/solana.service
 BEHIND_OK_VAL=3 # behind, that seemed ordinary
 BEHIND_WARNING=true
-rpcURL2="https://mainnet.helius-rpc.com/..." # Helius RPC
 CHAT_ALARM=-100..684
 CHAT_INFO=-100..888
 BOT_TOKEN=507625...VICllWU
+RPC_LIST=(
+"https://mainnet.helius-rpc.com/..."
+"https://mainnet.helius-rpc.com/..."
+"https://mainnet.helius-rpc.com/..."
+)
 ```
 Ключи private_key.ssh от обоих серверов должны находиться в папках ~/keys.
 В первый раз скрипт резервного сервера должен запускаться перед запуском на основном сервере. 
 При этом на основной сервер копируется файл с IP адресом резервного. Даллее порядок запуска не имеет значения.  
-В этот же файл необходимо добавить второй РПЦ, например отсюда https://dashboard.helius.dev 
