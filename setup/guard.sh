@@ -1,26 +1,30 @@
 #!/bin/bash
-GUARD_VER=v1.4.5
+GUARD_VER=v1.4.6
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
 LEDGER=$HOME/solana/ledger
+LOG_FILE=$HOME/guard.log
 SOLANA_SERVICE="$HOME/solana/solana.service"
 BEHIND_WARNING=false # 'false'- send telegramm INFO missage, when behind. 'true'-send ALERT message
 WARNING_FREQUENCY=12 # max frequency of warning messages (WARNING_FREQUENCY x 5) seconds
 BEHIND_OK_VAL=3 # behind, that seemed ordinary
 RELAYER_SERVICE=false # use restarting jito-relayer service
 configDir="$HOME/.config/solana"
-# rpcURL2="https://mainnet.helius-rpc.com..." # Helius RPC
 # CHAT_ALARM=-1001..5684
 # CHAT_INFO=-1001..2888
 # BOT_TOKEN=50762..CllWU
+# список альтернативных rpcURL2 для сравнения значений
+# RPC_LIST=(
+# "https://mainnet.helius-rpc.com..."
+# "https://mainnet.helius-rpc.com..."
+# )
 #======================================================
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 rpcURL1=$(solana config get | grep "RPC URL" | awk '{print $3}')
-rpcURL2="" # берется из файлла tg_bot_token. Нужен в качестве альтернативного RPC для сравнения значений
 version=$(solana --version | awk '{print $2}')ec
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
@@ -42,40 +46,48 @@ if [ -f "$HOME/guard.cfg" ]; then
 else
   	echo "Error: $HOME/guard.cfg does not exist, set default settings" >&2
 fi
-if [[ -z "$rpcURL2" ]]; then
-    rpcURL2=$rpcURL1 # Присваиваем значение rpcURL2, чтобы не было ошибки
-	echo -e "Warning! $RED rpcURL2 is not defined in $HOME/guard.cfg ! $CLEAR"
+if [[ -f $LOG_FILE ]]; then
+    rpc_index=$(grep -oP 'rpc_index=\K\d+' "$LOG_FILE" | tail -n 1) # Читаем последний rpc_index из лог-файла
 fi
+if [[ -z "$RPC_LIST" ]]; then
+    RPC_LIST=($rpcURL1) # Записываем в массив RPC сервер соланы, чтобы не было ошибки
+	rpc_index=0
+	echo -e "Warning! $RED RPC_LIST is not defined in $HOME/guard.cfg ! $CLEAR"
+fi
+if [[ -z "$BOT_TOKEN" ]]; then
+	echo -e "Warning! $RED Telegram BOT_TOKEN is not defined in $HOME/guard.cfg ! $CLEAR"
+fi
+
 
 TIME() {
 	TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 	}
 LOG() {
     local message="$1"
-    echo "$(TIME) $message" | tee -a ~/guard.log  # Записываем в лог
+    echo "$(TIME) $message" | tee -a $LOG_FILE  # Записываем в лог
 	}
 SEND_INFO(){
 	local message="$1"
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
-	echo "$(TIME) $message" >> ~/guard.log
+	echo "$(TIME) $message" >> $LOG_FILE
  	echo -e "$(TIME) $message $CLEAR"
 	}
 SEND_ALARM(){
 	local message="$1"
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_ALARM -d text="$message" > /dev/null
-	echo "$(TIME) $message" >> ~/guard.log
+	echo "$(TIME) $message" >> $LOG_FILE
  	echo -e "$(TIME) $RED $message $CLEAR"
 	}
  
 REQUEST_IP(){
 	sleep 0.5
 	local RPC_URL="$1"
-	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> ~/guard.log)
+	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> $LOG_FILE)
 	if [ $? -ne 0 ]; then 
-		echo "$(TIME) Error in gossip request for RPC $RPC_URL" >> ~/guard.log
+		echo "$(TIME) Error in gossip request for RPC $RPC_URL" >> $LOG_FILE
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
-		echo "$(TIME) Error: validator request emty" >> ~/guard.log
+		echo "$(TIME) Error: validator request emty" >> $LOG_FILE
 	fi	
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
@@ -83,12 +95,12 @@ REQUEST_IP(){
 REQUEST_DELINK(){
 	sleep 0.5
 	local RPC_URL="$1"
-	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> ~/guard.log)
+	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> $LOG_FILE)
 	if [ $? -ne 0 ]; then 
-		echo "$(TIME) Error in validators list request for RPC $RPC_URL" >> ~/guard.log
+		echo "$(TIME) Error in validators list request for RPC $RPC_URL" >> $LOG_FILE
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
-		echo "$(TIME) Error: validators list emty" >> ~/guard.log
+		echo "$(TIME) Error: validators list emty" >> $LOG_FILE
 	fi	
 	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
@@ -108,23 +120,30 @@ RPC_REQUEST() {
         FUNCTION_NAME="REQUEST_DELINK"
     fi    	
 	
-	REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # вопрос_2
-	REQUEST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
+	REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # запрос к РПЦ соланы
+	REQUEST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"") # запрос к одному из РПЦ хелиуса из списка RPC_LIST
+	if [[ -z "$REQUEST2" ]]; then # резервный РПЦ отказал, скорее всего кончился лимит. Переключимся на следующий сервер.
+        ((rpc_index++)) # Увеличиваем индекс и 
+		if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
+		rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
+		LOG "update rpc_index=$rpc_index, RPC=$rpcURL2" # сохраняем последнее значение rpc_index в лог, чтобы восстановить при перезапуске guard
+    fi
+		
 	
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
         REQUEST_ANSWER="$REQUEST1"
 		return 
     fi    
-		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> ~/guard.log
+		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> $LOG_FILE
 		# Если результаты разные, опрашиваем в цикле 10 раз
 	declare -A request_count
 	for i in {1..10}; do 
 		RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
 		RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
-		if [[ -z "$RQST1" ]]; then RQST1="empty"; fi
-  		if [[ -z "$RQST2" ]]; then RQST2="empty"; fi
-  		echo "$(TIME) RPC1=$RQST1, RPC2=$RQST2" >> ~/guard.log
+		if [[ -z "$RQST1" ]]; then RQST1=" "; fi
+  		if [[ -z "$RQST2" ]]; then RQST2=" "; fi
+  		echo "$(TIME) RPC1=[$RQST1], RPC2=[$RQST2]" >> $LOG_FILE
 		((request_count["$RQST1"]++)) # Увеличиваем счётчики для 
 		((request_count["$RQST2"]++)) # каждого вызова, включая пустые
 	done
@@ -153,7 +172,7 @@ RPC_REQUEST() {
     fi 
     percentage=$(( (max_count * 100) / 20 ))
 	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=[$CLR1$REQUEST1$CLEAR] RPC2=[$CLR2$REQUEST2$CLEAR]     "	
-    echo "$(TIME) Warning! Different answers $percentage%: RPC1=[$REQUEST1] RPC2=[$REQUEST2]. max_count=$max_count, most_frequent_answer=$most_frequent_answer" >> ~/guard.log
+    echo "$(TIME) Warning! Different answers $percentage%: RPC1=[$REQUEST1] RPC2=[$REQUEST2]. max_count=$max_count, most_frequent_answer=$most_frequent_answer" >> $LOG_FILE
    	if [[ $percentage -lt 70 ]]; then 
 		REQUEST_ANSWER="";
   		((Wrong_request_count++))
@@ -168,7 +187,7 @@ RPC_REQUEST() {
    		Wrong_request_count=0
 	fi
 		
-	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  ~/guard.log
+	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  $LOG_FILE
 	}
 
 
@@ -201,7 +220,7 @@ GET_VOTING_IP(){
 command_exit_status=0; command_output='' # set global variable
 SSH(){
 	local ssh_command="$1"
-  	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> ~/guard.log)
+  	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> $LOG_FILE)
   	command_exit_status=$?
   	if [ $command_exit_status -ne 0 ]; then
     	LOG "SSH Error: command_output=$command_output"
@@ -223,15 +242,22 @@ SSH(){
   	fi
 	}
 
-echo -e " == SOLANA GUARD $GREEN$GUARD_VER $CLEAR" | tee -a ~/guard.log
+echo -e " == SOLANA GUARD $GREEN$GUARD_VER $CLEAR" | tee -a $LOG_FILE
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
-echo "voting  IP=$VOTING_IP" | tee -a ~/guard.log
-echo "current IP=$CUR_IP" | tee -a ~/guard.log
-echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a ~/guard.log
-echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) $CLEAR" | tee -a ~/guard.log
-echo -e "RPC1:$BLUE$rpcURL1$CLEAR" | tee -a ~/guard.log
-echo -e "RPC2:$BLUE$rpcURL2$CLEAR" | tee -a ~/guard.log
+echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
+echo "current IP=$CUR_IP" | tee -a $LOG_FILE
+echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a $LOG_FILE
+echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) $CLEAR" | tee -a $LOG_FILE
+if [[ -z "$rpc_index" ]]; then # rpc_index not defined
+	echo "rpc_index not defined in $LOG_FILE, set default value rpc_index=0"
+	rpc_index=0; # Устанавливаем значение по умолчанию
+fi
+echo " current rpc_index=$rpc_index, rpcURL list:"
+for rpcURL in "${RPC_LIST[@]}"; do
+	echo -e "$BLUE$rpcURL$CLEAR" | tee -a $LOG_FILE
+done
+rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
 if [ -z "$NAME" ]; then NAME=$(hostname); fi
 if [ $rpcURL1 = https://api.testnet.solana.com ]; then 
 NODE="test"
@@ -248,12 +274,12 @@ disconnect_counter=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
  	# check behind slots
  	Request_OK='true'
-	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> ~/guard.log)
+	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then 
  		Request_OK='false'; 
    		LOG "Error in solana slot RPC request"
 	fi
-	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> ~/guard.log)
+	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> $LOG_FILE)
  	if [[ $? -ne 0 ]]; then 
   		Request_OK='false'; 
 		LOG "Error in solana slot localhost request" 
@@ -265,7 +291,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
    	fi
 	sleep 6
 	# epoch info
-	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> ~/guard.log)
+	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then
     	LOG "Error retrieving epoch info: $EPOCH_INFO"
 	 	SLOTS_UNTIL_EPOCH_END=0
@@ -275,11 +301,11 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 		SLOTS_UNTIL_EPOCH_END=$(echo "$SLOTS_IN_EPOCH - $SLOT_INDEX" | bc)
  	fi
 	# next slot time
-	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> ~/guard.log)
+	my_slot=$(timeout 5 solana leader-schedule -v | grep $IDENTITY | awk -v var=$RPC_SLOT '$1>=var' | head -n1 | cut -d ' ' -f3 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then 
  		Request_OK='false'; 
    		LOG "Error in leader schedule request"; 
-   fi
+	fi
 	if [[ $Request_OK == 'true' && "$my_slot" =~ ^-?[0-9]+$ && "$RPC_SLOT" =~ ^-?[0-9]+$ ]]; then  # переменные являются числами
     	slots_remaining=$((my_slot - RPC_SLOT))
 	 	NEXT_CLR=$BLUE
@@ -544,7 +570,7 @@ if [ $command_exit_status -ne  0 ]; then
 fi
 
 if [ "$remote_identity" = "$IDENTITY" ]; then
-	echo -e "$GREEN SSH connection succesful $CLEAR" | tee -a ~/guard.log
+	echo -e "$GREEN SSH connection succesful $CLEAR" | tee -a $LOG_FILE
 else
     echo -e "$RED Warning! Servers identity are different $CLEAR"
 	echo "Current Identity = $IDENTITY"
