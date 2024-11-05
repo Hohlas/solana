@@ -178,7 +178,7 @@ RPC_REQUEST() {
   		((Wrong_request_count++))
 		LOG "Wrong_request_count=$Wrong_request_count"
 		if [[ $Wrong_request_count -ge 5 ]]; then
-            SEND_ALARM "Warning: Wrong REQUEST_ANSWER !!!"
+            SEND_ALARM "${NODE}.${NAME} Wrong REQUEST_ANSWER !!!"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
    		LOG "Error: incorrect REQUEST_ANSWER, disable it"
