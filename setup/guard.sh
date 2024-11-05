@@ -289,7 +289,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then
-    	LOG "Error retrieving epoch info: $EPOCH_INFO"
+    	echo "$(TIME) Error retrieving epoch info: $EPOCH_INFO" >> $LOG_FILE
 	 	SLOTS_UNTIL_EPOCH_END=0
 	else
 		SLOTS_IN_EPOCH=$(echo "$EPOCH_INFO" | jq '.slotsInEpoch')
