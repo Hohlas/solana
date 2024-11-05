@@ -273,7 +273,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then 
  		Request_OK='false'; 
-   		"$(TIME) Error in solana slot RPC request" >> $LOG_FILE
+   		echo "$(TIME) Error in solana slot RPC request" >> $LOG_FILE
 	fi
 	LOCAL_SLOT=$(timeout 5 solana slot -u localhost 2>> $LOG_FILE)
  	if [[ $? -ne 0 ]]; then 
@@ -299,12 +299,12 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	# next slot time
  	output=$(timeout 5 solana leader-schedule -v 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then
-		"$(TIME) Error in leader schedule request" >> $LOG_FILE
+		echo "$(TIME) Error in leader schedule request" >> $LOG_FILE
   		Request_OK='false';
 	else
 		my_slot=$(echo "$output" | grep "$IDENTITY" | awk -v var="$RPC_SLOT" '$1 >= var' | head -n1 | cut -d ' ' -f3)
   		if [[ $? -ne 0 ]]; then
-			"$(TIME) Error processing leader schedule request output" >> $LOG_FILE
+			echo "$(TIME) Error processing leader schedule request output" >> $LOG_FILE
    			Request_OK='false';
 	  	fi
 	fi
