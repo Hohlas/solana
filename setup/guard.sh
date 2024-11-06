@@ -126,7 +126,7 @@ RPC_REQUEST() {
         ((rpc_index++)) # Увеличиваем индекс и 
 		if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
 		rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
-		SEND_INFO "${NODE}.${NAME} update rpc_index=$rpc_index" # сохраняем последнее значение rpc_index в лог, чтобы восстановить при перезапуске guard
+		SEND_INFO "$SERV_TYPE ${NODE}.${NAME} update rpc_index=$rpc_index" # сохраняем последнее значение rpc_index в лог, чтобы восстановить при перезапуске guard
     fi
 		
 	
@@ -178,7 +178,7 @@ RPC_REQUEST() {
   		((Wrong_request_count++))
 		LOG "Wrong_request_count=$Wrong_request_count"
 		if [[ $Wrong_request_count -ge 5 ]]; then
-            SEND_ALARM "${NODE}.${NAME} Wrong REQUEST_ANSWER !!!"
+            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} Wrong REQUEST_ANSWER !!!"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
    		LOG "Error: incorrect REQUEST_ANSWER, disable it"
