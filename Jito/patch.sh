@@ -25,7 +25,7 @@ curl -o ~/jito/core/src/vote_simulator.rs https://github.com/bji/solana/blob/915
 curl -o ~/jito/programs/vote/src/vote_state/mod.rs https://github.com/bji/solana/blob/915909fc8539d4df7cc11ba14226ad6247c53cdb/programs/vote/src/vote_state/mod.rs
 curl -o ~/jito/sdk/program/src/vote/state/mod.rs https://github.com/bji/solana/blob/915909fc8539d4df7cc11ba14226ad6247c53cdb/sdk/program/src/vote/state/mod.rs
 
-$ ./cargo build
+./cargo build
 
 
 
