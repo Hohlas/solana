@@ -118,6 +118,8 @@ RPC_REQUEST() {
 		FUNCTION_NAME="REQUEST_IP" 
 	elif [[ "$REQUEST_TYPE" == "DELINK" ]]; then
         FUNCTION_NAME="REQUEST_DELINK"
+	else
+ 		REQUEST_ANSWER=""; return
     fi    	
 	rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
 	REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # запрос к РПЦ соланы
@@ -125,8 +127,7 @@ RPC_REQUEST() {
 	
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
-        REQUEST_ANSWER="$REQUEST1"
-		return 
+        REQUEST_ANSWER="$REQUEST1";	return 
     fi    
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> $LOG_FILE
 		# Если результаты разные, опрашиваем в цикле 10 раз
@@ -134,8 +135,8 @@ RPC_REQUEST() {
 	for i in {1..10}; do 
 		RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
 		RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
-		if [[ -z "$RQST1" ]]; then RQST1=" "; fi
-  		if [[ -z "$RQST2" ]]; then RQST2=" "; fi
+		if [[ -z "$RQST1" ]]; then RQST1=" "; fi # чтобы не пихать в массив пустые значения, 
+  		if [[ -z "$RQST2" ]]; then RQST2=" "; fi # пропишем пробел
   		echo "$(TIME) RPC1=[$RQST1], RPC2=[$RQST2]" >> $LOG_FILE
 		((request_count["$RQST1"]++)) # Увеличиваем счётчики для 
 		((request_count["$RQST2"]++)) # каждого вызова, включая пустые
@@ -166,18 +167,18 @@ RPC_REQUEST() {
     percentage=$(( (max_count * 100) / 20 ))
 	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=[$CLR1$REQUEST1$CLEAR] RPC2=[$CLR2$REQUEST2$CLEAR]     "	
     echo "$(TIME) Warning! Different answers $percentage%: RPC1=[$REQUEST1] RPC2=[$REQUEST2]. max_count=$max_count, most_frequent_answer=$most_frequent_answer" >> $LOG_FILE
-   	if [[ $percentage -lt 70 ]]; then 
-		REQUEST_ANSWER="";
+   	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
   		((Wrong_request_count++))
 		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
-  			if [[ -z "$REQUEST2" ]]; then # резервный РПЦ молчит, скорее всего кончился лимит. 
+  			if [[ -z "$REQUEST2" ]]; then # резервный РПЦ молчит, скорее всего кончился лимит бесплатного аккаунта. 
     			((rpc_index++)) # Увеличиваем индекс, т.е. переключимся на следующий RPC сервер из списка.
 				if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
 			fi
-            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} Wrong REQUEST_ANSWER, rpc_index=$rpc_index"
+            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} Wrong REQUEST_ANSWER=$REQUEST_ANSWER, rpc_index=$rpc_index"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-   		LOG "Error: incorrect REQUEST_ANSWER, Wrong_request_count=$Wrong_request_count, rpc_index=$rpc_index"
+   		LOG "Error: Wrong REQUEST_ANSWER=$REQUEST_ANSWER, Wrong_request_count=$Wrong_request_count, rpc_index=$rpc_index"
+	 	REQUEST_ANSWER="";
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
    		Wrong_request_count=0
