@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.4.7
+GUARD_VER=v1.4.8
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -119,16 +119,9 @@ RPC_REQUEST() {
 	elif [[ "$REQUEST_TYPE" == "DELINK" ]]; then
         FUNCTION_NAME="REQUEST_DELINK"
     fi    	
-	
+	rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
 	REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # запрос к РПЦ соланы
 	REQUEST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"") # запрос к одному из РПЦ хелиуса из списка RPC_LIST
-	if [[ -z "$REQUEST2" ]]; then # резервный РПЦ отказал, скорее всего кончился лимит. Переключимся на следующий сервер.
-        ((rpc_index++)) # Увеличиваем индекс и 
-		if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
-		rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
-		SEND_INFO "$SERV_TYPE ${NODE}.${NAME} update rpc_index=$rpc_index" # сохраняем последнее значение rpc_index в лог, чтобы восстановить при перезапуске guard
-    fi
-		
 	
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
@@ -176,12 +169,15 @@ RPC_REQUEST() {
    	if [[ $percentage -lt 70 ]]; then 
 		REQUEST_ANSWER="";
   		((Wrong_request_count++))
-		LOG "Wrong_request_count=$Wrong_request_count"
-		if [[ $Wrong_request_count -ge 5 ]]; then
-            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} Wrong REQUEST_ANSWER !!!"
+		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
+  			if [[ -z "$REQUEST2" ]]; then # резервный РПЦ молчит, скорее всего кончился лимит. 
+    			((rpc_index++)) # Увеличиваем индекс, т.е. переключимся на следующий RPC сервер из списка.
+				if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
+			fi
+            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} Wrong REQUEST_ANSWER, rpc_index=$rpc_index"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-   		LOG "Error: incorrect REQUEST_ANSWER, disable it"
+   		LOG "Error: incorrect REQUEST_ANSWER, Wrong_request_count=$Wrong_request_count, rpc_index=$rpc_index"
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
    		Wrong_request_count=0
