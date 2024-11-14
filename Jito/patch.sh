@@ -9,12 +9,13 @@ apt update
 apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
 
 # TAG=v2.0.15-jito
-if [ -d ~/jito ]; then 
-  cd ~/jito; 
+if [ -d ~/jito-solana ]; then 
+  cd ~/jito-solana; 
   git fetch origin; 
   git reset --hard origin/master # сбросить локальную ветку до последнего коммита из git
 else 
-  git clone https://github.com/jito-foundation/jito-solana.git ~/jito
+  git clone https://github.com/jito-foundation/jito-solana.git
+  cd jito-solana
 fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
 git checkout tags/$TAG
