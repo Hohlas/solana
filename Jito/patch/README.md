@@ -51,6 +51,7 @@ curl -o ~/jito-solana/sdk/program/src/vote/state/mod.rs https://raw.githubuserco
 ```
 
 ```bash
+cd ~/jito-solana;
 # rm -r ~/jito-solana/target/*
 # ./cargo build # to target/debug/
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"/solana-release
