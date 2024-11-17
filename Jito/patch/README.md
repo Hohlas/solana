@@ -58,7 +58,11 @@ CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/
 
 make agave -> solana links
 ```bash
-export PATH="/root/.local/share/solana/install/releases/v2.0.15-jito"/bin:"$PATH"
+if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; then
+    export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+    echo 'export PATH='$PATH >> ~/.bashrc
+fi
+ln -sf $HOME/.local/share/solana/install/active_release/bin $HOME/.local/share/solana/install/releases/$TAG/bin 
 source ~/.bashrc
 solana --version
 cd "/root/.local/share/solana/install/active_release/bin/" || exit
