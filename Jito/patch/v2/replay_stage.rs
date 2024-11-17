@@ -1191,39 +1191,41 @@ impl ReplayStage {
                         vote_banks.push(vote_bank.clone());
                     }
 
-                    if let Err(e) = if !vote_banks.is_empty() {Self::handle_votable_bank(
-                        &vote_banks,
-                        switch_fork_decision,
-                        &bank_forks,
-                        &mut tower,
-                        &mut progress,
-                        &vote_account,
-                        &identity_keypair,
-                        &authorized_voter_keypairs.read().unwrap(),
-                        &blockstore,
-                        &leader_schedule_cache,
-                        &lockouts_sender,
-                        &accounts_background_request_sender,
-                        &rpc_subscriptions,
-                        &block_commitment_cache,
-                        &mut heaviest_subtree_fork_choice,
-                        &bank_notification_sender,
-                        &mut duplicate_slots_tracker,
-                        &mut duplicate_confirmed_slots,
-                        &mut unfrozen_gossip_verified_vote_hashes,
-                        &mut voted_signatures,
-                        &mut has_new_vote_been_rooted,
-                        &mut replay_timing,
-                        &voting_sender,
-                        &mut epoch_slots_frozen_slots,
-                        &drop_bank_sender,
-                        wait_to_vote_slot,
-                        pop_expired,
-                    ) 
-                }
-                    {
+                    
+                    if !vote_banks.is_empty() {
+                        if let Err(e) = Self::handle_votable_bank(
+                            &vote_banks,
+                            switch_fork_decision,
+                            &bank_forks,
+                            &mut tower,
+                            &mut progress,
+                            &vote_account,
+                            &identity_keypair,
+                            &authorized_voter_keypairs.read().unwrap(),
+                            &blockstore,
+                            &leader_schedule_cache,
+                            &lockouts_sender,
+                            &accounts_background_request_sender,
+                            &rpc_subscriptions,
+                            &block_commitment_cache,
+                            &mut heaviest_subtree_fork_choice,
+                            &bank_notification_sender,
+                            &mut duplicate_slots_tracker,
+                            &mut duplicate_confirmed_slots,
+                            &mut unfrozen_gossip_verified_vote_hashes,
+                            &mut voted_signatures,
+                            &mut has_new_vote_been_rooted,
+                            &mut replay_timing,
+                            &voting_sender,
+                            &mut epoch_slots_frozen_slots,
+                            &drop_bank_sender,
+                            wait_to_vote_slot,
+                            pop_expired,
+                        )
+                        {
                         error!("Unable to set root: {e}");
                         return;
+                        }
                     }
                 }
                 voting_time.stop();
