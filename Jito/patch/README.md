@@ -62,7 +62,7 @@ if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; t
     export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
     echo 'export PATH='$PATH >> ~/.bashrc
 fi
-ln -sf $HOME/.local/share/solana/install/releases/$TAG/solana-release/bin $HOME/.local/share/solana/install/active_release 
+ln -sf $HOME/.local/share/solana/install/releases/$TAG/solana-release $HOME/.local/share/solana/install/active_release 
 source ~/.bashrc
 cd "/root/.local/share/solana/install/active_release/bin/" || exit
 for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
