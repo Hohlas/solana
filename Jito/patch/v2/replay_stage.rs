@@ -1192,7 +1192,7 @@ impl ReplayStage {
                     }
 
                     if let Err(e) = if !vote_banks.is_empty() {Self::handle_votable_bank(
-                        vote_bank,
+                        &vote_banks,
                         switch_fork_decision,
                         &bank_forks,
                         &mut tower,
