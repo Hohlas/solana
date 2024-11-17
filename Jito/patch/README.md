@@ -53,7 +53,7 @@ curl -o ~/jito-solana/sdk/program/src/vote/state/mod.rs https://raw.githubuserco
 ```bash
 # rm -r ~/jito-solana/target/*
 # ./cargo build # to target/debug/
-CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"
+CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"/solana-release
 ```
 
 make agave -> solana links
@@ -62,7 +62,7 @@ if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; t
     export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
     echo 'export PATH='$PATH >> ~/.bashrc
 fi
-ln -sf $HOME/.local/share/solana/install/active_release/bin $HOME/.local/share/solana/install/releases/$TAG/bin 
+ln -sf $HOME/.local/share/solana/install/active_release $HOME/.local/share/solana/install/releases/$TAG/solana-release/bin 
 source ~/.bashrc
 cd "/root/.local/share/solana/install/active_release/bin/" || exit
 for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
