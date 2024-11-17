@@ -65,7 +65,7 @@ if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; t
 fi
 ln -sf $HOME/.local/share/solana/install/releases/$TAG/solana-release $HOME/.local/share/solana/install/active_release 
 source ~/.bashrc
-cd "/root/.local/share/solana/install/active_release/bin/" || exit
+cd "$HOME/.local/share/solana/install/active_release/bin/" || exit
 for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
     if [ -f "$file" ]; then # файл существует ли 
         ln -sf "$file" "${file/agave-/solana-}" # Создаем символическую ссылку
