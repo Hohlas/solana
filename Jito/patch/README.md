@@ -39,6 +39,7 @@ git fetch --tags # для загрузки всех тегов из удален
 echo $TAG; git checkout tags/$TAG
 git submodule update --init --recursive
 ```
+replace by patched files
 
 ```bash
 curl -o ~/jito-solana/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/consensus.rs
