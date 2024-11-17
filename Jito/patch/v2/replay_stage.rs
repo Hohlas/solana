@@ -2599,7 +2599,7 @@ impl ReplayStage {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn handle_votable_banks(
+    fn handle_votable_bank(
         banks: &Vec<Arc<Bank>>,
         switch_fork_decision: &SwitchForkDecision,
         bank_forks: &Arc<RwLock<BankForks>>,
