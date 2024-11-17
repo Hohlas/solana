@@ -64,7 +64,6 @@ if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; t
 fi
 ln -sf $HOME/.local/share/solana/install/active_release/bin $HOME/.local/share/solana/install/releases/$TAG/bin 
 source ~/.bashrc
-solana --version
 cd "/root/.local/share/solana/install/active_release/bin/" || exit
 for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
     if [ -f "$file" ]; then # файл существует ли 
@@ -72,4 +71,5 @@ for file in agave-*; do # Перебираем все файлы, начинаю
         echo "create link for $file"
     fi
 done
+solana --version
 ```
