@@ -58,9 +58,9 @@ CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/
 
 make agave -> solana links
 ```bash
-solana --version
 export PATH="/root/.local/share/solana/install/releases/v2.0.15-jito"/bin:"$PATH"
 source ~/.bashrc
+solana --version
 cd "/root/.local/share/solana/install/active_release/bin/" || exit
 for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
     if [ -f "$file" ]; then # файл существует ли 
