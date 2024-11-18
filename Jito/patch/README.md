@@ -77,6 +77,10 @@ for file in agave-*; do # Перебираем все файлы, начинаю
 done
 solana --version
 ```
+check patch settings
+```bash
+tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed_threshold'
+```
 
 [Shinobi discord post](https://discord.com/channels/428295358100013066/673718028323782674/1281017905454121035)
 
