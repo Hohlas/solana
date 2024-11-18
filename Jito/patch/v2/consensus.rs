@@ -722,15 +722,16 @@ impl Tower {
             //   being achieved.  Without this, there could be deadlock if all validators ran this voting strategy
             //   beacuse if multiple forks happen at once, it's possible for all forks to end up with less than
             //   the threshold vote and no validator would ever switch forks.
-            warn!("Checking for change to mostly_confirmed_threshold");
+            warn!("Checking for change to mostly_confirmed_threshold in /root/solana");
             self.last_config_check_seconds = config_check_seconds;
-            match read_to_string(&Path::new("$HOME/solana/mostly_confirmed_threshold")) {
+            match read_to_string(&Path::new("/root/solana/mostly_confirmed_threshold")) {
                 Ok(s) => {
                     let split = s
                         .strip_suffix("\n")
                         .unwrap_or("")
                         .split_whitespace()
                         .collect::<Vec<&str>>();
+                    warn!("mostly_confirmed_threshold data: {:?}", split);    
                     match split.get(0).unwrap_or(&"").parse::<f64>() {
                         Ok(threshold) => {
                             if let Some(mostly_confirmed_threshold) =
@@ -803,7 +804,7 @@ impl Tower {
                     }
                 }
                 _ => {
-                    warn!("Using NO mostly_confirmed_threshold, threshold_ahead_count, after_skip_threshold, or threshold_escape_count");
+                    warn!("Can not read data from /root/solana/mostly_confirmed_threshold");
                     self.mostly_confirmed_threshold = None;
                     self.threshold_ahead_count = None;
                     self.after_skip_threshold = None;
