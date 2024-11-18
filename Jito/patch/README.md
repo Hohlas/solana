@@ -39,16 +39,18 @@ git fetch --tags # для загрузки всех тегов из удален
 echo $TAG; git checkout tags/$TAG
 git submodule update --init --recursive
 ```
-replace by patched files
-
+patched files
 ```bash
-curl -o "$HOME/mostly confirmed threshold" 'https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/mostly%20confirmed%20threshold'
 curl -o ~/jito-solana/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/consensus.rs
 curl -o ~/jito-solana/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/progress_map.rs
 curl -o ~/jito-solana/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/replay_stage.rs
 curl -o ~/jito-solana/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/vote_simulator.rs
 curl -o ~/jito-solana/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod.rs
 curl -o ~/jito-solana/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod_sdk.rs
+```
+settings file
+```bash
+curl -o $HOME/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/mostly_confirmed_threshold
 ```
 
 ```bash
