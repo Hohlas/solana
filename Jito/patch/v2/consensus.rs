@@ -658,7 +658,8 @@ impl Tower {
         // `self.vote_state`
         self.record_bank_vote_and_update_lockouts(
             bank.slot(),
-            bank.hash(), pop_expired,
+            bank.hash(), 
+            pop_expired,
             bank.feature_set
                 .is_active(&feature_set::enable_tower_sync_ix::id()),
         )
@@ -723,7 +724,7 @@ impl Tower {
             //   the threshold vote and no validator would ever switch forks.
             warn!("Checking for change to mostly_confirmed_threshold");
             self.last_config_check_seconds = config_check_seconds;
-            match read_to_string(&Path::new("./mostly_confirmed_threshold")) {
+            match read_to_string(&Path::new("$HOME/solana/mostly_confirmed_threshold")) {
                 Ok(s) => {
                     let split = s
                         .strip_suffix("\n")
