@@ -76,12 +76,9 @@ solana --version
 ```
 
 [Shinobi discord post](https://discord.com/channels/428295358100013066/673718028323782674/1281017905454121035)
-[hohla.test](https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?orgId=1&var-server=hohla&var-inter=30s&var-cpu=All&var-netif=All&var-pubkey=8HzsgkGhEFP2MKuuPDy5f8qvqR6hmwPqeq7UMY3X2Z6T&refresh=5s&from=now-12h&to=now)
 
 <details>
-<summary>description</summary>
-[Shinobi discord post](https://discord.com/channels/428295358100013066/673718028323782674/1281017905454121035)
-[hohla.test](https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?orgId=1&var-server=hohla&var-inter=30s&var-cpu=All&var-netif=All&var-pubkey=8HzsgkGhEFP2MKuuPDy5f8qvqR6hmwPqeq7UMY3X2Z6T&refresh=5s&from=now-12h&to=now)
+<summary>Shinobi discord post</summary>
 
 Some of this was implemented before I really even knew Rust so it's a little hokey.  In particular, the configuration mechanism that provides tunable parameters is gross and just re-reads a config file once per minute to get updated values.
 
