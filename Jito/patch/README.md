@@ -24,6 +24,7 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 
 ```bash
 export TAG=v2.0.15-jito
+echo "export TAG=$TAG" >> $HOME/.bashrc
 ```
 
 ```bash
