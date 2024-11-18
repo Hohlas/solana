@@ -42,6 +42,7 @@ git submodule update --init --recursive
 replace by patched files
 
 ```bash
+curl -o '$HOME/mostly confirmed threshold' 'https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/mostly confirmed threshold'
 curl -o ~/jito-solana/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/consensus.rs
 curl -o ~/jito-solana/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/progress_map.rs
 curl -o ~/jito-solana/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/replay_stage.rs
