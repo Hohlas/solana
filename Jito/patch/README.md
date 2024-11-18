@@ -48,7 +48,7 @@ curl -o ~/jito-solana/core/src/vote_simulator.rs https://raw.githubusercontent.c
 curl -o ~/jito-solana/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod.rs
 curl -o ~/jito-solana/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod_sdk.rs
 ```
-settings file
+settings file - If it doesn't exist, the mods do nothing.
 ```bash
 curl -o $HOME/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/mostly_confirmed_threshold
 ```
