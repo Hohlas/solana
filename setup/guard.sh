@@ -349,7 +349,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
 	fi  
 	
 	# check behind
-	if [[ $BEHIND -le $BEHIND_OK_VAL && $BEHIND -gt -1000 ]]; then # проверка на "число" и -1000<BEHIND<1 
+	if [[ $BEHIND -le $BEHIND_OK_VAL ]]; then #  && $BEHIND -gt -1000  проверка на "число" и -1000<BEHIND<1 
 		behind_counter=0
   		BEHIND_PRN="$GREEN$BEHIND"
 	else
