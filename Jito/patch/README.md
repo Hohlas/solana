@@ -78,6 +78,7 @@ solana --version
 <details>
 <summary>description</summary>
 [Shinobi discord post](https://discord.com/channels/428295358100013066/673718028323782674/1281017905454121035)
+[Shinobi discord post](https://discord.com/channels/428295358100013066/673718028323782674/1281017905454121035)
 
 Some of this was implemented before I really even knew Rust so it's a little hokey.  In particular, the configuration mechanism that provides tunable parameters is gross and just re-reads a config file once per minute to get updated values.
 
@@ -111,6 +112,17 @@ Stopping and waiting for them to catch up can be seen as a kind of lag (because 
 I don't feel obligated to go as far ahead of the pack as I can, I only need to be willing to always go a bit ahead.  If all wolves allow themselves to go a bit ahead, but none allow themselves to go too far ahead, then the pack always progresses because there are always some wolves at the forefront leading the way.
 
 The existing code base already has its own criteria: it will go up to 8 steps ahead of 38% of the pack.  One could argue that this is more pack-friendly because the leaders are willing to lead from that much further ahead; but in my opinion, if the pack can't keep up, then there's no real value in going that much further ahead.  4 steps is fine.
+
+---
+
+FWIW I've been using these specific mods for over a year, and similar mods (implemented much more poorly but with approximately the same effect) for two years before that.  Never an issue.
+Also be aware that if you use really extreme values (i.e. greater than 0.66 for mostly confirmed threshold, greater than 8 for vote-ahead), it's possible for your voting to break.  I have experimented with values like that in the past and had some issues.  I would not recommend greater than 0.6 for mostly confirmed threshold, or greater than 4 for vote-ahead.
+
+In terms of what could be improved to get those additional credits:
+There may be edge cases I don't understand/haven't thought through where votes are being pruned out for safety that they don't need to be.  In other words, this code might be a little too conservative and might be missing some votes sometimes.
+There may be other ways to do fork avoidance that would be better at avoiding forks; although if those techniques introduce more waiting for info sometimes then they are inducing more artificial lag and that needs to be considered.
+There may be ways to alter the existing code base's selection of "next slot to vote on" so that it is either faster or less likely to choose a dying fork or both; I didn't mess with that code because I didn't want to break it and it has to deal with a lot of edge cases that could cause cluster breakage.  So tread carefully.
+Heuristics for predicting when a fork is likely to die.  Could keep historical data from which the likelihood that a slot is going to be skipped on factors like how often the leader is skipped, how slow the shreds are coming, whether or not the subsequent leader often skips its predecessor, etc.  Better prediction would mean voting on the wrong fork less often, and voting on the wrong fork is almost entirely the reason that vote credits are missed, so more accurate fork prediction leading to better dead-fork avoidance would be very beneficial.
 
 
 
