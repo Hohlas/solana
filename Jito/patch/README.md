@@ -28,18 +28,64 @@ echo "export TAG=$TAG" >> $HOME/.bashrc
 ```
 
 ```bash
+REPO_URL="https://github.com/jito-foundation/jito-solana.git"
 if [ -d ~/jito-solana ]; then 
   cd ~/jito-solana; 
   git fetch origin; 
   git reset --hard origin/master # сбросить локальную ветку до последнего коммита из git
 else 
-  git clone https://github.com/jito-foundation/jito-solana.git --recurse-submodules && \
+  git clone $REPO_URL --recurse-submodules && \
   cd jito-solana
 fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
-echo $TAG; git checkout tags/$TAG
+TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+echo "last TAG:$TAG"
+git checkout tags/$TAG
 git submodule update --init --recursive
 ```
+
+<details>
+<summary>check patched files last commit </summary>
+
+
+```bash
+changes_found=false
+CURRENT_DATE=$(date +%s)
+GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
+echo -e "\n \n = check patched files last commit = "
+for FILE_PATH in "${FILES[@]}"; do
+    # Получаем дату последнего коммита для файла в формате Unix timestamp
+    LAST_COMMIT_DATE=$(git log -1 --format="%ct" -- "$FILE_PATH" 2>/dev/null)
+
+    # Проверяем, существует ли файл в репозитории
+    if [ $? -ne 0 ]; then
+        echo "Файл $FILE_PATH не найден в репозитории."
+        continue
+    fi
+
+    # Вычисляем разницу в месяцах
+    DIFF_MONTHS=$(( (CURRENT_DATE - LAST_COMMIT_DATE) / (30*24*60*60) ))
+
+    # Проверяем, если разница меньше 3 месяцев
+    if [ "$DIFF_MONTHS" -lt 3 ]; then
+        echo -e "$FILE_PATH $RED last commit on $(date -d "@$LAST_COMMIT_DATE" +"%Y-%m-%d") $CLEAR"
+        changes_found=true
+    else
+        echo -e "$FILE_PATH $GREEN no change $CLEAR"
+    fi
+done
+
+if [ "$changes_found" = true ]; then
+    echo -e "Warning! $RED Patch file changed! $CLEAR"
+else
+    echo "files did not changed"
+fi
+
+```
+
+</details>
+
+
 patched files
 ```bash
 curl -o ~/jito-solana/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/consensus.rs
