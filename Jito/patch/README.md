@@ -39,7 +39,7 @@ else
 fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
 TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-echo "last TAG:$TAG"
+echo -e "current TAG: \033[32m $TAG \033[0m"
 git checkout tags/$TAG
 git submodule update --init --recursive
 ```
