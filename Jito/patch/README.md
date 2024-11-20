@@ -24,7 +24,7 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 
 ```bash
 # REPO_URL="https://github.com/anza-xyz/agave.git"
-# rm -r ~/solana_git
+# rm -r ~/solana_gi
 REPO_URL="https://github.com/jito-foundation/jito-solana.git"
 ```
 
@@ -119,6 +119,7 @@ curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.co
 ```bash
 cd ~/solana_git;
 rm -r ~/solana_git/target/*
+# rm -r $HOME/.local/share/solana/install/releases/$TAG
 # ./cargo build # to target/debug/
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"/solana-release
 ```
