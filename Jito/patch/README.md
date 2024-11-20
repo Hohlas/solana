@@ -23,12 +23,10 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 
 
 ```bash
-export TAG=v2.0.15-jito
-echo "export TAG=$TAG" >> $HOME/.bashrc
+REPO_URL="https://github.com/jito-foundation/jito-solana.git"
 ```
 
 ```bash
-REPO_URL="https://github.com/jito-foundation/jito-solana.git"
 if [ -d ~/jito-solana ]; then 
   cd ~/jito-solana; 
   git fetch origin; 
@@ -38,8 +36,16 @@ else
   cd jito-solana
 fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
-TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+```
+
+```bash
+# TAG=v2.0.15-jito
+TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 echo -e "current TAG: \033[32m $TAG \033[0m"
+echo "export TAG=$TAG" >> $HOME/.bashrc
+```
+
+```bash
 git checkout tags/$TAG
 git submodule update --init --recursive
 ```
