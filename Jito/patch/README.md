@@ -23,17 +23,18 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 
 
 ```bash
+REPO_URL="https://github.com/anza-xyz/agave.git"
 REPO_URL="https://github.com/jito-foundation/jito-solana.git"
 ```
 
 ```bash
-if [ -d ~/jito-solana ]; then 
-  cd ~/jito-solana; 
+if [ -d ~/solana_git ]; then 
+  cd ~/solana_git; 
   git fetch origin; 
   git reset --hard origin/master # сбросить локальную ветку до последнего коммита из git
 else 
-  git clone $REPO_URL --recurse-submodules && \
-  cd jito-solana
+  git clone $REPO_URL --recurse-submodules ~/solana_git
+  cd solana_git
 fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
 ```
@@ -94,12 +95,12 @@ fi
 
 patched files
 ```bash
-curl -o ~/jito-solana/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/consensus.rs
-curl -o ~/jito-solana/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/progress_map.rs
-curl -o ~/jito-solana/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/replay_stage.rs
-curl -o ~/jito-solana/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/vote_simulator.rs
-curl -o ~/jito-solana/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod.rs
-curl -o ~/jito-solana/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod_sdk.rs
+curl -o ~/solana_git/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/consensus.rs
+curl -o ~/solana_git/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/progress_map.rs
+curl -o ~/solana_git/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/replay_stage.rs
+curl -o ~/solana_git/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/vote_simulator.rs
+curl -o ~/solana_git/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod.rs
+curl -o ~/solana_git/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod_sdk.rs
 ```
 settings file - If it doesn't exist, the mods do nothing.
 ```bash
@@ -107,8 +108,8 @@ curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.co
 ```
 
 ```bash
-cd ~/jito-solana;
-rm -r ~/jito-solana/target/*
+cd ~/solana_git;
+rm -r ~/solana_git/target/*
 # ./cargo build # to target/debug/
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"/solana-release
 ```
