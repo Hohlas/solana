@@ -56,6 +56,14 @@ git submodule update --init --recursive
 
 
 ```bash
+FILES=(
+    "core/src/consensus.rs"
+    "core/src/consensus/progress_map.rs"
+    "core/src/replay_stage.rs"
+    "core/src/vote_simulator.rs"
+    "programs/vote/src/vote_state/mod.rs"
+    "sdk/program/src/vote/state/mod.rs"
+)
 changes_found=false
 CURRENT_DATE=$(date +%s)
 GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
