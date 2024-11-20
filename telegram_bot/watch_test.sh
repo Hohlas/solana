@@ -7,7 +7,7 @@ CLUSTER=t
 #если хочешь 1 ноду то в скобках указывается только один pub,vote,ip,TEXT и т.д. Добавить можно сколько угодно нод но каждый новый параметр через пробел!  
 PUB_KEY=(mFJG277eG7EFS7Zu2UU5BkFZQW7PpAVfjMaFsTqXAUq 8HzsgkGhEFP2MKuuPDy5f8qvqR6hmwPqeq7UMY3X2Z6T CpFKK4LrfnCZ32gQPPW8hVMqFsMSe46k7cUjs8h77iQQ)
 VOTE=(2r71p3Gv2GhEbJWZp7ZZMvBzYMr3KjwvfV5oNTKXxTaX CgXsXRodb3aTwqPEkyUwL3aPTmHxVdT8CVv5QeeMBAnG E64siUgPsM5GSCbdbrzQzf5FsB6XgrBpSPJhk2euTfQV)
-IP=(195.3.221.63 193.34.212.173 185.225.191.203)
+IP=(195.3.223.30 195.3.223.66 185.225.191.203)
 #==== tg_bot_token ====
 # CHAT_ALARM=-100...684
 # CHAT_INFO=-100...888
