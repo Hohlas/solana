@@ -102,8 +102,9 @@ fi
 
 </details>
 
+<details>
+<summary> files to replace </summary>
 
-files to replace
 ```bash
 SOL_VERSION=v2.0
 curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/consensus.rs
@@ -115,6 +116,8 @@ curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubuserconten
 curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mostly_confirmed_threshold
 echo -e "replace files for \033[32m $SOL_VERSION \033[0m versions "
 ```
+
+</details>
 
 ```bash
 cd $REPO_DIR;
