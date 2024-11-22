@@ -69,7 +69,7 @@ FILES=(
 changes_found=false
 CURRENT_DATE=$(date +%s)
 GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
-echo -e "\n \n = check patched files last commit = "
+echo -e "\n \n = check files last commit date = "
 for FILE_PATH in "${FILES[@]}"; do
     # Получаем дату последнего коммита для файла в формате Unix timestamp
     LAST_COMMIT_DATE=$(git log -1 --format="%ct" -- "$FILE_PATH" 2>/dev/null)
@@ -93,7 +93,7 @@ for FILE_PATH in "${FILES[@]}"; do
 done
 
 if [ "$changes_found" = true ]; then
-    echo -e "Warning! $RED Patch file changed! $CLEAR"
+    echo -e "Warning! $RED some files was changed! $CLEAR"
 else
     echo "files did not changed"
 fi
