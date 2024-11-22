@@ -133,7 +133,7 @@ if ! grep -q "$HOME/.local/share/solana/install/active_release/bin" ~/.bashrc; t
     export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
     echo 'export PATH='$PATH >> ~/.bashrc
 fi
-ln -sf $HOME/.local/share/solana/install/releases/$TAG/solana-release $HOME/.local/share/solana/install/active_release
+ln -sfn $HOME/.local/share/solana/install/releases/$TAG/solana-release $HOME/.local/share/solana/install/active_release
 cd "$HOME/.local/share/solana/install/releases/$TAG/solana-release/bin/"
 for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
     if [ -f "$file" ]; then # файл существует ли 
@@ -143,16 +143,16 @@ for file in agave-*; do # Перебираем все файлы, начинаю
 done
 solana --version
 ```
-check patch settings
+check settings
 ```bash
 tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed_threshold'
 ```
 
-[Shinobi discord post](https://discord.com/channels/428295358100013066/673718028323782674/1281017905454121035)
 
 <details>
-<summary>Shinobi discord post</summary>
+<summary>discord post</summary>
 
+[Shinobi discord post](https://discord.com/channels/428295358100013066/673718028323782674/1281017905454121035)
 Some of this was implemented before I really even knew Rust so it's a little hokey.  In particular, the configuration mechanism that provides tunable parameters is gross and just re-reads a config file once per minute to get updated values.
 
 The config file is stored in the validator's root directory and is called "mostly_confirmed_threshold".  If it doesn't exist, the mods do nothing.  If it does exist, then it is a simple file with four values in sequence:
