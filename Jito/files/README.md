@@ -36,7 +36,7 @@ if [ -d $REPO_DIR ]; then
   git reset --hard origin/master # сбросить локальную ветку до последнего коммита из git
 else 
   git clone $REPO_URL --recurse-submodules $REPO_DIR
-  cd solana_git
+  cd $REPO_DIR
 fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
 ```
