@@ -1,4 +1,4 @@
-## Jito patch setup
+## Jito setup
 
 <details>
 <summary>rust setup</summary>
@@ -26,15 +26,16 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 # REPO_URL="https://github.com/anza-xyz/agave.git"
 # rm -r ~/solana_gi
 REPO_URL="https://github.com/jito-foundation/jito-solana.git"
+REPO_DIR=$HOME/jito-solana
 ```
 
 ```bash
-if [ -d ~/solana_git ]; then 
-  cd ~/solana_git; 
+if [ -d $REPO_DIR ]; then 
+  cd $REPO_DIR; 
   git fetch origin; 
   git reset --hard origin/master # сбросить локальную ветку до последнего коммита из git
 else 
-  git clone $REPO_URL --recurse-submodules ~/solana_git
+  git clone $REPO_URL --recurse-submodules $REPO_DIR
   cd solana_git
 fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
@@ -53,7 +54,7 @@ git submodule update --init --recursive
 ```
 
 <details>
-<summary>check patched files last commit </summary>
+<summary>check files last commit date </summary>
 
 
 ```bash
@@ -102,23 +103,22 @@ fi
 </details>
 
 
-patched files
+files to replace
 ```bash
-curl -o ~/solana_git/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/consensus.rs
-curl -o ~/solana_git/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/progress_map.rs
-curl -o ~/solana_git/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/replay_stage.rs
-curl -o ~/solana_git/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/vote_simulator.rs
-curl -o ~/solana_git/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod.rs
-curl -o ~/solana_git/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/v2/mod_sdk.rs
-```
-settings file - If it doesn't exist, the mods do nothing.
-```bash
-curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/patch/mostly_confirmed_threshold
+SOL_VERSION=v2.0
+curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/consensus.rs
+curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/progress_map.rs
+curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/replay_stage.rs
+curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/vote_simulator.rs
+curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mod.rs
+curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mod_sdk.rs
+curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mostly_confirmed_threshold
+echo "replace files for $SOL_VERSION versions"
 ```
 
 ```bash
-cd ~/solana_git;
-rm -r ~/solana_git/target/*
+cd $REPO_DIR;
+rm -r $REPO_DIR/target/*
 # rm -r $HOME/.local/share/solana/install/releases/$TAG
 # ./cargo build # to target/debug/
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"/solana-release
