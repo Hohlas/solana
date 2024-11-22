@@ -113,7 +113,7 @@ curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/H
 curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mod.rs
 curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mod_sdk.rs
 curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mostly_confirmed_threshold
-echo "replace files for $SOL_VERSION versions"
+echo -e "replace files for \033[32m $SOL_VERSION \033[0m versions "
 ```
 
 ```bash
