@@ -168,8 +168,7 @@ curl -o $REPO_DIR/mod_sdk.rs https://raw.githubusercontent.com/$REPO_URL/sdk/pro
 echo -e "get files from \033[32m $REPO_URL \033[0m ok "
 ```
 
-
-<details>
+</details>
 
 
 <details>
