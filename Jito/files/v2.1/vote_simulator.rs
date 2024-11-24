@@ -110,7 +110,7 @@ impl VoteSimulator {
                             solana_vote_program::vote_state::Vote::new(
                                 vec![parent],
                                 parent_bank.hash(),
-                            ),
+                            ), true,
                         )
                         .unwrap();
                         TowerSync::new(
