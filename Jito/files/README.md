@@ -107,6 +107,7 @@ fi
 
 ```bash
 SOL_VERSION=v2.0
+SOL_VERSION=v2.1
 curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/consensus.rs
 curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/progress_map.rs
 curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/replay_stage.rs
