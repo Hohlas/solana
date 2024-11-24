@@ -1,5 +1,5 @@
 #!/bin/bash
-ulimit -n 1000000
+ulimit -n 2048000
 
 echo -e '\n\e[42m install GPG keys \e[0m\n'
 # Загрузка и добавление ключа
