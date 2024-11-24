@@ -1029,39 +1029,7 @@ impl ReplayStage {
                                     continue;
                                 }
                                 // 3
-                                if bank.slot()
-                                    > (bank.parent().map(|parent| parent.slot()).unwrap_or(0) + 1)
-                                {
-                                    match after_skip_threshold {
-                                        Some(1) => {
-                                            if !progress
-                                                .get_fork_stats(bank.slot())
-                                                .unwrap()
-                                                .is_mostly_confirmed
-                                            {
-                                                info!(
-                                                    "vote-optimizer after skip refusing {}",
-                                                    bank.slot()
-                                                );
-                                                break;
-                                            }
-                                        }
-                                        Some(2) => {
-                                            if !progress
-                                                .get_fork_stats(bank.slot())
-                                                .unwrap()
-                                                .is_supermajority_confirmed
-                                            {
-                                                info!(
-                                                    "vote-optimizer after skip refusing {}",
-                                                    bank.slot()
-                                                );
-                                                break;
-                                            }
-                                        }
-                                        _ => (),
-                                    }
-                                }
+                                
                                 filtered_vote_banks.push(bank.clone());
                                 // 4
                                 if filtered_vote_banks.len() == 31 {
@@ -4104,7 +4072,7 @@ impl ReplayStage {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn mark_slots_confirmed(
+    fn mark_slots_duplicate_confirmed(
         confirmed_slots: &[(Slot, Hash)],
         mostly_confirmed_forks: &[Slot],
         blockstore: &Blockstore,
