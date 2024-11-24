@@ -103,20 +103,36 @@ fi
 </details>
 
 <details>
-<summary> files to replace </summary>
+<summary> files for V2.0.x </summary>
 
 ```bash
-SOL_VERSION=v2.0
-SOL_VERSION=v2.1
-curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/consensus.rs
-curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/progress_map.rs
-curl -o $REPO_DIR/core/src/consensus/fork_choice.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/fork_choice.rs
-curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/replay_stage.rs
-curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/vote_simulator.rs
-curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mod.rs
-curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mod_sdk.rs
-curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mostly_confirmed_threshold
-echo -e "replace files for \033[32m $SOL_VERSION \033[0m versions "
+
+curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/consensus.rs
+curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/progress_map.rs
+curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/replay_stage.rs
+curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/vote_simulator.rs
+curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/mod.rs
+curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/mod_sdk.rs
+curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/mostly_confirmed_threshold
+echo -e "replace files for \033[32m V2.0.x \033[0m versions "
+```
+
+</details>
+
+<details>
+<summary> files for V2.1.x </summary>
+
+```bash
+
+curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/consensus.rs
+curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/progress_map.rs
+curl -o $REPO_DIR/core/src/consensus/fork_choice.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/fork_choice.rs
+curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/replay_stage.rs
+curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/vote_simulator.rs
+curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/mod.rs
+curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/mod_sdk.rs
+curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/mostly_confirmed_threshold
+echo -e "replace files for \033[32m V2.1.x \033[0m versions "
 ```
 
 </details>
