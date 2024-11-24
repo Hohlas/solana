@@ -5,16 +5,16 @@ SOLANA_PATH="$HOME/.local/share/solana/install/active_release/bin/solana" #По�
 #Cluster: m-mainnet-beta или t-testnet
 CLUSTER=m
 #если хочешь 1 ноду то в скобках указывается только один pub,vote,ip,TEXT и т.д. Добавить можно сколько угодно нод но каждый новый параметр через пробел!  
-PUB_KEY=(5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC)
-VOTE=(5WVvtQDDd3Gsdm3eyDrRAczP9greGmdBjNoyD93iYw9F 3FLezD8GJgnawEHhZcsjdPxZVar9FzqEdViusQ5ZdSwe 9esjPxaUdD7yg4yDrBkP3jLipcAGVjpLDXsddF89avzW)
-IP=(149.50.110.199 149.50.110.94 149.50.110.231)
+PUB_KEY=(5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC 9SjGU3tzdEXfLaVsLpnTwP3inBNhAPMq4XKupUf9Ms5E)
+VOTE=(5WVvtQDDd3Gsdm3eyDrRAczP9greGmdBjNoyD93iYw9F 3FLezD8GJgnawEHhZcsjdPxZVar9FzqEdViusQ5ZdSwe 9esjPxaUdD7yg4yDrBkP3jLipcAGVjpLDXsddF89avzW HG574XwiowrjLx8h91KhHUhPeMfmUPBLfC9XrXynj9x)
+IP=(149.50.110.199 149.50.110.94 149.50.110.231 193.34.213.254)
 #==== tg_bot_token ====
 # CHAT_ALARM=-100...684
 # CHAT_INFO=-100...888
 # BOT_TOKEN=507...lWU
 #======================
 source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
-NODE_NAME=("BUKA" "HOHLA" "VALERA")
+NODE_NAME=("BUKA" "HOHLA" "VALERA" "Stepan")
 BALANCEWARN=(1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
 date
