@@ -483,9 +483,7 @@ pub fn select_vote_and_reset_forks(
     ) {
         // We can vote!
         if candidate_vote_bank.slot() != *last_logged_vote_slot {
-            info!("voting: {} {:.1}%",
-                candidate_vote_bank.slot(),
-                100.0 * fork_weight);
+            //info!("voting: {} {:.1}%", candidate_vote_bank.slot(), 100.0 * fork_weight);
             *last_logged_vote_slot = candidate_vote_bank.slot();
             }
         SelectVoteAndResetForkResult {
