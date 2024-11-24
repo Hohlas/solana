@@ -1008,7 +1008,7 @@ impl ReplayStage {
                             // 3. If there is a "skip ahead threshold", all votes after a skip if the first vote after
                             //    the skip doesn't meet the threshold.
                             // 4. All except the first 31 votes that aren't filtered by 1 - 3.
-                            let after_skip_threshold = tower.get_after_skip_threshold();
+                            // let after_skip_threshold = tower.get_after_skip_threshold();
                             let mut filtered_vote_banks = vec![];
                             let mut filtered_vote_slots = vec![];
                             for bank in &vote_banks {
@@ -1545,7 +1545,7 @@ impl ReplayStage {
         if progress
             .get_fork_stats(bank.slot())
             .unwrap()
-            .is_supermajority_confirmed
+            //.is_supermajority_confirmed
         {
             bank.slot()
         } else if let Some(parent) = bank.parent() {
