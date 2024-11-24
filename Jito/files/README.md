@@ -110,6 +110,7 @@ SOL_VERSION=v2.0
 SOL_VERSION=v2.1
 curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/consensus.rs
 curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/progress_map.rs
+curl -o $REPO_DIR/core/src/consensus/fork_choice.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/fork_choice.rs
 curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/replay_stage.rs
 curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/vote_simulator.rs
 curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/$SOL_VERSION/mod.rs
