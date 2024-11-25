@@ -170,7 +170,7 @@ tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed
 <summary>download original files</summary>
 
 ```bash
-REPO_DIR=$HOME/files
+FILES_DIR=$HOME/files
 TAG=v2.0.15
 TAG=v2.1.1
 REPO_URL="jito-foundation/jito-solana/refs/tags/$TAG-jito"
@@ -178,12 +178,13 @@ REPO_URL="anza-xyz/agave/refs/tags/$TAG"
 ```
 
 ```bash
-curl -o $REPO_DIR/consensus.rs https://raw.githubusercontent.com/$REPO_URL/core/src/consensus.rs
-curl -o $REPO_DIR/progress_map.rs https://raw.githubusercontent.com/$REPO_URL/core/src/consensus/progress_map.rs
-curl -o $REPO_DIR/replay_stage.rs https://raw.githubusercontent.com/$REPO_URL/core/src/replay_stage.rs
-curl -o $REPO_DIR/vote_simulator.rs https://raw.githubusercontent.com/$REPO_URL/core/src/vote_simulator.rs
-curl -o $REPO_DIR/mod.rs https://raw.githubusercontent.com/$REPO_URL/programs/vote/src/vote_state/mod.rs
-curl -o $REPO_DIR/mod_sdk.rs https://raw.githubusercontent.com/$REPO_URL/sdk/program/src/vote/state/mod.rs
+curl -o $FILES_DIR/consensus.rs https://raw.githubusercontent.com/$REPO_URL/core/src/consensus.rs
+curl -o $FILES_DIR/progress_map.rs https://raw.githubusercontent.com/$REPO_URL/core/src/consensus/progress_map.rs
+curl -o $FILES_DIR/replay_stage.rs https://raw.githubusercontent.com/$REPO_URL/core/src/replay_stage.rs
+curl -o $FILES_DIR/fork_choice.rs https://raw.githubusercontent.com/$REPO_URL/core/src/consensus/fork_choice.rs
+curl -o $FILES_DIR/vote_simulator.rs https://raw.githubusercontent.com/$REPO_URL/core/src/vote_simulator.rs
+curl -o $FILES_DIR/mod.rs https://raw.githubusercontent.com/$REPO_URL/programs/vote/src/vote_state/mod.rs
+curl -o $FILES_DIR/mod_sdk.rs https://raw.githubusercontent.com/$REPO_URL/sdk/program/src/vote/state/mod.rs
 echo -e "get files from \033[32m $REPO_URL \033[0m ok "
 ```
 
