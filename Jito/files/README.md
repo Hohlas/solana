@@ -170,8 +170,9 @@ tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed
 <summary>download original files</summary>
 
 ```bash
-REPO_DIR=$HOME/patch
+REPO_DIR=$HOME/files
 TAG=v2.0.15
+TAG=v2.1.1
 REPO_URL="jito-foundation/jito-solana/refs/tags/$TAG-jito"
 REPO_URL="anza-xyz/agave/refs/tags/$TAG"
 ```
