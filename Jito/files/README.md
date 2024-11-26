@@ -61,6 +61,7 @@ git submodule update --init --recursive
 FILES=(
     "core/src/consensus.rs"
     "core/src/consensus/progress_map.rs"
+    "core/src/consensus/fork_choice.rs"
     "core/src/replay_stage.rs"
     "core/src/vote_simulator.rs"
     "programs/vote/src/vote_state/mod.rs"
