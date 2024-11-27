@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.4.8
+GUARD_VER=v1.4.9
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -160,13 +160,13 @@ RPC_REQUEST() {
 	fi	
 	
   	if [[ "$REQUEST1" == "$most_frequent_answer" ]]; then 
-    	CLR1=$GREEN; CLR2=$YELLOW;
+    	CLR1=$GREEN; CLR2=$YELLOW; WRONG_ANSWER="Wrong answer RPC.$rpc_index=[$REQUEST2]"
     else 
-    	CLR1=$YELLOW; CLR2=$GREEN;
+    	CLR1=$YELLOW; CLR2=$GREEN; WRONG_ANSWER="Wrong answer RPC.sol=[$REQUEST1]"
     fi 
     percentage=$(( (max_count * 100) / 20 ))
-	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC1=[$CLR1$REQUEST1$CLEAR] RPC2=[$CLR2$REQUEST2$CLEAR]     "	
-    echo "$(TIME) Warning! Different answers $percentage%: RPC1=[$REQUEST1] RPC2=[$REQUEST2]. max_count=$max_count, most_frequent_answer=$most_frequent_answer" >> $LOG_FILE
+	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC.sol=[$CLR1$REQUEST1$CLEAR] RPC.$rpc_index=[$CLR2$REQUEST2$CLEAR]     "	
+    echo "$(TIME) Warning! Different answers $percentage%: RPC.sol=[$REQUEST1] RPC.$rpc_index=[$REQUEST2]. most_frequent_answer=$most_frequent_answer, most_frequent_answer_count=$max_count" >> $LOG_FILE
    	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
   		((Wrong_request_count++))
 		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
@@ -174,10 +174,10 @@ RPC_REQUEST() {
     			((rpc_index++)) # Увеличиваем индекс, т.е. переключимся на следующий RPC сервер из списка.
 				if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
 			fi
-            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} Wrong REQUEST_ANSWER=$REQUEST_ANSWER, rpc_index=$rpc_index"
+            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} $WRONG_ANSWER, differ$percentage%"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-   		LOG "Error: Wrong REQUEST_ANSWER=$REQUEST_ANSWER, Wrong_request_count=$Wrong_request_count, rpc_index=$rpc_index"
+   		LOG "Error: $WRONG_ANSWER, most_frequent_answer=[$most_frequent_answer], rpc_index=$rpc_index"
 	 	REQUEST_ANSWER="";
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
@@ -246,7 +246,7 @@ if [[ -z "$rpc_index" ]]; then # rpc_index not defined
 	echo "rpc_index not defined in $LOG_FILE, set default value rpc_index=0"
 	rpc_index=0; # Устанавливаем значение по умолчанию
 fi
-echo " current rpc_index=$rpc_index, rpcURL list:"
+echo " Helius rpc_index=$rpc_index, rpcURL list:"
 for rpcURL in "${RPC_LIST[@]}"; do
 	echo -e "$BLUE$rpcURL$CLEAR" | tee -a $LOG_FILE
 done
