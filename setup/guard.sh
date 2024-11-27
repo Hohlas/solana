@@ -166,7 +166,7 @@ RPC_REQUEST() {
     fi 
     percentage=$(( (max_count * 100) / 20 ))
 	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC.sol=[$CLR1$REQUEST1$CLEAR] RPC.$rpc_index=[$CLR2$REQUEST2$CLEAR]     "	
-    echo "$(TIME) Warning! Different answers $percentage%: RPC.sol=[$REQUEST1] RPC.$rpc_index=[$REQUEST2]. most_frequent_answer=$most_frequent_answer, most_frequent_answer_count=$max_count" >> $LOG_FILE
+    echo "$(TIME) Warning! Different answers $percentage%: RPC.sol=[$REQUEST1] RPC.$rpc_index=[$REQUEST2]. most_frequent_answer[$max_count]=$most_frequent_answer" >> $LOG_FILE
    	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
   		((Wrong_request_count++))
 		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
@@ -177,7 +177,7 @@ RPC_REQUEST() {
             SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} $WRONG_ANSWER, differ$percentage%"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-   		LOG "Error: $WRONG_ANSWER, most_frequent_answer=[$most_frequent_answer], rpc_index=$rpc_index"
+   		LOG "Error: $WRONG_ANSWER, most_frequent_answer[$max_count]=$most_frequent_answer, Helius rpc_index=$rpc_index"
 	 	REQUEST_ANSWER="";
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
