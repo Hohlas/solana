@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.4.9
+GUARD_VER=v1.4.10
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -135,8 +135,8 @@ RPC_REQUEST() {
 	for i in {1..10}; do 
 		RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
 		RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
-		if [[ -z "$RQST1" ]]; then RQST1=" "; fi # чтобы не пихать в массив пустые значения, 
-  		if [[ -z "$RQST2" ]]; then RQST2=" "; fi # пропишем пробел
+		if [[ -z "$RQST1" ]]; then RQST1="NULL"; fi # чтобы не пихать в массив пустые значения, 
+  		if [[ -z "$RQST2" ]]; then RQST2="NULL"; fi # пропишем 'NULL'
   		echo "$(TIME) RPC1=[$RQST1], RPC2=[$RQST2]" >> $LOG_FILE
 		((request_count["$RQST1"]++)) # Увеличиваем счётчики для 
 		((request_count["$RQST2"]++)) # каждого вызова, включая пустые
@@ -153,35 +153,29 @@ RPC_REQUEST() {
 		fi
 	done
 
-	if [[ -z "$most_frequent_answer" ]]; then
- 		REQUEST_ANSWER=""
-		SEND_ALARM "Warning: REQUEST_ANSWER is empty"
-		return 1
+	if [[ -z "$most_frequent_answer" || "$most_frequent_answer" == "NULL" ]]; then
+ 		REQUEST_ANSWER=""; most_frequent_answer=""
+		# echo "$(TIME) "Warning: REQUEST_ANSWER is empty" >> $LOG_FILE
 	fi	
 	
-  	if [[ "$REQUEST1" == "$most_frequent_answer" ]]; then 
-    	CLR1=$GREEN; CLR2=$YELLOW; WRONG_ANSWER="Wrong answer RPC.$rpc_index=[$REQUEST2]"
-    else 
-    	CLR1=$YELLOW; CLR2=$GREEN; WRONG_ANSWER="Wrong answer RPC.sol=[$REQUEST1]"
-    fi 
-    percentage=$(( (max_count * 100) / 20 ))
-	echo -e "$(TIME) Warning! Different answers $BLUE$percentage%$CLEAR: RPC.sol=[$CLR1$REQUEST1$CLEAR] RPC.$rpc_index=[$CLR2$REQUEST2$CLEAR]     "	
-    echo "$(TIME) Warning! Different answers $percentage%: RPC.sol=[$REQUEST1] RPC.$rpc_index=[$REQUEST2]. most_frequent_answer[$max_count]=$most_frequent_answer" >> $LOG_FILE
+    percentage=$(( (max_count * 100) / 20 ))	
    	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
   		((Wrong_request_count++))
 		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
   			if [[ -z "$REQUEST2" ]]; then # резервный РПЦ молчит, скорее всего кончился лимит бесплатного аккаунта. 
     			((rpc_index++)) # Увеличиваем индекс, т.е. переключимся на следующий RPC сервер из списка.
 				if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
+				LOG "Change Helius rpc_index=$rpc_index"
 			fi
-            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} $WRONG_ANSWER, differ$percentage%"
+            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', differ$percentage%"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-   		LOG "Error: $WRONG_ANSWER, most_frequent_answer[$max_count]=$most_frequent_answer, Helius rpc_index=$rpc_index"
+		LOG "Error! Empty answer: RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', dominate[$percentage%]='$most_frequent_answer'"
 	 	REQUEST_ANSWER="";
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
    		Wrong_request_count=0
+		LOG "Warning! Different answers: RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', dominate[$percentage%]='$most_frequent_answer'"
 	fi
 		
 	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  $LOG_FILE
