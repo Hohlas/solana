@@ -39,6 +39,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-local-snapshot-age 5000 \
 --accounts-hash-interval-slots 5000 \
 --no-skip-initial-accounts-db-clean \
+--block-verification-method unified-scheduler \
 --block-production-method central-scheduler \
 --private-rpc \
 --full-rpc-api \
