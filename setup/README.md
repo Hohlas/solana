@@ -29,6 +29,7 @@ fdisk /dev/nvme1n1 #
   # n # create new. 'ENTER' by default. 
   # w # write changes
 mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
+mkfs.xfs /dev/nvme1n1p1
 mkswap /dev/nvme1n1p2 # format as swap
 ```
 
