@@ -42,8 +42,8 @@ git fetch --tags # для загрузки всех тегов из удален
 ```
 
 ```bash
-# TAG=v2.0.15-jito
-TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
+TAG=v2.0.15-jito
+# TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 echo -e "current TAG: \033[32m $TAG \033[0m"
 echo "export TAG=$TAG" >> $HOME/.bashrc
 ```
