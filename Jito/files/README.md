@@ -178,6 +178,7 @@ REPO_URL="anza-xyz/agave/refs/tags/$TAG"
 ```
 
 ```bash
+rm -r $FILES_DIR/*
 curl -o $FILES_DIR/consensus.rs https://raw.githubusercontent.com/$REPO_URL/core/src/consensus.rs
 curl -o $FILES_DIR/progress_map.rs https://raw.githubusercontent.com/$REPO_URL/core/src/consensus/progress_map.rs
 curl -o $FILES_DIR/replay_stage.rs https://raw.githubusercontent.com/$REPO_URL/core/src/replay_stage.rs
