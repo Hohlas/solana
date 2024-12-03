@@ -4,60 +4,6 @@
 sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux htop atop curl nano fail2ban smartmontools mc man rsync cron logrotate rsyslog encfs jq -y
 ```
 [Create Partitions & SWAP](https://github.com/Hohlas/ubuntu/blob/main/set/disk.md)
-<details>
-<summary>create and mount partitions</summary>
-
-```bash
-mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
-mkdir -p /mnt/disk1/accounts
-mkdir -p /mnt/disk2/accounts_index
-mkdir -p /mnt/disk3/accounts_hash_cache #
-# ln -sf /mnt/disk2 /mnt/disk3 # для трех дисков
-
-# disk3 / System
-mkdir -p /mnt/keys
-chmod 600 /mnt/keys 
-echo "# KEYS to RAMDISK 
-tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
-mount /mnt/keys 
-ln -sf /mnt/keys ~/keys
-```
-```bash
-lsblk -f # check MOUNTPOINTS 
-fdisk /dev/nvme1n1 #
-  # d # delete 
-  # n # create new. 'ENTER' by default. 
-  # w # write changes
-mkfs.ext4 /dev/nvme1n1p1 # format partition 'p1'
-mkfs.xfs /dev/nvme1n1p1
-mkswap /dev/nvme1n1p2 # format as swap
-```
-
-### RAID0 + disk2
-```bash
-mount /dev/nvme2n1p1 /mnt/disk2
-echo '/dev/disk/by-uuid/<uuid> /mnt/disk1 ext4 defaults 0 1' | sudo tee -a /etc/fstab
-mount -a
-```
-
-### system_disk + disk1 + disk2
-```bash
-DISK1_NVME=/dev/nvme1n1p1
-DISK2_NVME=/dev/nvme2n1p1
-DISK3_NVME=/dev/nvme3n1p1
-
-mount $DISK1_NVME /mnt/disk1
-echo "$DISK1_NVME /mnt/disk1 ext4 defaults 0 1" | sudo tee -a /etc/fstab
-mount $DISK2_NVME /mnt/disk2
-echo "$DISK2_NVME /mnt/disk2 ext4 defaults 0 1" | sudo tee -a /etc/fstab
-mount $DISK3_NVME /mnt/disk3
-echo "$DISK3_NVME /mnt/disk3 ext4 defaults 0 1" | sudo tee -a /etc/fstab
-mount -a
-```
-
-</details>
-
-
 
 <details>
 <summary>System check</summary>
