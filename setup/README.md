@@ -173,32 +173,7 @@ chmod +x ~/jito_relayer_setup.sh
 ```
 </details>
 
-<details>
-<summary>Grafana Setup</summary>
-
-```bash
-source ~/sol_git/setup/grafana_setup.sh
-```
-### update config file
-```bash
-git_clone
-cp ~/sol_git/setup/telegraf.conf /etc/telegraf/telegraf.conf
-source ~/.bashrc
-tmp="\"$NAME\""
-sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
-systemctl restart telegraf
-journalctl -u telegraf -f
-```
-```bash
-nano /etc/telegraf/telegraf.conf  # add config
-```
-### price service
-```bash
-sed -i "/^solanaPrice=/c\solanaPrice=$(curl -s 'https://api.margus.one/solana/price/'| jq -r .price)" /root/solanamonitoring/monitor.sh
-systemctl restart telegraf
-```
-
-</details>
+[Grafana](https://github.com/Hohlas/solana/telegraf/readme.md)
 
 ## Snapshot Finder
 
