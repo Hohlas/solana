@@ -3,7 +3,7 @@
 ```bash
 sudo apt update && sudo apt upgrade -y && sudo apt install git ncdu ufw tmux htop atop curl nano fail2ban smartmontools mc man rsync cron logrotate rsyslog encfs jq -y
 ```
-
+[Create Partitions & SWAP](https://github.com/Hohlas/ubuntu/blob/main/set/disk.md)
 <details>
 <summary>create and mount partitions</summary>
 
@@ -57,7 +57,7 @@ mount -a
 
 </details>
 
-[SWAP](https://github.com/Hohlas/ubuntu/blob/main/crypto/swap.md)
+
 
 <details>
 <summary>System check</summary>
