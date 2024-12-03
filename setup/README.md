@@ -173,7 +173,7 @@ chmod +x ~/jito_relayer_setup.sh
 ```
 </details>
 
-[Grafana](https://github.com/Hohlas/solana/blob/main/telegraf/README.md)
+[Grafana](https://github.com/Hohlas/solana/blob/main/telegraf/readme.md)
 
 ## Snapshot Finder
 
