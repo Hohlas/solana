@@ -9,7 +9,6 @@
 
 #####    CONFIG    ##################################################################################################
 configDir="$HOME/.config/solana" # the directory for the config files, eg.: /home/user/.config/solana
-LEDGER=$HOME/solana/ledger
 ##### optional:        #
 identityPubkey=""      # identity pubkey for the validator, insert if autodiscovery fails
 voteAccount=""         # vote account address for the validator, specify if there are more than one or if autodiscovery fails
@@ -42,7 +41,7 @@ if [ "$noVoting" -eq 0 ]; then
    if [ -z $voteAccount ]; then voteAccount=$($cli validators --url $rpcURL --output json-compact | jq -r 'first (.validators[] | select(.identityPubkey == '\"$identityPubkey\"')) | .voteAccountPubkey'); fi
    if [ -z $voteAccount ]; then echo "please configure the vote account in the script or wait for availability upon starting the node"; exit 1; fi
 fi
-identityPubkey=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+identityPubkey="${(timeout 3 stdbuf -oL solana-validator --ledger "/root/solana/ledger" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')}"
 
 validatorBalance=$($cli balance $identityPubkey | grep -o '[0-9.]*')
 validatorVoteBalance=$($cli balance $voteAccount | grep -o '[0-9.]*')
