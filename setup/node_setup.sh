@@ -33,6 +33,7 @@ else
 cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
+curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/test/stat.sh > ~/stat.sh; chmod +x ~/stat.sh
 
 echo -e '\n\e[42m copy files \e[0m\n'
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
@@ -73,6 +74,7 @@ echo "alias node_install='source ~/sol_git/setup/install.sh'" >> $HOME/.bashrc
 echo "alias node_update='source ~/sol_git/setup/update.sh'" >> $HOME/.bashrc
 echo "alias finder='source ~/sol_git/setup/finder.sh'" >> $HOME/.bashrc
 echo "alias yabs='curl -sL yabs.sh | bash'" >> $HOME/.bashrc
+echo "alias stat='source ~/stat.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 source $HOME/.bashrc
