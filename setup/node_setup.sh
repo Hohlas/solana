@@ -7,6 +7,10 @@ mkdir -p /mnt/disk2/accounts_index
 mkdir -p /mnt/disk3/accounts_hash_cache #
 # ln -sf /mnt/disk2 /mnt/disk3 # для трех дисков
 
+echo "# RAMDISK 
+tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
+mkdir -p /mnt/ramdisk; mount /mnt/ramdisk
+
 if [ ! -d "$HOME/keys" ]; then
     mkdir -p /mnt/keys
     ln -sf /mnt/keys "$HOME/keys"
