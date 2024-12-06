@@ -31,8 +31,8 @@ if [ ! -f ~/solana/empty-validator.json ]; then
 solana-keygen new -s --no-bip39-passphrase -o ~/solana/empty-validator.json
 fi
 # ln -sf ~/solana/empty-validator.json ~/solana/validator_link.json
-echo "download guard.cfg"
-curl -o $HOME/guard.cfg https://raw.githubusercontent.com/Hohlas/solana/main/setup/cfg/${NAME,,}.cfg
+echo "download guard.cfg" # from buka
+# curl -o $HOME/guard.cfg https://raw.githubusercontent.com/Hohlas/solana/main/setup/cfg/${NAME,,}.cfg
 
 # update services and network url
 if [[ $NODE == "main" ]]; then
