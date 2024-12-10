@@ -24,7 +24,7 @@ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check
 ```bash
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
 ```
-
+[iostat](https://github.com/Hohlas/ubuntu/tree/main/test#readme)
 </details>
 
 <details>
