@@ -172,6 +172,7 @@ tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed
 ```bash
 FILES_DIR=$HOME/files
 mkdir -p $HOME/files
+rm -r $HOME/files/*
 TAG=v2..
 REPO_URL="jito-foundation/jito-solana/refs/tags/$TAG-jito"
 REPO_URL="anza-xyz/agave/refs/tags/$TAG"
