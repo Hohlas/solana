@@ -56,8 +56,9 @@ git submodule update --init --recursive
 <details>
 <summary>check files for last commit date </summary>
 
-[JitoGit](https://github.com/jito-foundation/jito-solana/releases)
+[JitoGit](https://github.com/jito-foundation/jito-solana/releases)  
 [AgaveGit](https://github.com/anza-xyz/agave/releases)
+
 ```bash
 FILES=(
     "core/src/consensus.rs"
