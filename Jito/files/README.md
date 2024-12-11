@@ -56,8 +56,13 @@ git submodule update --init --recursive
 <details>
 <summary>check files for last commit date </summary>
 
-[JitoGit](https://github.com/jito-foundation/jito-solana/releases)  [AgaveGit](https://github.com/anza-xyz/agave/releases)
+[JitoGit](https://github.com/jito-foundation/jito-solana/releases) | [AgaveGit](https://github.com/anza-xyz/agave/releases)
 ```bash
+TAG1=v2.1.1-jito
+```
+
+```bash
+GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
 FILES=(
     "core/src/consensus.rs"
     "core/src/consensus/progress_map.rs"
@@ -67,37 +72,16 @@ FILES=(
     "programs/vote/src/vote_state/mod.rs"
     "sdk/program/src/vote/state/mod.rs"
 )
-changes_found=false
-CURRENT_DATE=$(date +%s)
-GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
-echo -e "\n \n = check files last commit date = "
-for FILE_PATH in "${FILES[@]}"; do
-    # Получаем дату последнего коммита для файла в формате Unix timestamp
-    LAST_COMMIT_DATE=$(git log -1 --format="%ct" -- "$FILE_PATH" 2>/dev/null)
-
-    # Проверяем, существует ли файл в репозитории
-    if [ $? -ne 0 ]; then
-        echo "Файл $FILE_PATH не найден в репозитории."
-        continue
-    fi
-
-    # Вычисляем разницу в месяцах
-    DIFF_MONTHS=$(( (CURRENT_DATE - LAST_COMMIT_DATE) / (30*24*60*60) ))
-
-    # Проверяем, если разница меньше 3 месяцев
-    if [ "$DIFF_MONTHS" -lt 3 ]; then
-        echo -e "$FILE_PATH $RED last commit on $(date -d "@$LAST_COMMIT_DATE" +"%Y-%m-%d") $CLEAR"
-        changes_found=true
+# Сравниваем файлы для двух тегов
+for FILE in "${FILES[@]}"; do
+    DIFF=$(git diff "$TAG" "$TAG1" -- "$FILE") # различия между тегами
+    if [ -n "$DIFF" ]; then
+        echo -e "${RED}file update:${CLEAR} $FILE"
+        echo "$DIFF"  # Выводим различия
     else
-        echo -e "$FILE_PATH $GREEN no change $CLEAR"
+        echo -e "${GREEN}file the same:${CLEAR} $FILE"
     fi
 done
-
-if [ "$changes_found" = true ]; then
-    echo -e "Warning! $RED some files was changed! $CLEAR"
-else
-    echo "files did not changed"
-fi
 
 ```
 
