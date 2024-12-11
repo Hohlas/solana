@@ -9,8 +9,8 @@ mkdir -p /mnt/disk3/accounts_hash_cache #
 
 echo "# RAMDISK 
 tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
-mkdir -p /mnt/ramdisk/keys; mount /mnt/ramdisk
-ln -sf /mnt/ramdisk/keys "$HOME/keys"
+mkdir -p /mnt/ramdisk; mount /mnt/ramdisk
+mkdir -p /mnt/ramdisk/keys; ln -sf /mnt/ramdisk/keys "$HOME/keys"
 
 echo -e '\n\e[42m set CPU  perfomance mode \e[0m\n'
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
