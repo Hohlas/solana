@@ -9,19 +9,11 @@ mkdir -p /mnt/disk3/accounts_hash_cache #
 
 echo "# RAMDISK 
 tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
-mkdir -p /mnt/ramdisk; mount /mnt/ramdisk
+mkdir -p /mnt/ramdisk/keys; mount /mnt/ramdisk
+ln -sf /mnt/ramdisk/keys "$HOME/keys"
 
-if [ ! -d "$HOME/keys" ]; then
-    mkdir -p /mnt/keys
-    ln -sf /mnt/keys "$HOME/keys"
-    chmod 600 /mnt/keys 
-	echo "# KEYS to RAMDISK 
-	tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
-	mount /mnt/keys
-	echo "create and mount ~/keys in RAMDISK"
-else
-    echo "~/keys exist"
-fi
+echo -e '\n\e[42m set CPU  perfomance mode \e[0m\n'
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
 
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sudo sysctl vm.swappiness=10  # change current SWAPPINESS
