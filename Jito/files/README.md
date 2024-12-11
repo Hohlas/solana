@@ -72,7 +72,7 @@ FILES=(
     "programs/vote/src/vote_state/mod.rs"
     "sdk/program/src/vote/state/mod.rs"
 )
-# Сравниваем файлы для двух тегов
+echo -e "\n  - TAGs $BLUE$TAG$CLEAR & $BLUE$TAG1$CLEAR differences - "
 for FILE in "${FILES[@]}"; do
     DIFF=$(git diff "$TAG" "$TAG1" -- "$FILE") # различия между тегами
     if [ -n "$DIFF" ]; then
