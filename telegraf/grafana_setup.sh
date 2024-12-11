@@ -1,5 +1,5 @@
 #!/bin/bash
-ulimit -n 2048000
+# ulimit -n 2048000
 
 echo -e '\n\e[42m install GPG keys \e[0m\n'
 # Загрузка и добавление ключа
@@ -45,8 +45,10 @@ then curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/locale > /
 echo "Download locale file to /etc/default"; 
 fi # файл locale иногда отсутствует, из-за этого появляется ошибка
 
-cp ~/sol_git/telegraf/telegraf.conf /etc/telegraf/telegraf.conf
-cp ~/sol_git/telegraf/monitor.sh  ~/solanamonitoring/monitor.sh
+
+curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/telegraf.conf > /etc/telegraf/telegraf.conf
+curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/monitor.sh > $HOME/solanamonitoring/monitor.sh
+
 tmp="\"$NAME\""
 sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
 # sed -i "/^solanaPrice=/c\solanaPrice=555" /root/solanamonitoring/monitor.sh
