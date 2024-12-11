@@ -7,19 +7,17 @@ mkdir -p /mnt/disk2
 mkdir -p /mnt/disk3
 
 if [ ! -d "$HOME/keys" ]; then
-    echo "# keys to RAM 
-	tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
+    echo "# keys to RAM" | sudo tee -a /etc/fstab 
+	echo "tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
     mkdir -p /mnt/keys
-
-    echo "# RAMDISK 
-    tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
-    mkdir -p /mnt/ramdisk
-    
+    #echo "# RAMDISK" | sudo tee -a /etc/fstab 
+    #echo "tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
+    #mkdir -p /mnt/ramdisk
 	mount -a
     ln -sf /mnt/keys "$HOME/keys" 
-    echo "create RAMDISK & keys"
+    echo "create RAMDISK for keys"
 else
-    echo "RAMDISK ~/keys exist"
+    echo "RAMDISK for keys exist"
 fi
 
 
