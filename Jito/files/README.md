@@ -54,7 +54,7 @@ git submodule update --init --recursive
 ```
 
 <details>
-<summary>check files for last commit date </summary>
+<summary>check TAGs differences </summary>
 
 [JitoGit](https://github.com/jito-foundation/jito-solana/releases) | [AgaveGit](https://github.com/anza-xyz/agave/releases)
 ```bash
@@ -76,10 +76,10 @@ FILES=(
 for FILE in "${FILES[@]}"; do
     DIFF=$(git diff "$TAG" "$TAG1" -- "$FILE") # различия между тегами
     if [ -n "$DIFF" ]; then
-        echo -e "${RED}file update:${CLEAR} $FILE"
-        echo "$DIFF"  # Выводим различия
+        echo -e "${RED}files are different:${CLEAR} $FILE"
+        # echo "$DIFF"  # Выводим различия
     else
-        echo -e "${GREEN}file the same:${CLEAR} $FILE"
+        echo -e "${GREEN}files the same:${CLEAR} $FILE"
     fi
 done
 
