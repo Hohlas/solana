@@ -7,7 +7,7 @@ mkdir -p /mnt/disk2
 mkdir -p /mnt/disk3
 
 if [ ! -d "$HOME/keys" ]; then
-    echo "# keys to RAM" | sudo tee -a /etc/fstab 
+	echo "# keys to RAM" | sudo tee -a /etc/fstab 
 	echo "tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
     mkdir -p /mnt/keys
     #echo "# RAMDISK" | sudo tee -a /etc/fstab 
