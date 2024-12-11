@@ -2,15 +2,27 @@
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
 # create dirs
 mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
-mkdir -p /mnt/disk1/accounts
-mkdir -p /mnt/disk2/accounts_index
-mkdir -p /mnt/disk3/accounts_hash_cache #
-# ln -sf /mnt/disk2 /mnt/disk3 # для трех дисков
+mkdir -p /mnt/disk1
+mkdir -p /mnt/disk2
+mkdir -p /mnt/disk3
 
-echo "# RAMDISK 
-tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
-mkdir -p /mnt/ramdisk; mount /mnt/ramdisk
-mkdir -p /mnt/ramdisk/keys; ln -sf /mnt/ramdisk/keys "$HOME/keys"
+if [ ! -d "$HOME/keys" ]; then
+    echo "# keys to RAM 
+	tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
+    mkdir -p /mnt/keys
+
+    echo "# RAMDISK 
+    tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
+    mkdir -p /mnt/ramdisk
+    
+	mount -a
+    ln -sf /mnt/keys "$HOME/keys" 
+    echo "create RAMDISK & keys"
+else
+    echo "RAMDISK ~/keys exist"
+fi
+
+
 
 echo -e '\n\e[42m set CPU  perfomance mode \e[0m\n'
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
