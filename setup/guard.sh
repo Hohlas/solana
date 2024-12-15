@@ -190,7 +190,7 @@ RPC_REQUEST() {
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
    		Wrong_request_count=0
-		LOG "Warning! Different answers: RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', dominate[$percentage%]='$most_frequent_answer'"
+		LOG "Warning! Different answers: RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', dominate[$percentage%]='$most_frequent_answer'($total_request_counter requests)"
 	fi
 		
 	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  $LOG_FILE
