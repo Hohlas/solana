@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.4.10
+GUARD_VER=v1.5.0
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -132,14 +132,26 @@ RPC_REQUEST() {
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> $LOG_FILE
 		# Если результаты разные, опрашиваем в цикле 10 раз
 	declare -A request_count
+	total_request_counter=0
 	for i in {1..10}; do 
 		RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
 		RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
-		if [[ -z "$RQST1" ]]; then RQST1="NULL"; fi # чтобы не пихать в массив пустые значения, 
-  		if [[ -z "$RQST2" ]]; then RQST2="NULL"; fi # пропишем 'NULL'
-  		echo "$(TIME) RPC1=[$RQST1], RPC2=[$RQST2]" >> $LOG_FILE
-		((request_count["$RQST1"]++)) # Увеличиваем счётчики для 
-		((request_count["$RQST2"]++)) # каждого вызова, включая пустые
+
+		if [[ -z "$RQST1" ]]; then 
+			RQST1="NULL" # Чтобы не пихать в массив пустые значения, пропишем 'NULL'
+		else 
+			((request_count["$RQST1"]++)) # Увеличиваем счётчики для непустых значений	
+			((total_request_counter++))
+		fi
+
+		if [[ -z "$RQST2" ]]; then 
+			RQST2="NULL" 
+		else 
+			((request_count["$RQST2"]++)) # Увеличиваем счётчики для непустых значений
+			((total_request_counter++))	
+		fi 
+
+		echo "$(TIME) RPC1='$RQST1', RPC2='$RQST2'" >> $LOG_FILE
 	done
 
 	# Находим наиболее частый ответ
@@ -153,12 +165,15 @@ RPC_REQUEST() {
 		fi
 	done
 
-	if [[ -z "$most_frequent_answer" || "$most_frequent_answer" == "NULL" ]]; then
- 		REQUEST_ANSWER=""; most_frequent_answer=""
-		# echo "$(TIME) "Warning: REQUEST_ANSWER is empty" >> $LOG_FILE
+	if [[ -z "$most_frequent_answer" || "$most_frequent_answer" == "NULL" || $total_request_counter -lt 5 ]]; then
+ 		REQUEST_ANSWER=""
+		LOG "Warnign! most_frequent_answer='$most_frequent_answer', total_request_counter='$total_request_counter'"
+		return
+	else
+		percentage=$(( (max_count * 100) / total_request_counter ))
+		LOG "total_request_counter=$total_request_counter percentage=$percentage"
 	fi	
-	
-    percentage=$(( (max_count * 100) / 20 ))	
+		
    	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
   		((Wrong_request_count++))
 		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
