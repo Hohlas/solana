@@ -278,6 +278,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
  	Request_OK='true'
 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> $LOG_FILE)
  	if [[ -z "$RPC_SLOT" ]]; then
+  		echo "$(TIME) RPC_SLOT request empty from $rpcURL1, try from $rpcURL2" >> $LOG_FILE
     	RPC_SLOT=$(timeout 5 solana slot -u "$rpcURL2" 2>> "$LOG_FILE")
 	fi
 	if [[ $? -ne 0 ]]; then 
