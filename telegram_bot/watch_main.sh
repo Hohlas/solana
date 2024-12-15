@@ -25,7 +25,7 @@ do
     BALANCE_TEMP=$($SOLANA_PATH balance ${PUB_KEY[$index]} -u$CLUSTER | awk '{print $1}')
     BALANCE=$(printf "%.2f" $BALANCE_TEMP)
       
-    if (( $(bc <<< "$BALANCE < ${BALANCEWARN[$index]}") ));  then
+    if (( $(bc <<< "$BALANCE < ${BALANCEWARN[$index]}") && $(bc <<< "$BALANCE != 0") ));  then
     curl --header 'Content-Type: application/json' --request 'POST' --data '{"chat_id":"'"$CHAT_ALARM"'","text":" '"Balance! "' '"${NODE_NAME[$index]}"' '"\nBalance=$BALANCE"'"}' "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" 
     fi
     if [[ $PING == 0 ]]; then
