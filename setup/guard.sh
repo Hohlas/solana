@@ -33,8 +33,9 @@ version=$(solana-validator --version 2>/dev/null)
 if [ $? -ne 0 ]; then
     echo "Error! Can't run 'solana-validator'"
 	return
+else
+	version=$(echo "$version" | awk -F '[ ()]' '{print $1, $2, $NF}' | sed 's/client://')
 fi	
-client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
 SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
@@ -277,7 +278,7 @@ NODE="test"
 elif [ $rpcURL1 = https://api.mainnet-beta.solana.com ]; then 
 NODE="main"
 fi
-echo -e " $BLUE$NODE.$NAME $version-$client $CLEAR"
+echo -e " $BLUE$NODE.$NAME $version $CLEAR"
 
 health_counter=0
 behind_counter=0
