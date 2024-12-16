@@ -247,7 +247,7 @@ SSH(){
   	fi
 	}
 
-echo -e " == SOLANA GUARD $GREEN$GUARD_VER $CLEAR" | tee -a $LOG_FILE
+echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR" | tee -a $LOG_FILE
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
 echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
@@ -499,12 +499,7 @@ SECONDARY_SERVER(){ ############################################################
 	elif [ $copy_status -eq 124 ]; then LOG "copy tower from $SERV timeout exceed"
 	else LOG "copy tower from $SERV Error: $copy_status"
 	fi
-	# stop telegraf service on remote server
-	SSH "systemctl stop telegraf"
-	if [ $command_exit_status -eq 0 ]; then LOG "stop telegraf on remote server OK"
-	elif [ $command_exit_status -eq 124 ]; then LOG "stop telegraf on remote server timeout exceed"
- 	else LOG "stop telegraf on remote server Error"
-	fi
+	
  	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
 		TOWER_STATUS=' with tower'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
@@ -525,6 +520,13 @@ SECONDARY_SERVER(){ ############################################################
 		systemctl start relayer.service
   		MSG=$(printf "$MSG \n%s restart relayer service")
 	fi
+	# stop telegraf service on remote server
+	SSH "systemctl stop telegraf"
+	if [ $command_exit_status -eq 0 ]; then LOG "stop telegraf on remote server OK"
+	elif [ $command_exit_status -eq 124 ]; then LOG "stop telegraf on remote server timeout exceed"
+ 	else LOG "stop telegraf on remote server Error"
+	fi
+	# start telegraf service on local server
  	systemctl start telegraf
 	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	LOG "waiting for PRIMARY status"
