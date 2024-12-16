@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.5.0
+GUARD_VER=v1.5.1
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -132,7 +132,7 @@ RPC_REQUEST() {
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> $LOG_FILE
 		# Если результаты разные, опрашиваем в цикле 10 раз
 	declare -A request_count
-	total_request_counter=0
+	RQST1_counter=0; RQST2_counter=0
 	for i in {1..10}; do 
 		RQST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # Вызов функции через eval
 		RQST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"")
@@ -141,22 +141,30 @@ RPC_REQUEST() {
 			RQST1="NULL" # Чтобы не пихать в массив пустые значения, пропишем 'NULL'
 		else 
 			((request_count["$RQST1"]++)) # Увеличиваем счётчики для непустых значений	
-			((total_request_counter++))
+			((RQST1_counter++))
 		fi
 
 		if [[ -z "$RQST2" ]]; then 
 			RQST2="NULL" 
 		else 
 			((request_count["$RQST2"]++)) # Увеличиваем счётчики для непустых значений
-			((total_request_counter++))	
+			((RQST2_counter++))	
 		fi 
-
 		echo "$(TIME) RPC1='$RQST1', RPC2='$RQST2'" >> $LOG_FILE
 	done
+
+	if [[ $RQST2_counter -eq 0 ]]; then # резервный РПЦ молчит, скорее всего кончился лимит бесплатного аккаунта Helius. 
+    	((rpc_index++)) # Увеличиваем индекс, т.е. переключимся на следующий RPC сервер из списка.
+		if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
+		LOG "Change Helius rpc_index=$rpc_index"
+	fi
+
+
 
 	# Находим наиболее частый ответ
 	most_frequent_answer=""
 	max_count=0
+	RQST_counter=$((RQST1_counter + RQST2_counter))
 
 	for answer in "${!request_count[@]}"; do
 		if (( request_count["$answer"] > max_count )); then
@@ -165,32 +173,27 @@ RPC_REQUEST() {
 		fi
 	done
 
-	if [[ -z "$most_frequent_answer" || "$most_frequent_answer" == "NULL" || $total_request_counter -lt 5 ]]; then
+	if [[ -z "$most_frequent_answer" || "$most_frequent_answer" == "NULL" || $RQST_counter -lt 5 ]]; then
  		REQUEST_ANSWER=""
-		LOG "Warnign! most_frequent_answer='$most_frequent_answer', total_request_counter='$total_request_counter'"
+		LOG "Warnign! most_frequent_answer='$most_frequent_answer', RPC.1 requests=$RQST_counter, RPC.2 requests=$RQST2_counter"
 		return
 	else
-		percentage=$(( (max_count * 100) / total_request_counter ))
-		LOG "total_request_counter=$total_request_counter percentage=$percentage"
+		percentage=$(( (max_count * 100) / RQST_counter ))
+		LOG "Requests=$RQST_counter percentage=$percentage"
 	fi	
 		
    	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
   		((Wrong_request_count++))
 		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
-  			if [[ -z "$REQUEST2" ]]; then # резервный РПЦ молчит, скорее всего кончился лимит бесплатного аккаунта. 
-    			((rpc_index++)) # Увеличиваем индекс, т.е. переключимся на следующий RPC сервер из списка.
-				if [[ $rpc_index -ge ${#RPC_LIST[@]} ]]; then rpc_index=0; fi # проверяем, не вышли ли мы за пределы списка РПЦ серверов
-				LOG "Change Helius rpc_index=$rpc_index"
-			fi
-            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', differ$percentage%"
+            SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} RPC.sol='$REQUEST1'/$RQST1_counter, RPC.$rpc_index='$REQUEST2'/$RQST2_counter, differ$percentage%"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
-		LOG "Error! Empty answer: RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', dominate[$percentage%]='$most_frequent_answer'"
+		LOG "Error! Empty answer: RPC.sol='$REQUEST1'/$RQST1_counter, RPC.$rpc_index='$REQUEST2'/$RQST2_counter, dominate[$percentage%]='$most_frequent_answer'"
 	 	REQUEST_ANSWER="";
 	else
  		REQUEST_ANSWER="$most_frequent_answer"	
    		Wrong_request_count=0
-		LOG "Warning! Different answers: RPC.sol='$REQUEST1', RPC.$rpc_index='$REQUEST2', dominate[$percentage%]='$most_frequent_answer'($total_request_counter requests)"
+		LOG "Warning! Different answers: RPC.sol='$REQUEST1'/$RQST1_counter, RPC.$rpc_index='$REQUEST2'/$RQST2_counter, dominate[$percentage%]='$most_frequent_answer'"
 	fi
 		
 	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  $LOG_FILE
@@ -257,7 +260,7 @@ if [[ -z "$rpc_index" ]]; then # rpc_index not defined
 fi
 echo " Helius rpc_index=$rpc_index, rpcURL list:"
 for rpcURL in "${RPC_LIST[@]}"; do
-	echo -e "$BLUE$rpcURL$CLEAR" | tee -a $LOG_FILE
+	echo -e "$GREY$rpcURL$CLEAR" | tee -a $LOG_FILE
 done
 rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
 if [ -z "$NAME" ]; then NAME=$(hostname); fi
@@ -266,7 +269,7 @@ NODE="test"
 elif [ $rpcURL1 = https://api.mainnet-beta.solana.com ]; then 
 NODE="main"
 fi
-echo " $NODE.$NAME $version-$client"
+echo -e " $BLUE$NODE.$NAME $version-$client $CLEAR"
 
 health_counter=0
 behind_counter=0
