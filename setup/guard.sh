@@ -22,10 +22,18 @@ configDir="$HOME/.config/solana"
 #======================================================
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-IDENTITY=$(solana address) 
+IDENTITY=$(solana address 2>/dev/null)
+if [ $? -ne 0 ]; then  
+	echo "Error! Can't run 'solana'"
+	return
+fi	
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 rpcURL1=$(solana config get | grep "RPC URL" | awk '{print $3}')
-version=$(solana --version | awk '{print $2}')ec
+version=$(solana-validator --version 2>/dev/null)
+if [ $? -ne 0 ]; then
+    echo "Error! Can't run 'solana-validator'"
+	return
+fi	
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
@@ -508,7 +516,9 @@ SECONDARY_SERVER(){ ############################################################
 	fi
 	set_identity_status=$?
 	if [ $set_identity_status -eq 0 ]; then LOG "set identity$TOWER_STATUS OK"
-	else LOG "set identity Error: $set_identity_status"
+	else 
+		LOG "set identity Error: $set_identity_status"
+		MSG=$(printf "$MSG \n%s set identity Error: $set_identity_status")
 	fi
 	# stop relayer service on remote server
  	if [[ $RELAYER_SERVICE == 'true' ]]; then 
