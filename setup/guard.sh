@@ -500,21 +500,24 @@ SECONDARY_SERVER(){ ############################################################
 			SEND_ALARM "Can't ping REMOTE server"
 		fi
 	fi
-	# remove old tower before
  	LOG "Let's start voting on current server"
-	rm $LEDGER/tower-1_9-$IDENTITY.bin 
-	remove_status=$?
-	if [ $remove_status -eq 0 ]; then LOG "remove old tower OK"
-	else LOG "remove old tower Error: $remove_status"
-	fi
+
 	# copy tower from remote server
-	timeout 5 scp -P $PORT -i $KEYS/*.ssh $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
+	timeout 5 scp -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
 	copy_status=$?
 	if [ $copy_status -eq 0 ]; then LOG "copy tower from $SERV OK"
 	elif [ $copy_status -eq 124 ]; then LOG "copy tower from $SERV timeout exceed"
 	else LOG "copy tower from $SERV Error: $copy_status"
 	fi
-	
+
+	last_modified=$(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s)
+	time_diff=$(( $(date +%s) - $(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s) ))
+	if [ $time_diff -ge 3 ]; then
+		SEND_ALARM "Too long tower modify time = $time_diff seconds"
+  	else
+   		LOG "tower modify time = $time_diff seconds"
+	fi
+ 
  	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
 		TOWER_STATUS=' with tower'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
