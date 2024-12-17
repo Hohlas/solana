@@ -24,7 +24,7 @@ VOTING_ADDR=$(solana address -k $VOTING_KEY)
 VOTE_ACC_ADDR=$(solana address -k $VOTE_ACC_KEY)
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 VOTE_IP=$(solana gossip | grep $VOTING_ADDR | awk '{print $1}')
-GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
+GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
 
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
