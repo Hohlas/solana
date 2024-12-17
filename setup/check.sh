@@ -1,6 +1,6 @@
 #!/bin/bash
 #===========================================
-CHECK_VER=v1.3.6
+CHECK_VER=v1.3.7
 LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE="$HOME/solana/solana.service"
 #===========================================
@@ -9,15 +9,22 @@ VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\
 IDENTITY=$(solana address) 
 VOTE_ACC_KEY=$(grep -oP '(?<=--vote-account\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
-version=$(solana --version | awk '{print $2}')
+version=$(solana-validator --version 2>/dev/null)
+if [ $? -ne 0 ]; then
+    echo "Error! Can't run 'solana-validator'"
+	return
+else
+	version=$(echo "$version" | awk -F '[ ()]' '{print $1, $2, $NF}' | sed 's/client://')
+fi	
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
-current_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+#current_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+current_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}')
 EMPTY_ADDR=$(solana address -k $EMPTY_KEY)
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 VOTE_ACC_ADDR=$(solana address -k $VOTE_ACC_KEY)
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 VOTE_IP=$(solana gossip | grep $VOTING_ADDR | awk '{print $1}')
-GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; CLEAR=$'\033[0m'
+GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
 
 
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
@@ -41,7 +48,7 @@ score=$(solana validators --sort=credits -r -n | grep $VOTING_ADDR | awk '{print
 if [[ $minutes_remaining -lt 2 ]]; then TME_CLR=$RED
 else TME_CLR=$GREEN; fi
 echo " == SOLANA CHECK $CHECK_VER"
-echo " $NODE.$NAME $version-$client"
+echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
 echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$score"
 echo '--'
 echo -e " vote account:      $VOTE_ACC_ADDR"
