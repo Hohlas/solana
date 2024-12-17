@@ -233,7 +233,7 @@ GET_VOTING_IP(){
         SERV_TYPE='SECONDARY'
 	else
 		SERV_TYPE='UNDEFINED'
-		LOG "Warning! SERV_TYPE='UNDEFINED'. CUR_IP=$CUR_IP, VOTING_IP=$VOTING_IP, local_validator=$local_validator, IDENTITY=$IDENTITY"
+		LOG "Warning! SERV_TYPE='UNDEFINED'. CUR_IP=$CUR_IP, VOTING_IP=$VOTING_IP, local_validator=$local_validator, IDENTITY=$IDENTITY, EMPTY_KEY="$EMPTY_KEY"
     fi
 	}
 
