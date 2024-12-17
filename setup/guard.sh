@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.5.1
+GUARD_VER=v1.5.2
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -36,6 +36,7 @@ if [ $? -ne 0 ]; then
 else
 	version=$(echo "$version" | awk -F '[ ()]' '{print $1, $2, $NF}' | sed 's/client://')
 fi	
+client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
 SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
@@ -79,7 +80,7 @@ SEND_INFO(){
 	local message="$1"
 	curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
 	echo "$(TIME) $message" >> $LOG_FILE
- 	echo -e "$(TIME) $message $CLEAR"
+ 	echo -e "$(TIME) $GREEN $message $CLEAR"
 	}
 SEND_ALARM(){
 	local message="$1"
@@ -278,7 +279,7 @@ NODE="test"
 elif [ $rpcURL1 = https://api.mainnet-beta.solana.com ]; then 
 NODE="main"
 fi
-echo -e " $BLUE$NODE.$NAME $version $CLEAR"
+echo -e " $BLUE$NODE.$NAME $version $client $CLEAR"
 
 health_counter=0
 behind_counter=0
@@ -474,17 +475,16 @@ SECONDARY_SERVER(){ ############################################################
 		# STOP SOLANA on REMOTE server
   	LOG "Let's stop voting on remote server "
    	LOG "CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary "
-	MSG=$(printf "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON") # \n%s vote_off remote server
+	SEND_INFO "${NODE}.${NAME}: switch voting ${VOTING_IP} \n%s $REASON" # \n%s vote_off remote server
 	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
-		echo -e "$GREEN  set empty identity on REMOTE server successful $CLEAR" 
-		MSG=$(printf "$MSG \n%s set empty identity")
+		SEND_INFO "set empty identity on REMOTE server"
 	else
 		SEND_ALARM "Can't set identity on remote server"
   		LOG "Try to restart solana on remote server"
 		SSH "systemctl restart solana 2>&1"
     	if [ $command_exit_status -eq 0 ]; then
-			MSG=$(printf "$MSG \n%s restart solana on remote server")
+			SEND_INFO "restart solana on remote server"
       	else
 			SEND_ALARM "Can't restart solana on REMOTE server"
 			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
@@ -516,10 +516,10 @@ SECONDARY_SERVER(){ ############################################################
 		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	fi
 	set_identity_status=$?
-	if [ $set_identity_status -eq 0 ]; then LOG "set identity$TOWER_STATUS OK"
+	if [ $set_identity_status -eq 0 ]; then 
+		SEND_INFO "set identity$TOWER_STATUS OK"
 	else 
-		LOG "set identity Error: $set_identity_status"
-		MSG=$(printf "$MSG \n%s set identity Error: $set_identity_status")
+		SEND_ALARM "set identity Error: $set_identity_status"
 	fi
 	# stop relayer service on remote server
  	if [[ $RELAYER_SERVICE == 'true' ]]; then 
@@ -529,7 +529,7 @@ SECONDARY_SERVER(){ ############################################################
  		else LOG "stop relayer on remote server Error"
 		fi
 		systemctl start relayer.service
-  		MSG=$(printf "$MSG \n%s restart relayer service")
+  		LOG "restart relayer service"
 	fi
 	# stop telegraf service on remote server
 	SSH "systemctl stop telegraf"
@@ -539,7 +539,6 @@ SECONDARY_SERVER(){ ############################################################
 	fi
 	# start telegraf service on local server
  	systemctl start telegraf
-	SEND_ALARM "$(printf "$MSG \n%s VOTE ON$TOWER_STATUS")"
 	LOG "waiting for PRIMARY status"
 	while [ $SERV_TYPE = "SECONDARY" ]; do
  		# LOG "waiting for PRIMARY status"
