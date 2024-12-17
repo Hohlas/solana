@@ -41,7 +41,7 @@ client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 SITES=("www.google.com" "www.bing.com")
 SOL_BIN="$(cat ${configDir}/install/config.yml | grep 'active_release_dir\:' | awk '{print $2}')/bin"
-GREY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
+GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
 # ======================
 if [ -f "$HOME/guard.cfg" ]; then
 	if [ -r "$HOME/guard.cfg" ]; then
@@ -269,14 +269,14 @@ GET_VOTING_IP
 echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
 echo "current IP=$CUR_IP" | tee -a $LOG_FILE
 echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a $LOG_FILE
-echo -e "empty addr = $GREY$EMPTY_ADDR $CLEAR" | tee -a $LOG_FILE
+echo -e "empty addr = $GRAY$EMPTY_ADDR $CLEAR" | tee -a $LOG_FILE
 if [[ -z "$rpc_index" ]]; then # rpc_index not defined
 	echo "rpc_index not defined in $LOG_FILE, set default value rpc_index=0"
 	rpc_index=0; # Устанавливаем значение по умолчанию
 fi
 echo " Helius rpc_index=$rpc_index, rpcURL list:"
 for rpcURL in "${RPC_LIST[@]}"; do
-	echo -e "$GREY$rpcURL$CLEAR" | tee -a $LOG_FILE
+	echo -e "$GRAY$rpcURL$CLEAR" | tee -a $LOG_FILE
 done
 rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
 if [ -z "$NAME" ]; then NAME=$(hostname); fi
