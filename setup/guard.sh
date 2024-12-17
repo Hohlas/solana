@@ -220,6 +220,7 @@ GET_VOTING_IP(){
     SERV="$USER@$VOTING_IP"
     # Получаем локальный валидатор
     #local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+    #local_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}') # identity
     #if [[ $? -ne 0 ]]; then
         #LOG "Error defining local_validator"
         #return 1
@@ -279,7 +280,7 @@ NODE="test"
 elif [ $rpcURL1 = https://api.mainnet-beta.solana.com ]; then 
 NODE="main"
 fi
-echo -e " $BLUE$NODE.$NAME $version $client $CLEAR"
+echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
 
 health_counter=0
 behind_counter=0
