@@ -234,7 +234,11 @@ GET_VOTING_IP(){
         SERV_TYPE='SECONDARY'
 	else
 		SERV_TYPE='UNDEFINED'
-		LOG "Warning! SERV_TYPE='UNDEFINED'. CUR_IP=$CUR_IP, VOTING_IP=$VOTING_IP, local_validator=$local_validator, IDENTITY=$IDENTITY, EMPTY_ADDR=$EMPTY_ADDR"
+		LOG "Warning! SERV_TYPE='UNDEFINED'. 
+  		CUR_IP=$CUR_IP, VOTING_IP=$VOTING_IP, 
+		local_validator=$local_validator, 
+  		IDENTITY=$IDENTITY, 
+		EMPTY_ADDR=$EMPTY_ADDR"
     fi
 	}
 
@@ -510,12 +514,13 @@ SECONDARY_SERVER(){ ############################################################
 	else LOG "copy tower from $SERV Error: $copy_status"
 	fi
 
-	last_modified=$(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s)
-	time_diff=$(( $(date +%s) - $(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s) ))
-	if [ $time_diff -ge 3 ]; then
-		SEND_ALARM "Too long tower modify time = $time_diff seconds"
+	current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
+	last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
+	time_diff=$((current_time - last_modified))
+	if [ $time_diff -ge 1000 ]; then # more than 1 second
+		SEND_ALARM "Too long tower modify time = $time_diff ms"
   	else
-   		LOG "tower modify time = $time_diff seconds"
+   		LOG "tower modify time = $time_diff ms"
 	fi
  
  	# START SOLANA on LOCAL server
