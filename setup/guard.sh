@@ -28,6 +28,7 @@ if [ $? -ne 0 ]; then
 	return
 fi	
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
+EMPTY_ADDR=$(solana address -k $EMPTY_KEY)
 rpcURL1=$(solana config get | grep "RPC URL" | awk '{print $3}')
 version=$(solana-validator --version 2>/dev/null)
 if [ $? -ne 0 ]; then
@@ -233,7 +234,7 @@ GET_VOTING_IP(){
         SERV_TYPE='SECONDARY'
 	else
 		SERV_TYPE='UNDEFINED'
-		LOG "Warning! SERV_TYPE='UNDEFINED'. CUR_IP=$CUR_IP, VOTING_IP=$VOTING_IP, local_validator=$local_validator, IDENTITY=$IDENTITY, EMPTY_KEY=$EMPTY_KEY"
+		LOG "Warning! SERV_TYPE='UNDEFINED'. CUR_IP=$CUR_IP, VOTING_IP=$VOTING_IP, local_validator=$local_validator, IDENTITY=$IDENTITY, EMPTY_ADDR=$EMPTY_ADDR"
     fi
 	}
 
@@ -268,7 +269,7 @@ GET_VOTING_IP
 echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
 echo "current IP=$CUR_IP" | tee -a $LOG_FILE
 echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a $LOG_FILE
-echo -e "empty key = $GREY$(solana address -k $EMPTY_KEY) $CLEAR" | tee -a $LOG_FILE
+echo -e "empty addr = $GREY$EMPTY_ADDR $CLEAR" | tee -a $LOG_FILE
 if [[ -z "$rpc_index" ]]; then # rpc_index not defined
 	echo "rpc_index not defined in $LOG_FILE, set default value rpc_index=0"
 	rpc_index=0; # Устанавливаем значение по умолчанию
