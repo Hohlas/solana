@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.5.2
+GUARD_VER=v1.5.3
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -189,7 +189,7 @@ RPC_REQUEST() {
 		return
 	else
 		percentage=$(( (max_count * 100) / RQST_counter ))
-		LOG "Requests=$RQST_counter percentage=$percentage"
+		# LOG "Requests=$RQST_counter percentage=$percentage"
 	fi	
 		
    	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
@@ -220,16 +220,20 @@ GET_VOTING_IP(){
     SERV="$USER@$VOTING_IP"
     # Получаем локальный валидатор
     #local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
-    #local_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}') # identity
-    #if [[ $? -ne 0 ]]; then
-        #LOG "Error defining local_validator"
-        #return 1
-    #fi
+    local_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}') # identity
+    if [[ $? -ne 0 ]]; then
+        LOG "Error defining local_validator"
+        # return 1
+    fi
+	#local_validator=$(cat $HOME/tmp); LOG "local_validator=$local_validator"
     # Проверяем текущий IP и устанавливаем тип сервера
-    if [[ "$CUR_IP" == "$VOTING_IP" ]]; then
+    if [[ "$CUR_IP" == "$VOTING_IP" && "$local_validator" == "$IDENTITY" ]]; then
         SERV_TYPE='PRIMARY'
-    else 
+    elif [[ "$local_validator" == "$EMPTY_ADDR" ]]; then
         SERV_TYPE='SECONDARY'
+	else
+		SERV_TYPE='UNDEFINED'
+		LOG "Warning! SERV_TYPE='UNDEFINED'. CUR_IP=$CUR_IP, VOTING_IP=$VOTING_IP, local_validator=$local_validator, IDENTITY=$IDENTITY"
     fi
 	}
 
@@ -469,7 +473,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
-  		if [ "$SERV_TYPE" = "PRIMARY" ]; then
+  		if [[ "$SERV_TYPE" == "PRIMARY" ]]; then
     		return
        	fi
 	done
@@ -563,7 +567,7 @@ if [[ $primary_mode == "p" ]]; then
 	primary_mode='permanent_primary'; 
 	echo -e "start guard in $YELLOW Permanent Primary mode$CLEAR"
 fi	
-if [ "$SERV_TYPE" = "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
+if [[ "$SERV_TYPE" == "PRIMARY" ]]; then # PRIMARY can't determine REMOTE_IP of SECONDARY
 	if [ -f $HOME/remote_ip ]; then # SECONDARY should have written its IP to PRIMARY
 		REMOTE_IP=$(cat $HOME/remote_ip) # echo "get REMOTE_IP of SECONDARY_SERVER from $HOME/remote_ip: $REMOTE_IP"
 	else 
@@ -573,8 +577,11 @@ if [ "$SERV_TYPE" = "PRIMARY" ]; then # PRIMARY can't determine REMOTE_IP of SEC
 		echo -e "Warning! Run guard on SECONDARY server first to get it's IP"
 		return
 	fi
-else # SECONDARY
+elif [[ "$SERV_TYPE" == "SECONDARY" ]]; then # SECONDARY
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
+else
+	echo -e "Warning! Server type (PRIMARY/SECONDARY) undefined"
+	return	
 fi
 
 chmod 600 $KEYS/*.ssh
@@ -612,9 +619,11 @@ SSH "echo '$CUR_IP' > $HOME/remote_ip" # send 'current IP' to remote server
 while true  ###  main cycle   #################################################
 do
 	GET_VOTING_IP
-	if [ "$SERV_TYPE" = "PRIMARY" ]; then
+	if [[ "$SERV_TYPE" == "PRIMARY" ]]; then
 		PRIMARY_SERVER
-	else
+	elif [[ "$SERV_TYPE" == "SECONDARY" ]]; then
 		SECONDARY_SERVER
+	else
+		SEND_ALARM "Server type undefined"	
 	fi	
 done
