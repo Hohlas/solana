@@ -533,7 +533,7 @@ SECONDARY_SERVER(){ ############################################################
 	fi	
   	
    # START SOLANA on LOCAL server
-   	if [ $time_diff -ge 120000 ]; then # more than 120 seconds
+   	if (( $(echo "$time_diff >= 120.000" | bc -l) )) # more than 120 seconds
 		SEND_ALARM "tower too old = ${time_diff}s"
    		TOWER_STATUS=' without tower'; 	
 	 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
