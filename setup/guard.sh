@@ -455,7 +455,7 @@ PRIMARY_SERVER(){ ##############################################################
 		GET_VOTING_IP
   		sleep 1
 	done
-	LOG "switch PRIMARY status to SECONDARY"
+	LOG "PRIMARY status ended"
  	sleep 20
 	}
 	
