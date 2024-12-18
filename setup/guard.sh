@@ -518,10 +518,10 @@ SECONDARY_SERVER(){ ############################################################
 	current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
 	last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
 	time_diff=$((current_time - last_modified))
-	if [ $time_diff -ge 1000 ]; then # more than 1 second
-		SEND_ALARM "Too long tower modify time = $time_diff ms"
+	if [ $time_diff -ge 3000 ]; then # more than 3 seconds
+		SEND_ALARM "tower too old = $time_diff ms"
   	else
-   		LOG "tower modify time = $time_diff ms"
+   		LOG "tower age = $time_diff ms"
 	fi
  
  	# START SOLANA on LOCAL server
