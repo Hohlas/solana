@@ -537,7 +537,7 @@ SECONDARY_SERVER(){ ############################################################
   
  	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
-		TOWER_STATUS=' with tower $time_diffms'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
+		TOWER_STATUS=' with tower'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	else
 		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	fi
