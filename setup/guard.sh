@@ -508,12 +508,12 @@ SECONDARY_SERVER(){ ############################################################
  	LOG "Let's start voting on current server"
 
 	# remove old tower
-	if [[ -f $LEDGER/tower-1_9-$IDENTITY.bin ]]; then
-		rm $LEDGER/tower-1_9-$IDENTITY.bin 
-		if [ $? -eq 0 ]; then LOG "remove old tower OK"
-		else LOG "remove old tower Error: $remove_status"
-		fi
-	fi
+	#if [[ -f $LEDGER/tower-1_9-$IDENTITY.bin ]]; then
+	#	rm $LEDGER/tower-1_9-$IDENTITY.bin 
+	#	if [ $? -eq 0 ]; then LOG "remove old tower OK"
+	#	else LOG "remove old tower Error: $remove_status"
+	#	fi
+	#fi
 
 	# copy tower from remote server
 	timeout 5 scp -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
@@ -524,28 +524,28 @@ SECONDARY_SERVER(){ ############################################################
 	fi
 
  	# check tower age
+  	time_diff=200000
   	if [[ -f $LEDGER/tower-1_9-$IDENTITY.bin ]]; then
 		current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
 		last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
 		time_diff=$((current_time - last_modified))
-		if [ $time_diff -ge 3000 ]; then # more than 3 seconds
-			SEND_ALARM "tower too old = $time_diff ms"
-	  	else
-	   		LOG "tower age = $time_diff ms"
-		fi
- 	fi
-  
- 	# START SOLANA on LOCAL server
-	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
-		TOWER_STATUS=' with tower'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
+	fi	
+  	
+   # START SOLANA on LOCAL server
+   	if [ $time_diff -ge 120000 ]; then # more than 120 seconds
+		SEND_ALARM "tower too old = ${time_diff}ms"
+   		TOWER_STATUS=' without tower'; 	
+	 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	else
-		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
+	  	TOWER_STATUS=" with tower/${time_diff}ms. "; 	
+		solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	fi
+ 	
 	set_identity_status=$?
 	switch_stop_time=$(($(date +%s%N) / 1000000))
   	switch_time=$((switch_stop_time - switch_start_time))
  	if [ $set_identity_status -eq 0 ]; then 
-		SEND_INFO "Switch voting$TOWER_STATUS OK ($switch_time ms)"
+		SEND_INFO "Switch voting$TOWER_STATUS OK for ${switch_time}ms"
 	else 
 		SEND_ALARM "Switch voting Error: $set_identity_status, can't set identity"
   		return
