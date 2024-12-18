@@ -537,7 +537,7 @@ SECONDARY_SERVER(){ ############################################################
    		TOWER_STATUS=' without tower'; 	
 	 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	else
-	  	TOWER_STATUS=" with tower/${time_diff}ms. "; 	
+	  	TOWER_STATUS=" with tower/${time_diff}ms"; 	
 		solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	fi
  	
