@@ -485,7 +485,7 @@ SECONDARY_SERVER(){ ############################################################
 		# STOP SOLANA on REMOTE server
   	LOG "Let's stop voting on remote server "
    	LOG "CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary "
-	SEND_INFO "${NODE}.${NAME}: switch voting ${VOTING_IP} $REASON" # \n%s vote_off remote server
+	SEND_INFO "${NODE}.${NAME}: switch voting from ${VOTING_IP} $REASON" # \n%s vote_off remote server
 	switch_start_time=$(($(date +%s%N) / 1000000)) #
  	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
