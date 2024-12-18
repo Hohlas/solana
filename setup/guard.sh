@@ -507,6 +507,14 @@ SECONDARY_SERVER(){ ############################################################
 	fi
  	LOG "Let's start voting on current server"
 
+	# remove old tower
+	if [[ -f $LEDGER/tower-1_9-$IDENTITY.bin ]]; then
+		rm $LEDGER/tower-1_9-$IDENTITY.bin 
+		if [ $? -eq 0 ]; then LOG "remove old tower OK"
+		else LOG "remove old tower Error: $remove_status"
+		fi
+	fi
+
 	# copy tower from remote server
 	timeout 5 scp -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
 	copy_status=$?
@@ -515,6 +523,7 @@ SECONDARY_SERVER(){ ############################################################
 	else LOG "Error! Copy tower from $SERV $copy_status"
 	fi
 
+ 	# check tower age
 	current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
 	last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
 	time_diff=$((current_time - last_modified))
@@ -526,7 +535,7 @@ SECONDARY_SERVER(){ ############################################################
  
  	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
-		TOWER_STATUS=' with tower'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
+		TOWER_STATUS=' with tower $time_diffms'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	else
 		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	fi
@@ -536,7 +545,8 @@ SECONDARY_SERVER(){ ############################################################
  	if [ $set_identity_status -eq 0 ]; then 
 		SEND_INFO "Switch voting$TOWER_STATUS OK ($switch_time ms)"
 	else 
-		SEND_ALARM "set identity Error: $set_identity_status"
+		SEND_ALARM "Switch voting Error: $set_identity_status, can't set identity"
+  		return
 	fi
  	
 	# stop relayer service on remote server
