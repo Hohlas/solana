@@ -528,24 +528,26 @@ SECONDARY_SERVER(){ ############################################################
   	if [[ -f $LEDGER/tower-1_9-$IDENTITY.bin ]]; then
 		current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
 		last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
-		time_diff=$((current_time - last_modified))
+		time_diff=$((current_time - last_modified)); 
+  		time_diff=$(echo "scale=3; $time_diff / 1000" | bc) # convert to seconds
 	fi	
   	
    # START SOLANA on LOCAL server
    	if [ $time_diff -ge 120000 ]; then # more than 120 seconds
-		SEND_ALARM "tower too old = ${time_diff}ms"
+		SEND_ALARM "tower too old = ${time_diff}s"
    		TOWER_STATUS=' without tower'; 	
 	 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	else
-	  	TOWER_STATUS=" with tower/${time_diff}ms"; 	
+	  	TOWER_STATUS=" with tower/${time_diff}s"; 	
 		solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
 	fi
  	
 	set_identity_status=$?
 	switch_stop_time=$(($(date +%s%N) / 1000000))
   	switch_time=$((switch_stop_time - switch_start_time))
+   	switch_time=$(echo "scale=3; $switch_time / 1000" | bc) # convert to seconds
  	if [ $set_identity_status -eq 0 ]; then 
-		SEND_INFO "Switch voting$TOWER_STATUS OK for ${switch_time}ms"
+		SEND_INFO "Switch voting$TOWER_STATUS OK for ${switch_time}s"
 	else 
 		SEND_ALARM "Switch voting Error: $set_identity_status, can't set identity"
   		return
