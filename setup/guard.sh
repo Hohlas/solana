@@ -484,7 +484,7 @@ SECONDARY_SERVER(){ ############################################################
 	done
 		# STOP SOLANA on REMOTE server
   	LOG "Let's stop voting on remote server "
-   	LOG "CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary "
+   	LOG "CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary, Delinquent=$Delinquent, VOTING_IP=$VOTING_IP  "
 	SEND_INFO "${NODE}.${NAME}: switch voting from ${VOTING_IP} $REASON" # \n%s vote_off remote server
 	switch_start_time=$(($(date +%s%N) / 1000000)) #
  	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
@@ -547,9 +547,9 @@ SECONDARY_SERVER(){ ############################################################
   	switch_time=$((switch_stop_time - switch_start_time))
    	switch_time=$(echo "scale=3; $switch_time / 1000" | bc) # convert to seconds
  	if [ $set_identity_status -eq 0 ]; then 
-		SEND_INFO "Switch voting$TOWER_STATUS OK for ${switch_time}s"
+		SEND_INFO "Start voting$TOWER_STATUS OK for ${switch_time}s"
 	else 
-		SEND_ALARM "Switch voting Error: $set_identity_status, can't set identity"
+		SEND_ALARM "Start voting Error: $set_identity_status, can't set identity"
   		return
 	fi
  	
