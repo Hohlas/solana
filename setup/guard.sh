@@ -486,7 +486,8 @@ SECONDARY_SERVER(){ ############################################################
   	LOG "Let's stop voting on remote server "
    	LOG "CHECK_UP=$CHECK_UP, HEALTH=$HEALTH, BEHIND=$BEHIND, REASON=$REASON, set_primary=$set_primary "
 	SEND_INFO "${NODE}.${NAME}: switch voting ${VOTING_IP} $REASON" # \n%s vote_off remote server
-	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
+	switch_start_time=$(($(date +%s%N) / 1000000)) #
+ 	SSH "$SOL_BIN/solana-validator -l $LEDGER set-identity $EMPTY_KEY 2>&1"
 	if [ $command_exit_status -eq 0 ]; then
 		SEND_INFO "set empty identity on REMOTE server"
 	else
@@ -510,8 +511,8 @@ SECONDARY_SERVER(){ ############################################################
 	timeout 5 scp -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
 	copy_status=$?
 	if [ $copy_status -eq 0 ]; then LOG "copy tower from $SERV OK"
-	elif [ $copy_status -eq 124 ]; then LOG "copy tower from $SERV timeout exceed"
-	else LOG "copy tower from $SERV Error: $copy_status"
+	elif [ $copy_status -eq 124 ]; then LOG "Error! Copy tower from $SERV timeout exceed"
+	else LOG "Error! Copy tower from $SERV $copy_status"
 	fi
 
 	current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
@@ -530,11 +531,14 @@ SECONDARY_SERVER(){ ############################################################
 		TOWER_STATUS=' without tower'; 	solana-validator -l $LEDGER set-identity $VOTING_KEY;
 	fi
 	set_identity_status=$?
-	if [ $set_identity_status -eq 0 ]; then 
-		SEND_INFO "set identity$TOWER_STATUS OK"
+	switch_stop_time=$(($(date +%s%N) / 1000000))
+  	switch_time=$((switch_stop_time - switch_start_time))
+ 	if [ $set_identity_status -eq 0 ]; then 
+		SEND_INFO "Switch voting$TOWER_STATUS OK ($switch_time ms)"
 	else 
 		SEND_ALARM "set identity Error: $set_identity_status"
 	fi
+ 	
 	# stop relayer service on remote server
  	if [[ $RELAYER_SERVICE == 'true' ]]; then 
  		SSH "systemctl stop relayer.service" 
@@ -553,6 +557,9 @@ SECONDARY_SERVER(){ ############################################################
 	fi
 	# start telegraf service on local server
  	systemctl start telegraf
+  	if [[ $? -ne 0 ]]; then LOG "Error! start telegraf"
+   	else LOG "start telegraf OK"
+	fi
 	LOG "waiting for PRIMARY status"
 	while [ $SERV_TYPE = "SECONDARY" ]; do
  		# LOG "waiting for PRIMARY status"
