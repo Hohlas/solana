@@ -524,15 +524,17 @@ SECONDARY_SERVER(){ ############################################################
 	fi
 
  	# check tower age
-	current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
-	last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
-	time_diff=$((current_time - last_modified))
-	if [ $time_diff -ge 3000 ]; then # more than 3 seconds
-		SEND_ALARM "tower too old = $time_diff ms"
-  	else
-   		LOG "tower age = $time_diff ms"
-	fi
- 
+  	if [[ -f $LEDGER/tower-1_9-$IDENTITY.bin ]]; then
+		current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
+		last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
+		time_diff=$((current_time - last_modified))
+		if [ $time_diff -ge 3000 ]; then # more than 3 seconds
+			SEND_ALARM "tower too old = $time_diff ms"
+	  	else
+	   		LOG "tower age = $time_diff ms"
+		fi
+ 	fi
+  
  	# START SOLANA on LOCAL server
 	if [ -f $LEDGER/tower-1_9-$IDENTITY.bin ]; then 
 		TOWER_STATUS=' with tower $time_diffms'; 	solana-validator -l $LEDGER set-identity --require-tower $VOTING_KEY;
