@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.5.3
+GUARD_VER=v1.5.6
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -586,11 +586,12 @@ SECONDARY_SERVER(){ ############################################################
    	else LOG "start telegraf OK"
 	fi
 	LOG "waiting for PRIMARY status"
-	while [ $SERV_TYPE = "SECONDARY" ]; do
+ 	sleep 2
+	#while [ $SERV_TYPE = "SECONDARY" ]; do
  		# LOG "waiting for PRIMARY status"
-   		GET_VOTING_IP
-     	CHECK_HEALTH
- 	done
+   		#GET_VOTING_IP
+     	#CHECK_HEALTH
+ 	#done
 	}
 
 
