@@ -95,10 +95,10 @@ REQUEST_IP(){
 	local RPC_URL="$1"
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> $LOG_FILE)
 	if [ $? -ne 0 ]; then 
-		echo "$(TIME) Error in gossip request for RPC $RPC_URL" >> $LOG_FILE
+		echo "$(TIME) Error in REQUEST_IP for RPC $RPC_URL" >> $LOG_FILE
 	fi
 	if [ -z "$VALIDATOR_REQUEST" ]; then
-		echo "$(TIME) Error: validator request emty" >> $LOG_FILE
+		echo "$(TIME) Error in REQUEST_IP: validator request emty" >> $LOG_FILE
 	fi	
 	echo "$VALIDATOR_REQUEST" | grep "$IDENTITY" | awk '{print $1}'
 	}
@@ -108,10 +108,10 @@ REQUEST_DELINK(){
 	local RPC_URL="$1"
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> $LOG_FILE)
 	if [ $? -ne 0 ]; then 
-		echo "$(TIME) Error in validators list request for RPC $RPC_URL" >> $LOG_FILE
+		echo "$(TIME) Error in REQUEST_DELINK for RPC $RPC_URL" >> $LOG_FILE
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
-		echo "$(TIME) Error: validators list emty" >> $LOG_FILE
+		echo "$(TIME) Error in REQUEST_DELINK: validators list emty" >> $LOG_FILE
 	fi	
 	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
@@ -214,7 +214,7 @@ GET_VOTING_IP(){
     # Получаем IP-адрес голосующего валидатора 
 	RPC_REQUEST "IP"  
  	if [ -z "$REQUEST_ANSWER" ]; then
-		LOG "Error: VOTING_IP empty, keep previous value"
+		LOG "Error in GET_VOTING_IP: VOTING_IP empty, keep previous value"
 		return 1 
 	fi
 	VOTING_IP=$REQUEST_ANSWER
@@ -223,7 +223,7 @@ GET_VOTING_IP(){
     #local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
     local_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}') # identity
     if [[ $? -ne 0 ]]; then
-        LOG "Error defining local_validator"
+        LOG "Error in GET_VOTING_IP: define local_validator"
         # return 1
     fi
 	#local_validator=$(cat $HOME/tmp); LOG "local_validator=$local_validator"
@@ -529,9 +529,20 @@ SECONDARY_SERVER(){ ############################################################
 		current_time=$(($(date +%s%N) / 1000000)) # текущее время в миллисекундах
 		last_modified=$(($(date -r "$LEDGER/tower-1_9-$IDENTITY.bin" +%s%N) / 1000000)) # время последнего изменения файла в миллисекундах
 		time_diff=$((current_time - last_modified)); 
-  		time_diff=$(echo "scale=3; $time_diff / 1000" | bc) # convert to seconds
+  		time_diff=$(echo "scale=2; $time_diff / 1000" | bc) # convert to seconds
 	fi	
-  	
+
+ 	# check, if remote validator 'changing' / 'stop voting'
+	SSH "$SOL_BIN/solana-validator --ledger '$LEDGER' contact-info" # get remote validator info
+	remote_validator=$(echo "$command_output" | grep "Identity:" | awk '{print $2}') # get remote voting identity
+	if [[ "$remote_validator" == "$IDENTITY" ]]; then
+		SEND_ALARM "Error! remote_validator still voting, so can't start voting"
+		LOG "remote_validator=$remote_validator, IDENTITY=$IDENTITY"
+		return
+	else
+		LOG "remote_validator change to $remote_validator OK, so can start voting"
+	fi
+   
    # START SOLANA on LOCAL server
    	if (( $(echo "$time_diff >= 120.000" | bc -l) )); then # more than 120 seconds
 		SEND_ALARM "tower too old = ${time_diff}s"
@@ -545,7 +556,7 @@ SECONDARY_SERVER(){ ############################################################
 	set_identity_status=$?
 	switch_stop_time=$(($(date +%s%N) / 1000000))
   	switch_time=$((switch_stop_time - switch_start_time))
-   	switch_time=$(echo "scale=3; $switch_time / 1000" | bc) # convert to seconds
+   	switch_time=$(echo "scale=2; $switch_time / 1000" | bc) # convert to seconds
  	if [ $set_identity_status -eq 0 ]; then 
 		SEND_INFO "Start voting$TOWER_STATUS OK for ${switch_time}s"
 	else 
