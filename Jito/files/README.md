@@ -144,6 +144,7 @@ for file in agave-*; do # Перебираем все файлы, начинаю
     fi
 done
 solana --version
+solana-validator --version
 ```
 check settings
 ```bash
