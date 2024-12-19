@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.5.6
+GUARD_VER=v1.6.0
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -540,7 +540,7 @@ SECONDARY_SERVER(){ ############################################################
 		LOG "remote_validator=$remote_validator, IDENTITY=$IDENTITY"
 		return
 	else
-		LOG "remote_validator change to $remote_validator OK, so can start voting"
+		LOG "remote_validator change OK, so can start voting"
 	fi
    
    # START SOLANA on LOCAL server
@@ -558,7 +558,7 @@ SECONDARY_SERVER(){ ############################################################
   	switch_time=$((switch_stop_time - switch_start_time))
    	switch_time=$(echo "scale=2; $switch_time / 1000" | bc) # convert to seconds
  	if [ $set_identity_status -eq 0 ]; then 
-		SEND_INFO "Start voting$TOWER_STATUS OK for ${switch_time}s"
+		SEND_INFO "Start voting$TOWER_STATUS for ${switch_time}s"
 	else 
 		SEND_ALARM "Start voting Error: $set_identity_status, can't set identity"
   		return
