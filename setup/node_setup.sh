@@ -20,8 +20,6 @@ else
     echo "RAMDISK for keys exist"
 fi
 
-
-
 echo -e '\n\e[42m set CPU  perfomance mode \e[0m\n'
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
 
@@ -40,12 +38,13 @@ cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/test/stat.sh > ~/stat.sh; chmod +x ~/stat.sh
+$HOME/sol_git/setup/trim2cron.sh # fstrim every 10 minutes
 
 echo -e '\n\e[42m copy files \e[0m\n'
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
-cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
+# cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
 # cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
 # create links
