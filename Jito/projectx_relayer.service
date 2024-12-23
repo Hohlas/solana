@@ -5,10 +5,10 @@ After=network-online.target
 [Service]
 User=$USER
 Type=simple
-ExecStart=$HOME/lite-relayer/target/release/transaction-relayer \
---keypair-path $HOME/solana/relayer-keypair.json \
---signing-key-pem-path $HOME/solana/private.pem \
---verifying-key-pem-path $HOME/solana/public.pem \
+ExecStart=/root/lite-relayer/target/release/transaction-relayer \
+--keypair-path /root/solana/relayer-keypair.json \
+--signing-key-pem-path /root/solana/private.pem \
+--verifying-key-pem-path /root/solana/public.pem \
 --webserver-bind-addr 127.0.0.1:5050 \
 --grpc-bind-ip 127.0.0.1 \
 --x-block-engine-url $X_BLOCK_ENGINE
