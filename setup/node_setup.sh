@@ -45,11 +45,14 @@ cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofil
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
 cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
-cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
-unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release
 # create links
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
+
+# make relayer
+mkdir -p $HOME/lite-relayer/target/release
+cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
 ln -sf ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
+unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release # withour compiling
 
 source ~/sol_git/setup/get_tag.sh $NODE
 source ~/sol_git/setup/install.sh $TAG
