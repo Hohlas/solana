@@ -3,7 +3,7 @@ Description=X Transaction Relayer
 Requires=network-online.target
 After=network-online.target
 [Service]
-User=$USER
+User=root
 Type=simple
 ExecStart=/root/lite-relayer/target/release/transaction-relayer \
 --keypair-path /root/solana/relayer-keypair.json \
@@ -11,7 +11,7 @@ ExecStart=/root/lite-relayer/target/release/transaction-relayer \
 --verifying-key-pem-path /root/solana/public.pem \
 --webserver-bind-addr 127.0.0.1:5050 \
 --grpc-bind-ip 127.0.0.1 \
---x-block-engine-url $X_BLOCK_ENGINE
+--x-block-engine-url http://de.projectx.run:11227
 RestartSec=10
 Restart=on-failure
 [Install]
