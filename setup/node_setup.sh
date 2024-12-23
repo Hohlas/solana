@@ -5,6 +5,7 @@ mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
 mkdir -p /mnt/disk1
 mkdir -p /mnt/disk2
 mkdir -p /mnt/disk3
+mkdir -p /mnt/ramdisk
 
 if [ ! -d "$HOME/keys" ]; then
 	echo "# keys to RAM" | sudo tee -a /etc/fstab 
@@ -39,23 +40,19 @@ fi
 chmod +x ~/sol_git/setup/*.sh
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/test/stat.sh > ~/stat.sh; chmod +x ~/stat.sh
 
-echo -e '\n\e[42m copy files \e[0m\n'
+echo -e '\n\e[42m System tune \e[0m\n'
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
 cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
-# create links
-ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
+sysctl -p /etc/sysctl.d/21-solana-validator.conf
 
-# make relayer
+echo -e '\n\e[42m Set relayer \e[0m\n'
 mkdir -p $HOME/lite-relayer/target/release
 cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
 ln -sf ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
 unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release # withour compiling
-
-source ~/sol_git/setup/get_tag.sh $NODE
-source ~/sol_git/setup/install.sh $TAG
 
 # create alias #
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
@@ -88,9 +85,10 @@ echo ' # --- # ' >> $HOME/.bashrc
 source $HOME/.bashrc
 source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
-source ~/sol_git/setup/update.sh
+source ~/sol_git/setup/install.sh
+ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 
-sysctl -p /etc/sysctl.d/21-solana-validator.conf
+
 systemctl daemon-reload
 systemctl restart logrotate
 systemctl restart chronyd.service
