@@ -31,9 +31,9 @@ sudo systemctl restart relayer
 sudo ufw allow 11228,11229/udp
 
 # copy executable file without installation
-mkdir -p $HOME/lite-relayer/target/release/
-curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/projectx_relayer.zip > $HOME/lite-relayer/target/release/projectx_relayer.zip
-unzip -j $HOME/lite-relayer/target/release/projectx_relayer.zip -d $HOME/lite-relayer/target/release
-chmod +x /root/.cargo/bin/jito-transaction-relayer
+#mkdir -p $HOME/lite-relayer/target/release/
+#curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/projectx_relayer.zip > $HOME/lite-relayer/target/release/projectx_relayer.zip
+#unzip -j $HOME/lite-relayer/target/release/projectx_relayer.zip -d $HOME/lite-relayer/target/release
+#chmod +x $HOME/lite-relayer/target/release/projectx_relayer
 
 
