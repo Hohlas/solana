@@ -83,9 +83,9 @@ echo "alias stat='source ~/stat.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 source $HOME/.bashrc
+source ~/sol_git/setup/install.sh
 source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
-source ~/sol_git/setup/install.sh
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 
 
