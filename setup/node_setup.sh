@@ -38,18 +38,18 @@ cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/test/stat.sh > ~/stat.sh; chmod +x ~/stat.sh
-$HOME/sol_git/setup/trim2cron.sh # fstrim every 10 minutes
 
 echo -e '\n\e[42m copy files \e[0m\n'
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
-# cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
+cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
-# cp ~/sol_git/Jito/jito-relayer.service ~/solana/jito-relayer.service
+cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
+unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release
 # create links
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
-ln -sf ~/solana/jito-relayer.service /etc/systemd/system # jito-relayer.service
+ln -sf ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
 
 source ~/sol_git/setup/get_tag.sh $NODE
 source ~/sol_git/setup/install.sh $TAG
