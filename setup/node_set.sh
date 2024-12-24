@@ -23,7 +23,7 @@ fi
 if [[ $NODE == "main" ]]; then
     solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
     cp ~/sol_git/Jito/solana.service ~/solana/solana.service
-    read -p "write snapshots? (y/n)" SNAPS; 
+    read -p " Do You need to record SNAPSHOTS? (y/n)" SNAPS; 
     if [[ "$SNAPS" == "y" ]]; then 
         # add snapshots
         sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
