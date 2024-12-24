@@ -23,21 +23,24 @@ fi
 if [[ $NODE == "main" ]]; then
     solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
     cp ~/sol_git/Jito/solana.service ~/solana/solana.service
-
     read -p "write snapshots? (y/n)" SNAPS; 
     if [[ "$SNAPS" == "y" ]]; then 
+        # add snapshots
         sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
         sed -i "/^--incremental-snapshot-interval-slots /c --incremental-snapshot-interval-slots 2500 \\\\" ~/solana/solana.service
+        # remove lines
+        sed -i "/^--accounts $/d" ~/solana/solana.service
+        sed -i "/^--accounts $/d" ~/solana/solana.service
+        sed -i "/^--accounts-hash-cache-path $/d" ~/solana/solana.service
+        sed -i "/^--accounts-index-path $/d" ~/solana/solana.service
     fi
-    
-    sed -i "/^--allowed-validators /c\--allowed-validators $validator_key" ~/solana/jito-relayer.service
-    echo -e "\033[31m set MAIN $NAME\033[0m"
 elif [[ $NODE == "test" ]]; then
     solana config set --url https://api.testnet.solana.com --keypair ~/solana/validator-keypair.json
     cp ~/sol_git/test/solana.service ~/solana/solana.service
-    echo -e "\033[34m set test $NAME\033[0m"
 else
     echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
+    exit
 fi
+echo -e "\033[31m set $NODE.$NAME  \033[0m"
 systemctl daemon-reload
 ~/sol_git/setup/check.sh
