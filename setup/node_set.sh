@@ -26,8 +26,8 @@ if [[ $NODE == "main" ]]; then
 
     read -p "write snapshots? (y/n)" SNAPS; 
     if [[ "$SNAPS" == "y" ]]; then 
-        sed -i "/^--full-snapshot-interval-slots /c\--full-snapshot-interval-slots 25000 \" ~/solana/solana.service
-        sed -i "/^--incremental-snapshot-interval-slots /c\--incremental-snapshot-interval-slots 2500 \" ~/solana/solana.service
+        sed -i "/^--full-snapshot-interval-slots /c '--full-snapshot-interval-slots 25000 \\'" ~/solana/solana.service
+        sed -i "/^--incremental-snapshot-interval-slots /c '--incremental-snapshot-interval-slots 2500 \\'" ~/solana/solana.service
     fi
     
     sed -i "/^--allowed-validators /c\--allowed-validators $validator_key" ~/solana/jito-relayer.service
