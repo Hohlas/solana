@@ -25,10 +25,10 @@ RelayerKey=$(solana address -k ~/solana/relayer-keypair.json)
 echo "RelayerKey $RelayerKey"
 # sed -i "/^--allowed-validators /c\--allowed-validators $RelayerKey" ~/solana/jito-relayer.service
 
-sudo systemctl daemon-reload
-sudo systemctl enable relayer.service
-sudo systemctl restart relayer
-sudo ufw allow 11228,11229/udp
+systemctl daemon-reload
+systemctl enable relayer.service
+# systemctl restart relayer
+ufw allow 11228,11229/udp
 
 # copy executable file without installation
 #mkdir -p $HOME/lite-relayer/target/release/
