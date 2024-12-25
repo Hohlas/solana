@@ -5,17 +5,33 @@ read -p "are you ready to RESET solana node? " RESP; if [ "$RESP" != "y" ]; then
 echo "Stop solana.service"
 systemctl stop solana
 
-LEDGER_PATH=$(grep -oP '(?<=--ledger\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
-if [[ -d "$LEDGER_PATH" ]]; then
-    echo "remoove $LEDGER_PATH "
-    rm -r $LEDGER_PATH/*
+# remoove LEDGER
+RM_PATH=$(grep -oP '(?<=--ledger\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
+if [[ -d "$RM_PATH" ]]; then
+    echo "remoove LEDGER "
+    rm -r $RM_PATH/*
 fi    
 
+# remoove accounts
+RM_PATH=$(grep -oP '(?<=--accounts\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
+if [[ -d "$RM_PATH" ]]; then
+    echo "remoove accounts "
+    rm -r $RM_PATH/*
+fi
 
-echo -e "snapshot path =\033[32m $SNAPSHOT_PATH \033[0m "
+# remoove accounts-hash-cache-path
+RM_PATH=$(grep -oP '(?<=--accounts-hash-cache-path\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
+if [[ -d "$RM_PATH" ]]; then
+    echo "remoove accounts-hash-cache-path "
+    rm -r $RM_PATH/*
+fi
 
-
-
+# remoove accounts-index-path
+RM_PATH=$(grep -oP '(?<=--accounts-index-path\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
+if [[ -d "$RM_PATH" ]]; then
+    echo "remoove accounts-index-path "
+    rm -r $RM_PATH/*
+fi
 
 rm -rf ~/solana/ledger/* && echo "delete ledger/*"
 rm -rf /mnt/disk1/* && echo "delete disk1/*"
