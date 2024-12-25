@@ -33,10 +33,18 @@ if [[ -d "$RM_PATH" ]]; then
     rm -r $RM_PATH/*
 fi
 
-rm -rf ~/solana/ledger/* && echo "delete ledger/*"
-rm -rf /mnt/disk1/* && echo "delete disk1/*"
-rm -rf /mnt/disk2/* && echo "delete disk2/*"
-rm -rf /mnt/disk3/* && echo "delete disk3/*"
+if [ -d $HOME/solana/ledger ]; then
+    rm -rf $HOME/solana/ledger/* && echo "delete ledger/*"
+fi    
+if [ -d /mnt/disk1 ]; then
+    rm -rf /mnt/disk1/* && echo "delete disk1/*"
+fi
+if [ -d /mnt/disk2 ]; then
+    rm -rf /mnt/disk2/* && echo "delete disk2/*"
+fi
+if [ -d /mnt/disk3 ]; then
+    rm -rf /mnt/disk3/* && echo "delete disk3/*"
+fi    
 if [ -d /mnt/ramdisk ]; then
     rm -r /mnt/ramdisk/*  && echo "delete RAMDISK/*"
 fi
