@@ -5,8 +5,8 @@ read -p "are you ready to RESET solana node? " RESP; if [ "$RESP" != "y" ]; then
 echo "Stop solana.service"
 systemctl stop solana
 
-LEDGER_PATH=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-if [[ -z "$LEDGER_PATH" ]]; then
+LEDGER_PATH=$(grep -oP '(?<=--ledger\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
+if [[ -d "$LEDGER_PATH" ]]; then
     echo "remoove $LEDGER_PATH "
     rm -r $LEDGER_PATH/*
 fi    
