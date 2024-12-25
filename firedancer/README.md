@@ -45,3 +45,6 @@ WantedBy=multi-user.target
 systemctl daemon-reload
 systemctl enable fdctl-hugetlbfs.service
 ```
+```bash
+cat /proc/mounts | grep \\.fd
+```
