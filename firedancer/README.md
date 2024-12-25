@@ -22,8 +22,8 @@ update-grub
 </details>
 
 ```bash
-echo "#!/bin/bash
-$HOME/firedancer/build/native/gcc/bin/fdctl configure init hugetlbfs" > /usr/local/bin/fdctl-hugetlbfs-init.sh
+echo '#!/bin/bash
+$HOME/firedancer/build/native/gcc/bin/fdctl configure init hugetlbfs' > /usr/local/bin/fdctl-hugetlbfs-init.sh
 chmod +x /usr/local/bin/fdctl-hugetlbfs-init.sh
 
 
