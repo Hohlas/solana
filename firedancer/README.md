@@ -47,4 +47,5 @@ systemctl enable fdctl-hugetlbfs.service
 ```
 ```bash
 cat /proc/mounts | grep \\.fd
+cat /sys/kernel/mm/hugepages/hugepages-1048576kB/free_hugepages
 ```
