@@ -34,6 +34,7 @@ Description=Initialize hugetlbfs for Firedancer
 After=network.target
 
 [Service]
+User=root
 Type=oneshot
 ExecStart=/usr/local/bin/fdctl-hugetlbfs-init.sh
 RemainAfterExit=yes
