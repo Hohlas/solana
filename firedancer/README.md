@@ -42,7 +42,7 @@ update-grub
 </details>
 
 ```bash
-fdctl --config $HOME/solana/dance_config.toml
+fdctl run --config $HOME/solana/dance_config.toml
 ```
 ```bash
 echo '#!/bin/bash
