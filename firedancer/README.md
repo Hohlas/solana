@@ -19,6 +19,7 @@ make -j fdctl solana # build Firedancer
 # ln -sfn $HOME/firedancer/build/native/gcc $HOME/.local/share/solana/install/active_release
 # cd $HOME/firedancer/build/native/gcc/bin
 # ln -sf $HOME/firedancer/build/native/gcc/bin/solana $HOME/firedancer/build/native/gcc/bin/solana-validator
+mkdir -p $HOME/solana/ledger
 export PATH="$HOME/firedancer/build/native/gcc/bin/:$PATH"
 echo 'export PATH='$PATH >> ~/.bashrc
 curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dance_config.toml > $HOME/solana/dance_config.toml
