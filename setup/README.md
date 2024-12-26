@@ -61,6 +61,7 @@ nano ~/.ssh/authorized_keys
 # config file2ban
 echo "backend = systemd" >> /etc/fail2ban/jail.d/defaults-debian.conf
 echo "authpriv.*      /var/log/auth.log" >> /etc/rsyslog.conf
+systemctl enable fail2ban
 systemctl restart fail2ban
 fail2ban-client status
 
