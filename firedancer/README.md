@@ -14,6 +14,10 @@ git checkout v0.302.20104 # Or the latest Frankendancer release
 ./deps.sh # script to install system packages and compile library dependencies
 ```
 ```bash
+sed -i "/^[ \t]*results\[ 0 \] = pwd\.pw_uid/c results[ 0 ] = 1001;" ~/firedancer/src/app/fdctl/config.c
+sed -i "/^[ \t]*results\[ 1 \] = pwd\.pw_gid/c results[ 1 ] = 1002;" ~/firedancer/src/app/fdctl/config.c
+```
+```bash
 make -j fdctl solana # build Firedancer
 ```
 ```bash
@@ -41,9 +45,6 @@ update-grub
 
 </details>
 
-```bash
-sudo setcap 'cap_sys_resource=+ep cap_sys_nice=+ep cap_sys_nice=ep cap_sys_resource=ep cap_net_raw=ep cap_sys_admin=ep cap_net_bind_service=ep' $HOME/firedancer/build/native/gcc/bin/fdctl
-```
 
 ```bash
 fdctl run --config $HOME/solana/dance_config.toml
