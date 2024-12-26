@@ -45,6 +45,15 @@ update-grub
 
 </details>
 
+<details>
+<summary>add permissions</summary>
+
+```bash
+sudo setcap 'cap_sys_resource=+ep cap_sys_nice=+ep cap_sys_nice=ep cap_sys_resource=ep cap_net_raw=ep cap_sys_admin=ep cap_net_bind_service=ep' $HOME/firedancer/build/native/gcc/bin/fdctl
+```
+
+</details>
+
 
 ```bash
 fdctl run --config $HOME/solana/dance_config.toml
