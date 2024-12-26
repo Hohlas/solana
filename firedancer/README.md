@@ -1,6 +1,6 @@
 ## Firedancer setup
 
-[Firedancer setup](https://firedancer-io.github.io/firedancer/guide/getting-started.html)
+[Getting Started](https://firedancer-io.github.io/firedancer/guide/getting-started.html)
 ```bash
 ln -sfn $HOME/firedancer/build/native/gcc $HOME/.local/share/solana/install/active_release
 # cd $HOME/firedancer/build/native/gcc/bin
