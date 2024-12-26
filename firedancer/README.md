@@ -41,6 +41,9 @@ update-grub
 </details>
 
 ```bash
+fdctl --config $HOME/solana/dance_config.toml
+```
+```bash
 echo '#!/bin/bash
 $HOME/firedancer/build/native/gcc/bin/fdctl configure init hugetlbfs' > /usr/local/bin/fdctl-hugetlbfs-init.sh
 chmod +x /usr/local/bin/fdctl-hugetlbfs-init.sh
