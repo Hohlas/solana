@@ -12,9 +12,10 @@ git clone --recurse-submodules https://github.com/firedancer-io/firedancer.git
 cd firedancer
 git checkout v0.302.20104 # Or the latest Frankendancer release
 ./deps.sh # script to install system packages and compile library dependencies
+```
+```bash
 make -j fdctl solana # build Firedancer
 ```
-
 ```bash
 # ln -sfn $HOME/firedancer/build/native/gcc $HOME/.local/share/solana/install/active_release
 # cd $HOME/firedancer/build/native/gcc/bin
