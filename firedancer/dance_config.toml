@@ -17,10 +17,10 @@ dynamic_port_range = "8005-8025"
         "eoKpUABi59aT4rR9HGS3LcMecfut9x7zJyodWWP43YQ",
         "9QxCLckBiJc783jnMvXZubK4wH86Eqqvashtrwvcsgkv",
     ]
-	identity_path = "/root/solana/empty-validator.json"
-	vote_account_path = "/root/solana/vote.json"
+	identity_path = "$HOME/solana/empty-validator.json"
+	vote_account_path = "$HOME/solana/vote.json"
 	authorized_voter_paths = [
-		"/root/solana/validator-keypair.json"
+		"$HOME/solana/validator-keypair.json"
 	]
 
 [rpc]
@@ -38,7 +38,7 @@ dynamic_port_range = "8005-8025"
     solana_metrics_config = "host=https://metrics.solana.com:8086,db=tds,u=testnet_write,p=c4fa841aa918bf8274e3e2a44d77568d9861b3ea"
 
 [ledger]
-    path = "/root/solana/ledger"
+    path = "$HOME/solana/ledger"
     accounts_path = "/mnt/disk1/accounts"
     limit_size = 50000000
 	
