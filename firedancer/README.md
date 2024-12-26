@@ -3,6 +3,10 @@
 [Getting Started](https://firedancer-io.github.io/firedancer/guide/getting-started.html)
 
 ```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+```
+```bash
 cd
 git clone --recurse-submodules https://github.com/firedancer-io/firedancer.git
 cd firedancer
