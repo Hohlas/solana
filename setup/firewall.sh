@@ -458,7 +458,7 @@ DDOS_SEARCH() {
             # Проверка на наличие IP в списке DDoS
             if ! grep -q "$ip" "$DDoS_LIST_FILE"; then
                 echo "$(TIME) $ip" >> "$DDoS_LIST_FILE"
-                echo "Добавлен в DDoS список: $ip"
+                echo "$(TIME) Добавлен в DDoS список: $ip"
             fi
         fi
     done < "$OUTPUT_FILE"
