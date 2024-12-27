@@ -455,17 +455,21 @@ DDOS_SEARCH() {
     
 
 
-while read -r line; do
-        # Разделяем строку на IP и процесс
-        ip=$(echo "$line" | awk '{print $1}')
-        process=$(echo "$line" | awk '{print $2}' | cut -d'/' -f2)
+DDOS_SEARCH() {
+    # Получаем список IP-адресов с помощью ss, игнорируя заголовки
+    #iftop -i "$INTERFACE" -t -s 10 | grep -oP '(\d{1,3}\.){3}\d{1,3}' | sort -u > "$OUTPUT_FILE"
+    ss -tnp | awk 'NR > 1 {print $5}' | cut -d: -f1 | sort -u > "$OUTPUT_FILE"
 
-        # echo "read ip $ip from process $process"
+    # echo "Список IP-адресов сохранен в файле $OUTPUT_FILE"
+
+    # Проверка каждого IP-адреса на наличие в списке валидаторов
+    while read -r ip; do
+        # echo "read ip $ip"
         if ! grep -q "$ip" "$VALIDATOR_FILE"; then
             # Проверка на наличие IP в списке DDoS
             if ! grep -q "$ip" "$DDoS_LIST_FILE"; then
-                echo "$(TIME) $ip ($process)" >> "$DDoS_LIST_FILE"
-                echo "$(TIME) Добавлен в DDoS список: $ip ($process)"
+                echo "$(TIME) $ip" >> "$DDoS_LIST_FILE"
+                echo "Добавлен в DDoS список: $ip"
             fi
         fi
     done < "$OUTPUT_FILE"
