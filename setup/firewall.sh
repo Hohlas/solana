@@ -432,8 +432,8 @@ RPC_REQUEST "IP"
 
 
 # Укажите интерфейс, который вы хотите мониторить
-INTERFACE="enp5s0"
-
+#INTERFACE="enp5s0"
+INTERFACE=$(ip link show | awk '/^[0-9]+: / {print $2}' | tr -d ':' | xargs -I {} ip addr show {} | awk '/state UP/ {print $2; exit}' | tr -d ':')
 # Укажите файл, в который будут записаны IP-адреса
 OUTPUT_FILE="$HOME/ip_addresses.txt"
 
@@ -446,6 +446,7 @@ DDoS_LIST_FILE="$HOME/DDOS_LIST.txt"
 # Функция для поиска DDoS-атак
 DDOS_SEARCH() {
     # Получаем список IP-адресов с помощью ss, игнорируя заголовки
+    iftop -i "$INTERFACE" -t -s 10 | grep -oP '(\d{1,3}\.){3}\d{1,3}' | sort -u > "$OUTPUT_FILE"
     ss -tnp | awk 'NR > 1 {print $5}' | cut -d: -f1 | sort -u > "$OUTPUT_FILE"
 
     echo "Список IP-адресов сохранен в файле $OUTPUT_FILE"
