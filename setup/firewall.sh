@@ -446,14 +446,14 @@ DDoS_LIST_FILE="$HOME/DDOS_LIST.txt"
 # Функция для поиска DDoS-атак
 DDOS_SEARCH() {
     # Получаем список IP-адресов с помощью ss, игнорируя заголовки
-    iftop -i "$INTERFACE" -t -s 10 | grep -oP '(\d{1,3}\.){3}\d{1,3}' | sort -u > "$OUTPUT_FILE"
+    #iftop -i "$INTERFACE" -t -s 10 | grep -oP '(\d{1,3}\.){3}\d{1,3}' | sort -u > "$OUTPUT_FILE"
     ss -tnp | awk 'NR > 1 {print $5}' | cut -d: -f1 | sort -u > "$OUTPUT_FILE"
 
-    echo "Список IP-адресов сохранен в файле $OUTPUT_FILE"
+    # echo "Список IP-адресов сохранен в файле $OUTPUT_FILE"
 
     # Проверка каждого IP-адреса на наличие в списке валидаторов
     while read -r ip; do
-        echo "read ip $ip"
+        # echo "read ip $ip"
         if ! grep -q "$ip" "$VALIDATOR_FILE"; then
             # Проверка на наличие IP в списке DDoS
             if ! grep -q "$ip" "$DDoS_LIST_FILE"; then
