@@ -466,6 +466,7 @@ DDOS_SEARCH() {
 
 # Основной цикл
 while true; do
+	RPC_REQUEST "IP"
     DDOS_SEARCH
     sleep 1  # Задержка между итерациями (например, 5 секунд)
 done
