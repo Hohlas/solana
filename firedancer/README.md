@@ -81,8 +81,15 @@ systemctl daemon-reload
 systemctl enable fdctl-hugetlbfs.service
 ```
 ```bash
+# configure and check: hugetlbfs, sysctl, ethtool-channels, ethtool-gro
+fdctl configure init all
+fdctl configure check all 
+```
+
+```bash
 cat /proc/mounts | grep \\.fd
 cat /sys/kernel/mm/hugepages/hugepages-1048576kB/free_hugepages
+cat /sys/devices/system/node/node0/hugepages/hugepages-1048576kB/nr_hugepages
 ```
 
 ```bash
