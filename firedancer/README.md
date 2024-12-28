@@ -13,8 +13,8 @@ cd firedancer
 git checkout v0.302.20104 # Or the latest Frankendancer release
 ./deps.sh # script to install system packages and compile library dependencies
 ```
-root enable
 ```bash
+# root enable
 sed -i "/^[ \t]*results\[ 0 \] = pwd\.pw_uid/c results[ 0 ] = 1001;" ~/firedancer/src/app/fdctl/config.c
 sed -i "/^[ \t]*results\[ 1 \] = pwd\.pw_gid/c results[ 1 ] = 1002;" ~/firedancer/src/app/fdctl/config.c
 ```
@@ -56,8 +56,9 @@ sudo setcap 'cap_sys_resource=+ep cap_sys_nice=+ep cap_sys_nice=ep cap_sys_resou
 </details>
 
 
-configure service
+
 ```bash
+# # #  hugetlbfs configure service  # # #
 echo '#!/bin/bash
 $HOME/firedancer/build/native/gcc/bin/fdctl configure init hugetlbfs' > /usr/local/bin/fdctl-hugetlbfs-init.sh
 chmod +x /usr/local/bin/fdctl-hugetlbfs-init.sh
