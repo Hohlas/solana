@@ -1,39 +1,49 @@
 import re
 import csv
 
-def extract_replay_total_elapsed(log_file_path, output_csv_path):
+def extract_metric(log_file_path, output_csv_path, metric):
     with open(log_file_path, 'r') as log_file:
         # Список для хранения данных
         data = []
 
         for line in log_file:
-            # Ищем строки, содержащие "replay_total_elapsed"
-            if "replay_total_elapsed" in line:
+            # Ищем строки, содержащие заданную метрику
+            if metric in line:
                 # Извлекаем временную метку (с учетом квадратных скобок)
                 timestamp_match = re.match(r'\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z)', line)
-                # Извлекаем значение replay_total_elapsed
-                replay_total_elapsed_match = re.search(r'replay_total_elapsed=(\d+)', line)
+                # Извлекаем значение заданной метрики
+                metric_match = re.search(rf'{metric}=(\d+)', line)
 
-                if timestamp_match and replay_total_elapsed_match:
+                if timestamp_match and metric_match:
                     data.append([
                         timestamp_match.group(1),  # Время
-                        replay_total_elapsed_match.group(1)  # Значение replay_total_elapsed
+                        metric_match.group(1)  # Значение заданной метрики
                     ])
 
     # Отладочный вывод содержимого data
-    print("Собранные данные:")
+    print(f"Собранные данные для метрики '{metric}':")
     for entry in data:
         print(entry)
 
     # Записываем данные в CSV файл
     with open(output_csv_path, 'w', newline='') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter=';')
-        csv_writer.writerow(['time', 'replay_total_elapsed'])  # Заголовки столбцов
+        csv_writer.writerow(['time', metric])  # Заголовки столбцов
         csv_writer.writerows(data)  # Запись данных
 
-# Укажите пути к файлам
-log_file_path = r'C:\Users\hohla\solana\solana1.log'  # Замените на ваш путь к файлу
-output_csv_path = r'C:\Users\hohla\solana\solana.csv'  # Замените на ваш путь к выходному файлу
+def main():
+    log_file_path = r'C:\Users\hohla\solana\solana1.log'  # Путь к лог-файлу
+    metrics_file_path = r'C:\Users\hohla\solana\metrics.txt'  # Путь к файлу с метриками
 
-# Запуск функции извлечения
-extract_replay_total_elapsed(log_file_path, output_csv_path)
+    # Чтение списка метрик из файла
+    with open(metrics_file_path, 'r') as metrics_file:
+        metrics = [line.strip() for line in metrics_file if line.strip()]
+
+    # Для каждой метрики вызываем функцию извлечения
+    for metric in metrics:
+        output_csv_path = f'C:\\Users\\hohla\\solana\\{metric}.csv'  # Путь к выходному файлу для каждой метрики
+        extract_metric(log_file_path, output_csv_path, metric)
+
+# Запуск основной функции
+if __name__ == "__main__":
+    main()
