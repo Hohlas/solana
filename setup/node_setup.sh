@@ -6,6 +6,7 @@ mkdir -p /mnt/disk1
 mkdir -p /mnt/disk2
 mkdir -p /mnt/disk3
 mkdir -p /mnt/ramdisk
+mkdir -p /mnt/snapshots
 
 if [ ! -d "$HOME/keys" ]; then
 	echo "# keys to RAM" | sudo tee -a /etc/fstab 
