@@ -1,5 +1,6 @@
 import re
 import csv
+import os
 
 def extract_metric(log_file_path, output_csv_path, metric):
     with open(log_file_path, 'r') as log_file:
@@ -32,8 +33,11 @@ def extract_metric(log_file_path, output_csv_path, metric):
         csv_writer.writerows(data)  # Запись данных
 
 def main():
-    log_file_path = r'C:\Users\hohla\solana\solana1.log'  # Путь к лог-файлу
-    metrics_file_path = r'C:\Users\hohla\solana\metrics.txt'  # Путь к файлу с метриками
+    base_path = r'C:\Users\hohla\solana'  # Замените на нужный путь для Windows
+    # base_path = '/home/username/solana'  # Используйте этот путь для Ubuntu
+
+    log_file_path = os.path.join(base_path, 'solana1.log')  # Путь к лог-файлу
+    metrics_file_path = os.path.join(base_path, 'metrics.txt')  # Путь к файлу с метриками
 
     # Чтение списка метрик из файла
     with open(metrics_file_path, 'r') as metrics_file:
@@ -41,7 +45,7 @@ def main():
 
     # Для каждой метрики вызываем функцию извлечения
     for metric in metrics:
-        output_csv_path = f'C:\\Users\\hohla\\solana\\{metric}.csv'  # Путь к выходному файлу для каждой метрики
+        output_csv_path = os.path.join(base_path, f'{metric}.csv')  # Путь к выходному файлу для каждой метрики
         extract_metric(log_file_path, output_csv_path, metric)
 
 # Запуск основной функции
