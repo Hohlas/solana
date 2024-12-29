@@ -22,9 +22,9 @@ def extract_metric(log_file_path, output_csv_path, metric):
                     ])
 
     # Отладочный вывод содержимого data
-    print(f"Собранные данные для метрики '{metric}':")
-    for entry in data:
-        print(entry)
+    # print(f"Собранные данные для метрики '{metric}':")
+    # for entry in data:
+    #    print(entry)
 
     # Записываем данные в CSV файл
     with open(output_csv_path, 'w', newline='') as csv_file:
@@ -36,7 +36,7 @@ def main():
     base_path = r'C:\Users\hohla\solana'  # Замените на нужный путь для Windows
     # base_path = '/home/username/solana'  # Используйте этот путь для Ubuntu
 
-    log_file_path = os.path.join(base_path, 'solana1.log')  # Путь к лог-файлу
+    log_file_path = os.path.join(base_path, 'solana.log')  # Путь к лог-файлу
     metrics_file_path = os.path.join(base_path, 'metrics.txt')  # Путь к файлу с метриками
 
     # Чтение списка метрик из файла
