@@ -2,5 +2,7 @@
 apt update && apt upgrade && apt install -y software-properties-common
 ```
 ```bash
-echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt install -y python3.11
+
 ```
