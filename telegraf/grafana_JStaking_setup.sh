@@ -9,7 +9,7 @@ ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
 
 
 
-  echo "### Which cluster you wnat to monitor? ###"
+  
   if [[ $NODE == "main" ]]; then
     inventory="mainnet.yaml";
   elif [[ $NODE == "test" ]]; then
@@ -80,12 +80,6 @@ ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
   echo "### Cleanup install folder done ###"
   echo "### Check your dashboard: https://solana.thevalidators.io/d/e-8yEOXMwerfwe/solana-monitoring?&var-server="$VALIDATOR_NAME
 
-  echo Do you want to UNinstall ansible?
-  select yn in "Yes" "No"; do
-      case $yn in
-          Yes ) $pkg_manager remove ansible --yes; break;;
-          No ) echo "### Okay, ansible is still installed on this system.  ###"; break;;
-      esac
-  done
+  
 
 
