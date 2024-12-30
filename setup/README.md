@@ -9,7 +9,8 @@ sudo apt update && sudo apt upgrade -y && sudo apt install sysstat git ncdu ufw 
 <summary>System check</summary>
 
 ```bash
-curl -sL yabs.sh | bash 
+curl -sL yabs.sh | bash  # full test
+curl -sL yabs.sh | bash -s -- -fg    # speed test
 smartctl -a /dev/nvme0n1 
 ```
 [iostat](https://github.com/Hohlas/ubuntu/tree/main/test#readme)
