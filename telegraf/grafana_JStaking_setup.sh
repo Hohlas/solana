@@ -7,7 +7,7 @@ echo "### telegraf and point it to solana.thevalidators.io ###"
 echo "########################################################"
 ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
 
-install_monitoring () {
+
 
   echo "### Which cluster you wnat to monitor? ###"
   if [[ $NODE == "main" ]]; then
@@ -88,12 +88,4 @@ install_monitoring () {
       esac
   done
 
-}
 
-echo Do you want to install monitoring?
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) install_monitoring "${1:-latest}"; break;;
-        No ) echo "### Aborting install. No changes are made on the system."; exit;;
-    esac
-done
