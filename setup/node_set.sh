@@ -26,6 +26,7 @@ if [[ $NODE == "main" ]]; then
     read -p " Do You need to record SNAPSHOTS? (y/n)" SNAPS; 
     if [[ "$SNAPS" == "y" ]]; then 
         # add snapshots
+        sed -i "/^--ledger /c --ledger /mnt/ramdisk/ledger \\\\" ~/solana/solana.service
         sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
         sed -i "/^--incremental-snapshot-interval-slots /c --incremental-snapshot-interval-slots 2500 \\\\" ~/solana/solana.service
         # remove lines
@@ -33,6 +34,7 @@ if [[ $NODE == "main" ]]; then
         sed -i "/^--accounts /d" ~/solana/solana.service
         sed -i "/^--accounts-hash-cache-path /d" ~/solana/solana.service
         sed -i "/^--accounts-index-path /d" ~/solana/solana.service
+        sed -i "/^--no-skip-initial-accounts-db-clean /d" ~/solana/solana.service
     fi
 elif [[ $NODE == "test" ]]; then
     solana config set --url https://api.testnet.solana.com --keypair ~/solana/validator-keypair.json
