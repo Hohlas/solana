@@ -25,7 +25,7 @@ if [[ $NODE == "main" ]]; then
     cp ~/sol_git/Jito/solana.service ~/solana/solana.service
     read -p " modify for big RAM? (y/n)" BIG_RAM; 
     if [[ "$BIG_RAM" == "y" ]]; then 
-        echo " modify solana.service for big RAM "
+        echo -e "\033[31m modify solana.service for big RAM \033[0m"
         # add snapshots
         sed -i "/^--ledger /c --ledger /mnt/ramdisk/ledger \\\\" ~/solana/solana.service
         sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
@@ -44,6 +44,5 @@ else
     echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
     exit
 fi
-echo -e "\033[31m set $NODE.$NAME  \033[0m"
 systemctl daemon-reload
 ~/sol_git/setup/check.sh
