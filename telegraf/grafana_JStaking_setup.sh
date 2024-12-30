@@ -30,7 +30,7 @@ ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
     exit
   fi
 
-  read -e -p "### Please tell which user is running validator: " SOLANA_USER
+  SOLANA_USER=$USER
   cd
   rm -rf sv_manager/
 
