@@ -23,8 +23,9 @@ fi
 if [[ $NODE == "main" ]]; then
     solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
     cp ~/sol_git/Jito/solana.service ~/solana/solana.service
-    read -p " Do You need to record SNAPSHOTS? (y/n)" SNAPS; 
-    if [[ "$SNAPS" == "y" ]]; then 
+    read -p " modify for big RAM? (y/n)" BIG_RAM; 
+    if [[ "$BIG_RAM" == "y" ]]; then 
+        echo " modify solana.service for big RAM "
         # add snapshots
         sed -i "/^--ledger /c --ledger /mnt/ramdisk/ledger \\\\" ~/solana/solana.service
         sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
