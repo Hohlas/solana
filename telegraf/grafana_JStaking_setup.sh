@@ -2,7 +2,7 @@
 #set -x -e
 
 echo "###################### WARNING!!! ######################"
-echo "###   This script will install and/or reconfigure    ###"
+echo "###   This script v4 will install and/or reconfigure    ###"
 echo "### telegraf and point it to solana.thevalidators.io ###"
 echo "########################################################"
 ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
@@ -34,18 +34,8 @@ ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
   cd
   rm -rf sv_manager/
 
-  if [[ $(which apt | wc -l) -gt 0 ]]
-  then
-  pkg_manager=apt
-  elif [[ $(which yum | wc -l) -gt 0 ]]
-  then
-  pkg_manager=yum
-  fi
-
-  echo "### Update packages... ###"
-  $pkg_manager update
-  echo "### Install ansible, curl, unzip... ###"
-  $pkg_manager install ansible curl unzip --yes
+  apt update
+  apt install ansible curl unzip --yes
   
   # fix for eventually hanging of pip
   export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
@@ -54,7 +44,7 @@ ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
   ansible-galaxy collection install community.general
 
   echo "### Download Solana validator manager"
-  cmd="https://github.com/mfactory-lab/sv-manager/archive/refs/tags/$1.zip"
+  cmd="https://github.com/mfactory-lab/sv-manager/archive/refs/tags/latest.zip"
   echo "starting $cmd"
   curl -fsSL "$cmd" --output sv_manager.zip
   echo "### Unpack Solana validator manager ###"
