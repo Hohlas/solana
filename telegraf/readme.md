@@ -1,14 +1,13 @@
-## JStaking telegraf setup
+## JStaking monitoring setup
 [JStaking telegraf](https://github.com/mfactory-lab/sv-manager/blob/main/docs/advanced.md#how-to-install-monitoring-manually)
 ```bash
-# install telegraf and point it to solana.thevalidators.io
 curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/grafana_JStaking_setup.sh > ~/grafana_setup.sh; chmod +x ~/grafana_setup.sh
 source ~/grafana_setup.sh
 rm ~/grafana_setup.sh
 ```
 
 
-## Classic telegraf setup
+## Classic monitoring setup
 ```bash
 curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/grafana_setup.sh > ~/grafana_setup.sh; chmod +x ~/grafana_setup.sh
 source ~/grafana_setup.sh
