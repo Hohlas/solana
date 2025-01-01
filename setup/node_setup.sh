@@ -42,6 +42,7 @@ chmod +x ~/sol_git/setup/*.sh
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/test/stat.sh > ~/stat.sh; chmod +x ~/stat.sh
 
 echo -e '\n\e[42m System tune \e[0m\n'
+cp ~/sol_git/setup/cpu_performance.service /etc/systemd/system/cpu_performance.service
 cp ~/sol_git/setup/21-solana-validator.conf /etc/sysctl.d/21-solana-validator.conf
 cp ~/sol_git/setup/90-solana-nofiles.conf /etc/security/limits.d/90-solana-nofiles.conf
 cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
@@ -91,6 +92,8 @@ ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
 
 
 systemctl daemon-reload
+systemctl enable cpu_performance.service
+systemctl start cpu_performance.service
 systemctl restart logrotate
 systemctl restart chronyd.service
 source ~/sol_git/setup/grafana_setup.sh 
