@@ -5,8 +5,25 @@ echo "###################### WARNING!!! ######################"
 echo "###   This script v4 will install and/or reconfigure    ###"
 echo "### telegraf and point it to solana.thevalidators.io ###"
 echo "########################################################"
-ln -sf ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
+echo " "
+GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
+SOLANA_SERVICE="$HOME/solana/solana.service"
+VOTE_ACC_KEY=$(grep -oP '(?<=--vote-account\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+IDENTITY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
+ln -sfn $VOTE_ACC_KEY ~/solana/vote-account-keypair.json # additional link
+#ln -sfn ~/keys/${NAME,,}_${NODE,,}_vote.json ~/solana/vote-account-keypair.json
+VOTING_ADDR=$(solana address -k $IDENTITY)
+CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
+VOTE_IP=$(solana gossip | grep $VOTING_ADDR | awk '{print $1}')
+if [ "$CUR_IP" == "$VOTE_IP" ]; then STATUS="primary";
+else                              STATUS="secondary"; 
+fi
 
+echo $BLUE$NAME.$STATUS$CLEAR
+echo "IDENTITY:$GREEN $(solana address -k $IDENTITY) $CLEAR"
+echo "VOTE:$GREEN $(solana address -k $VOTE_ACC_KEY) $CLEAR"
+echo " "
 
 
   
