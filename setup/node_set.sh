@@ -28,6 +28,7 @@ if [[ $NODE == "main" ]]; then
         echo -e "\033[31m modify solana.service for big RAM \033[0m"
         # add snapshots
         sed -i "/^--ledger /c --ledger /mnt/ramdisk/ledger \\\\" ~/solana/solana.service
+        sed -i "/^--snapshots /c --snapshots /mnt/ramdisk/snapshots \\\\" ~/solana/solana.service
         sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
         sed -i "/^--incremental-snapshot-interval-slots /c --incremental-snapshot-interval-slots 2500 \\\\" ~/solana/solana.service
         # remove lines
