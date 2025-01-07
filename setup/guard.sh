@@ -575,16 +575,16 @@ SECONDARY_SERVER(){ ############################################################
   		LOG "restart relayer service"
 	fi
 	### stop telegraf service on remote server
-	#SSH "systemctl stop telegraf"
-	#if [ $command_exit_status -eq 0 ]; then LOG "stop telegraf on remote server OK"
-	#elif [ $command_exit_status -eq 124 ]; then LOG "stop telegraf on remote server timeout exceed"
- 	#else LOG "stop telegraf on remote server Error"
-	#fi
+	SSH "systemctl stop telegraf"
+	if [ $command_exit_status -eq 0 ]; then LOG "stop telegraf on remote server OK"
+	elif [ $command_exit_status -eq 124 ]; then LOG "stop telegraf on remote server timeout exceed"
+ 	else LOG "stop telegraf on remote server Error"
+	fi
 	### start telegraf service on local server
- 	#systemctl start telegraf
-  	#if [[ $? -ne 0 ]]; then LOG "Error! start telegraf"
-   	#else LOG "start telegraf OK"
-	#fi
+ 	systemctl start telegraf
+  	if [[ $? -ne 0 ]]; then LOG "Error! start telegraf"
+   	else LOG "start telegraf OK"
+	fi
 	LOG "waiting for PRIMARY status"
  	sleep 2
 	#while [ $SERV_TYPE = "SECONDARY" ]; do
