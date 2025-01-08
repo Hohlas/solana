@@ -3,7 +3,6 @@ GUARD_VER=v1.6.0
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
-LEDGER=$HOME/solana/ledger
 LOG_FILE=$HOME/guard.log
 SOLANA_SERVICE="$HOME/solana/solana.service"
 BEHIND_WARNING=false # 'false'- send telegramm INFO missage, when behind. 'true'-send ALERT message
@@ -22,6 +21,7 @@ configDir="$HOME/.config/solana"
 #======================================================
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address 2>/dev/null)
 if [ $? -ne 0 ]; then  
 	echo "Error! Can't run 'solana'"
