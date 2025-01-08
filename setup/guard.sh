@@ -220,8 +220,8 @@ GET_VOTING_IP(){
 	VOTING_IP=$REQUEST_ANSWER
     SERV="$USER@$VOTING_IP"
     # Получаем локальный валидатор
-    #local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
-    local_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}') # identity
+    #local_validator=$(timeout 3 stdbuf -oL solana-validator --ledger $LEDGER monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+    local_validator=$(solana-validator --ledger $LEDGER contact-info | grep "Identity:" | awk '{print $2}') # identity
     if [[ $? -ne 0 ]]; then
         LOG "Error in GET_VOTING_IP: define local_validator"
         # return 1
