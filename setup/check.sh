@@ -1,9 +1,9 @@
 #!/bin/bash
 #===========================================
-CHECK_VER=v1.3.7
-LEDGER=$HOME/solana/ledger
+CHECK_VER=v1.3.8
 SOLANA_SERVICE="$HOME/solana/solana.service"
 #===========================================
+LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address) 
