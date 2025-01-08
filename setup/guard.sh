@@ -21,7 +21,7 @@ configDir="$HOME/.config/solana"
 #======================================================
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\' | xargs)
 IDENTITY=$(solana address 2>/dev/null)
 if [ $? -ne 0 ]; then  
 	echo "Error! Can't run 'solana'"
@@ -270,7 +270,7 @@ SSH(){
 echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR" | tee -a $LOG_FILE
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
-echo "ledger path: $LEDGER"
+echo "ledger path: [$LEDGER]"
 echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
 echo "current IP=$CUR_IP" | tee -a $LOG_FILE
 echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a $LOG_FILE
