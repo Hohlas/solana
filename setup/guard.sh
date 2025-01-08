@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.6.0
+GUARD_VER=v1.6.1
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -270,6 +270,7 @@ SSH(){
 echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR" | tee -a $LOG_FILE
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
+echo "ledger path: $LEDGER"
 echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
 echo "current IP=$CUR_IP" | tee -a $LOG_FILE
 echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a $LOG_FILE
