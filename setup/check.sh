@@ -17,7 +17,7 @@ else
 	version=$(echo "$version" | awk -F '[ ()]' '{print $1, $2, $NF}' | sed 's/client://')
 fi	
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
-current_validator=$(timeout 3 stdbuf -oL solana-validator --ledger "$LEDGER" monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
+current_validator=$(timeout 3 stdbuf -oL solana-validator --ledger $LEDGER monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
 #current_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}')
 EMPTY_ADDR=$(solana address -k $EMPTY_KEY)
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
