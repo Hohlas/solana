@@ -537,7 +537,7 @@ SECONDARY_SERVER(){ ############################################################
 	SSH "$SOL_BIN/solana-validator --ledger '$LEDGER' contact-info" # get remote validator info
 	remote_validator=$(echo "$command_output" | grep "Identity:" | awk '{print $2}') # get remote voting identity
 	if [[ "$remote_validator" == "$IDENTITY" ]]; then
-		SEND_ALARM "Error! remote_validator still voting, so can't start voting"
+		SEND_ALARM "Error! remote_validator still voting, so try to start voting later"
 		LOG "remote_validator=$remote_validator, IDENTITY=$IDENTITY"
 		return
 	else
