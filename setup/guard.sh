@@ -569,6 +569,8 @@ SECONDARY_SERVER(){ ############################################################
  	#done
 	}
 
+##########################################################################
+
 echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR" | tee -a $LOG_FILE
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
@@ -623,6 +625,8 @@ elif [[ "$SERV_TYPE" == "SECONDARY" ]]; then # SECONDARY
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
 else
 	echo -e "Warning! Server type (PRIMARY/SECONDARY) undefined"
+	echo "local_validator=$local_validator"
+	echo "SERV_TYPE=$SERV_TYPE"
 	exit 0	
 fi
 
@@ -665,17 +669,18 @@ fi
 SSH "$SOL_BIN/solana address -k $EMPTY_KEY"
 remote_empty=$command_output
 
+LOG "remote identity  = $remote_identity"
+LOG "remote validator = $remote_validator"
+LOG "remote empty_adr = $remote_empty"
+
 if [[ "$remote_validator" == "$IDENTITY" ]]; then
-	LOG "remote server in VOTING mode"
+	LOG "remote server is Primary"
 elif [[ "$remote_validator" == "$remote_empty" ]]; then
-	LOG "remote server in NO_VOTING mode"
+	LOG "remote server in Secondary"
 else
 	echo -e "$RED remote server unknown status  $CLEAR" 
-	# exit 0
+	exit 0
 fi
-LOG "remote_identity=$remote_identity"
-LOG "remote_validator=$remote_validator"
-LOG "remote_empty=$remote_empty"
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
 SSH "echo '$CUR_IP' > $HOME/remote_ip" # send 'current IP' to remote server
