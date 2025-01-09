@@ -111,12 +111,10 @@ guard | vote_on | vote_off | ssh_agent
 mount_keys | umount_keys | shred_keys
 ```
 
-[Jito](https://github.com/Hohlas/solana/tree/main/Jito#readme)
 [Jito](https://github.com/Hohlas/solana/tree/main/Jito)
 
 [Grafana](https://github.com/Hohlas/solana/blob/main/telegraf/readme.md)
 
-## Snapshot Finder
 
 <details>
 <summary>setup snapshot finder</summary>
@@ -137,41 +135,7 @@ pip3 install -r requirements.txt
 
 </details>
 
-### init snapshot finder
-```bash
-source ~/.bashrc; 
-cd ~/solana-snapshot-finder \
-&& python3 -m venv venv \
-&& source ./venv/bin/activate
-```
-### MainNet snapshot finder
-```bash
-systemctl stop solana
-rm -rf ~/solana/ledger/*
-#rm -rf /mnt/disk1/snapshots/* 
-rm -rf /mnt/disk1/accounts/*
-rm -rf /mnt/disk2/ledger/*
-rm -rf /mnt/disk3/accounts_index/*
-rm -rf /mnt/disk3/accounts_hash_cache/*
-```
-```bash
-python3 snapshot-finder.py --snapshot_path /mnt/disk1/snapshots --num_of_retries 10 --measurement_time 10 --min_download_speed 40 --max_snapshot_age 500 --max_latency 500 --with_private_rpc --sort_order latency -r https://api.mainnet-beta.solana.com && \
-systemctl restart solana && tail -f ~/solana/solana.log
-```
-```bash
-python3 snapshot-finder.py --snapshot_path /mnt/disk2/ledger --num_of_retries 10 --measurement_time 10 --min_download_speed 40 --max_snapshot_age 500 --max_latency 500 --with_private_rpc --sort_order latency -r https://api.mainnet-beta.solana.com && \
-systemctl restart solana && tail -f ~/solana/solana.log
-```
-```bash
-wget --trust-server-names http://api.mainnet-beta.solana.com/snapshot.tar.bz2
-wget --trust-server-names http://api.mainnet-beta.solana.com/incremental-snapshot.tar.bz2
-```
-### TestNet snapshot finder
-```bash
-python3 snapshot-finder.py --snapshot_path $HOME/solana/ledger --num_of_retries 10 --measurement_time 10 --min_download_speed 50 --max_snapshot_age 500 --with_private_rpc --sort_order latency -r https://api.testnet.solana.com && \
-systemctl daemon-reload && systemctl restart solana
-tail -f ~/solana/solana.log
-```
+---
 
 ## LINKS
 ### grafana
