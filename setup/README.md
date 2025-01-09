@@ -112,6 +112,7 @@ mount_keys | umount_keys | shred_keys
 ```
 
 [Jito](https://github.com/Hohlas/solana/tree/main/Jito#readme)
+[Jito](https://github.com/Hohlas/solana/tree/main/Jito)
 
 [Grafana](https://github.com/Hohlas/solana/blob/main/telegraf/readme.md)
 
