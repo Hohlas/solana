@@ -53,6 +53,17 @@ source $HOME/.bashrc
 
 ```
 
+<details>
+<summary>Jito-Relayer Setup</summary>
+
+```bash
+curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/jito_relayer_setup.sh > ~/jito_relayer_setup.sh
+chmod +x ~/jito_relayer_setup.sh
+~/jito_relayer_setup.sh
+```
+</details>
+
+
 monitor
 ```bash
 solana-validator -l ~/solana/ledger monitor
