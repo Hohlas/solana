@@ -115,10 +115,11 @@ ln -sf /mnt/keys/validator-keypair.json ~/solana/validator-keypair.json
 ```bash
 PORT='22' # remote server ssh port
 KEYS=$HOME/keys
-LEDGER=$HOME/solana/ledger
 SOLANA_SERVICE=$HOME/solana/solana.service
+BEHIND_WARNING=false # 'false'- send telegramm INFO missage, when behind. 'true'-send ALERT message
+WARNING_FREQUENCY=12 # max frequency of warning messages (WARNING_FREQUENCY x 5) seconds
 BEHIND_OK_VAL=3 # behind, that seemed ordinary
-BEHIND_WARNING=true
+RELAYER_SERVICE=false # use restarting jito-relayer service
 CHAT_ALARM=-100..684
 CHAT_INFO=-100..888
 BOT_TOKEN=507625...VICllWU
