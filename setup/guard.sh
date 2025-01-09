@@ -597,7 +597,7 @@ fi
 echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
 
 
-GET_VOTING_IP
+# GET_VOTING_IP
 argument=$1 # read script argument
 primary_mode=''
 if [[ $argument =~ ^[0-9]+$ ]] && [ "$argument" -gt 0 ]; then
@@ -676,7 +676,7 @@ LOG "remote empty_adr = $remote_empty"
 if [[ "$remote_validator" == "$IDENTITY" ]]; then
 	LOG "remote server is Primary"
 elif [[ "$remote_validator" == "$remote_empty" ]]; then
-	LOG "remote server in Secondary"
+	LOG "remote server is Secondary"
 else
 	echo -e "$RED remote server unknown status  $CLEAR" 
 	return
