@@ -111,7 +111,8 @@ guard | vote_on | vote_off | ssh_agent
 mount_keys | umount_keys | shred_keys
 ```
 
-[Jito](https://github.com/Hohlas/solana/blob/main/Jito/readme.md)
+[Jito](https://github.com/Hohlas/solana/tree/main/Jito#readme)
+
 <details>
 <summary>Jito-Relayer Setup</summary>
 
