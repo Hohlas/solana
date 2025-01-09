@@ -619,7 +619,7 @@ if [[ "$SERV_TYPE" == "PRIMARY" ]]; then # PRIMARY can't determine REMOTE_IP of 
 	fi
 	if [[ -z $REMOTE_IP ]]; then # if $REMOTE_IP empty
 		echo -e "Warning! Run guard on SECONDARY server first to get it's IP"
-		exit 0
+		return
 	fi
 elif [[ "$SERV_TYPE" == "SECONDARY" ]]; then # SECONDARY
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
@@ -627,7 +627,7 @@ else
 	echo -e "Warning! Server type (PRIMARY/SECONDARY) undefined"
 	echo "local_validator=$local_validator"
 	echo "SERV_TYPE=$SERV_TYPE"
-	exit 0	
+	return	
 fi
 
 chmod 600 $KEYS/*.ssh
@@ -647,7 +647,7 @@ SSH "$SOL_BIN/solana address"
 remote_identity=$command_output
 if [ $command_exit_status -ne  0 ]; then
 	echo -e "$RED SSH connection not available  $CLEAR" 
-	exit 0
+	return
 fi
 
 if [ "$remote_identity" = "$IDENTITY" ]; then
@@ -656,7 +656,7 @@ else
     echo -e "$RED Warning! Servers identity are different $CLEAR"
 	echo "Current Identity = $IDENTITY"
 	echo "Remote Identity  = $remote_identity"
-	exit 0
+	return
 fi
 
 SSH "$SOL_BIN/solana-validator --ledger '$LEDGER' contact-info" # get remote validator info
@@ -664,7 +664,7 @@ remote_validator=$(echo "$command_output" | grep "Identity:" | awk '{print $2}')
 if [ -z "$remote_validator" ]; then
 	echo -e "$RED remote_validator is empty  $CLEAR"
 	echo "is remote server running?"	
-	exit 0
+	return
 fi
 SSH "$SOL_BIN/solana address -k $EMPTY_KEY"
 remote_empty=$command_output
@@ -679,7 +679,7 @@ elif [[ "$remote_validator" == "$remote_empty" ]]; then
 	LOG "remote server in Secondary"
 else
 	echo -e "$RED remote server unknown status  $CLEAR" 
-	exit 0
+	return
 fi
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
