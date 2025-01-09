@@ -1,10 +1,11 @@
 #!/bin/bash
-GUARD_VER=v1.6.1
+GUARD_VER=v1.6.2
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
 LOG_FILE=$HOME/guard.log
 SOLANA_SERVICE="$HOME/solana/solana.service"
+LEDGER="$HOME/solana/ledger"
 BEHIND_WARNING=false # 'false'- send telegramm INFO missage, when behind. 'true'-send ALERT message
 WARNING_FREQUENCY=12 # max frequency of warning messages (WARNING_FREQUENCY x 5) seconds
 BEHIND_OK_VAL=3 # behind, that seemed ordinary
@@ -21,7 +22,6 @@ configDir="$HOME/.config/solana"
 #======================================================
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\' | xargs)
 IDENTITY=$(solana address 2>/dev/null)
 if [ $? -ne 0 ]; then  
 	echo "Error! Can't run 'solana'"
@@ -47,7 +47,6 @@ if [ -f "$HOME/guard.cfg" ]; then
 	if [ -r "$HOME/guard.cfg" ]; then
     	source "$HOME/guard.cfg" # get settings
      	KEYS=$(echo "$KEYS" | tr -d '\r') # Удаление символа \r, если он есть
-		LEDGER=$(echo "$LEDGER" | tr -d '\r') # Удаление символа \r, если он есть
       	SOLANA_SERVICE=$(echo "$SOLANA_SERVICE" | tr -d '\r') # Удаление символа \r, если он есть
 	   	configDir=$(echo "$configDir" | tr -d '\r') # Удаление символа \r, если он есть
 	   	BOT_TOKEN=$(echo "$BOT_TOKEN" | tr -d '\r') # Удаление символа \r, если он есть
@@ -266,31 +265,6 @@ SSH(){
     	fi
   	fi
 	}
-
-echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR" | tee -a $LOG_FILE
-#source ~/sol_git/setup/check.sh
-GET_VOTING_IP
-echo "ledger path: [$LEDGER]"
-echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
-echo "current IP=$CUR_IP" | tee -a $LOG_FILE
-echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a $LOG_FILE
-echo -e "empty addr = $GRAY$EMPTY_ADDR $CLEAR" | tee -a $LOG_FILE
-if [[ -z "$rpc_index" ]]; then # rpc_index not defined
-	echo "rpc_index not defined in $LOG_FILE, set default value rpc_index=0"
-	rpc_index=0; # Устанавливаем значение по умолчанию
-fi
-echo " Helius rpc_index=$rpc_index, rpcURL list:"
-for rpcURL in "${RPC_LIST[@]}"; do
-	echo -e "$GRAY$rpcURL$CLEAR" | tee -a $LOG_FILE
-done
-rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
-if [ -z "$NAME" ]; then NAME=$(hostname); fi
-if [ $rpcURL1 = https://api.testnet.solana.com ]; then 
-NODE="test"
-elif [ $rpcURL1 = https://api.mainnet-beta.solana.com ]; then 
-NODE="main"
-fi
-echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
 
 health_counter=0
 behind_counter=0
@@ -595,6 +569,31 @@ SECONDARY_SERVER(){ ############################################################
  	#done
 	}
 
+echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR" | tee -a $LOG_FILE
+#source ~/sol_git/setup/check.sh
+GET_VOTING_IP
+echo "ledger path: [$LEDGER]"
+echo "voting  IP=$VOTING_IP" | tee -a $LOG_FILE
+echo "current IP=$CUR_IP" | tee -a $LOG_FILE
+echo -e "IDENTITY  = $GREEN$IDENTITY $CLEAR" | tee -a $LOG_FILE
+echo -e "empty addr = $GRAY$EMPTY_ADDR $CLEAR" | tee -a $LOG_FILE
+if [[ -z "$rpc_index" ]]; then # rpc_index not defined
+	echo "rpc_index not defined in $LOG_FILE, set default value rpc_index=0"
+	rpc_index=0; # Устанавливаем значение по умолчанию
+fi
+echo " Helius rpc_index=$rpc_index, rpcURL list:"
+for rpcURL in "${RPC_LIST[@]}"; do
+	echo -e "$GRAY$rpcURL$CLEAR" | tee -a $LOG_FILE
+done
+rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
+if [ -z "$NAME" ]; then NAME=$(hostname); fi
+if [ $rpcURL1 = https://api.testnet.solana.com ]; then 
+NODE="test"
+elif [ $rpcURL1 = https://api.mainnet-beta.solana.com ]; then 
+NODE="main"
+fi
+echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
+
 
 GET_VOTING_IP
 argument=$1 # read script argument
@@ -618,13 +617,13 @@ if [[ "$SERV_TYPE" == "PRIMARY" ]]; then # PRIMARY can't determine REMOTE_IP of 
 	fi
 	if [[ -z $REMOTE_IP ]]; then # if $REMOTE_IP empty
 		echo -e "Warning! Run guard on SECONDARY server first to get it's IP"
-		return
+		exit 0
 	fi
 elif [[ "$SERV_TYPE" == "SECONDARY" ]]; then # SECONDARY
 	REMOTE_IP=$VOTING_IP # it's true for SECONDARY
 else
 	echo -e "Warning! Server type (PRIMARY/SECONDARY) undefined"
-	return	
+	exit 0	
 fi
 
 chmod 600 $KEYS/*.ssh
@@ -655,6 +654,28 @@ else
 	echo "Remote Identity  = $remote_identity"
 	exit 0
 fi
+
+SSH "$SOL_BIN/solana-validator --ledger '$LEDGER' contact-info" # get remote validator info
+remote_validator=$(echo "$command_output" | grep "Identity:" | awk '{print $2}') # get remote voting identity
+if [ -z "$remote_validator" ]; then
+	echo -e "$RED remote_validator is empty  $CLEAR"
+	echo "is remote server running?"	
+	exit 0
+fi
+SSH "$SOL_BIN/solana address -k $EMPTY_KEY"
+remote_empty=$command_output
+
+if [[ "$remote_validator" == "$IDENTITY" ]]; then
+	LOG "remote server in VOTING mode"
+elif [[ "$remote_validator" == "$remote_empty" ]]; then
+	LOG "remote server in NO_VOTING mode"
+else
+	echo -e "$RED remote server unknown status  $CLEAR" 
+	# exit 0
+fi
+LOG "remote_identity=$remote_identity"
+LOG "remote_validator=$remote_validator"
+LOG "remote_empty=$remote_empty"
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
 SSH "echo '$CUR_IP' > $HOME/remote_ip" # send 'current IP' to remote server
