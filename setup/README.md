@@ -113,16 +113,6 @@ mount_keys | umount_keys | shred_keys
 
 [Jito](https://github.com/Hohlas/solana/tree/main/Jito#readme)
 
-<details>
-<summary>Jito-Relayer Setup</summary>
-
-```bash
-curl https://raw.githubusercontent.com/Hohlas/solana/main/Jito/jito_relayer_setup.sh > ~/jito_relayer_setup.sh
-chmod +x ~/jito_relayer_setup.sh
-~/jito_relayer_setup.sh
-```
-</details>
-
 [Grafana](https://github.com/Hohlas/solana/blob/main/telegraf/readme.md)
 
 ## Snapshot Finder
