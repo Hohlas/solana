@@ -135,6 +135,67 @@ pip3 install -r requirements.txt
 
 </details>
 
+<details>
+<summary>Project X</summary>
+
+```bash
+# neccesary software install
+sudo apt update && sudo apt upgrade -y
+sudo apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
+# source $HOME/.cargo/env
+```
+```bash
+# Clone relayer repo and build binary
+cd $HOME
+git clone https://github.com/projectxsol/lite-relayer.git
+cd lite-relayer
+git fetch
+git submodule update --init --recursive
+cargo build --release --bin transaction-relayer
+```
+```bash
+# X_BLOCK_ENGINE=http://jp.projectx.run:11227 # JP location
+X_BLOCK_ENGINE=http://de.projectx.run:11227 # EU location
+echo $X_BLOCK_ENGINE
+```
+```bash
+# create relayer.service
+tee $HOME/relayer.service > /dev/null <<EOF
+[Unit]
+Description=X Transaction Relayer
+Requires=network-online.target
+After=network-online.target
+[Service]
+User=$USER
+Type=simple
+ExecStart=$HOME/lite-relayer/target/release/transaction-relayer \
+--keypair-path $HOME/solana/relayer-keypair.json \
+--signing-key-pem-path $HOME/solana/private.pem \
+--verifying-key-pem-path $HOME/solana/public.pem \
+--webserver-bind-addr 127.0.0.1:5050 \
+--grpc-bind-ip 127.0.0.1 \
+--x-block-engine-url $X_BLOCK_ENGINE
+RestartSec=10
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo mv $HOME/relayer.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable relayer.service
+sudo systemctl restart relayer
+sudo ufw allow 11228,11229/udp
+journalctl -u relayer -f
+```
+```bash
+# switch to relayer without restart
+solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://127.0.0.1:11226 
+```
+</details>
+
+
 ---
 
 [HOHLA.MAIN](https://metrics.stakeconomy.com/d/f2b2HcaGz/solana-community-validator-dashboard?orgId=1&refresh=1m&var-pubkey=AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd&var-server=HOHLA&var-inter=1m&var-netif=All&from=now-6h&to=now) | 
