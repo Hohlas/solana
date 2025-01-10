@@ -687,7 +687,7 @@ else
 	return
 fi
 
-echo -e "$GREEN remote server checkup successfully complete $CLEAR" | tee -a $LOG_FILE
+echo -e "$GREEN Remote Server checkup successful $CLEAR" | tee -a $LOG_FILE
 LOG " remote identity  = $remote_identity"
 LOG " remote validator = $remote_validator"
 LOG " remote empty_adr = $remote_empty"
