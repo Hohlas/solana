@@ -138,6 +138,8 @@ pip3 install -r requirements.txt
 <details>
 <summary>Project X</summary>
 
+[projectx.run](https://projectx.run) | [validators list](https://projectx.run/validators)
+
 ```bash
 # neccesary software install
 sudo apt update && sudo apt upgrade -y
