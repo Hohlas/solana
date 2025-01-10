@@ -646,14 +646,15 @@ IdentityFile $KEYS/*.ssh
 # check remote server SSH connection (by reading Identity addr)
 SSH "$SOL_BIN/solana address"
 remote_identity=$command_output
-if [ $command_exit_status -ne  0 ]; then
-	echo -e "$RED SSH connection not available  $CLEAR" 
+if [ $command_exit_status -eq  0 ]; then
+	LOG "SSH connection succesful"	
+else
+	echo -e "$RED SSH connection with remote server not available  $CLEAR" 
 	return
 fi
 
-if [ "$remote_identity" = "$IDENTITY" ]; then
-	echo -e "$GREEN SSH connection succesful $CLEAR" | tee -a $LOG_FILE
-else
+# compare servers identities
+if [ "$remote_identity" != "$IDENTITY" ]; then
     echo -e "$RED Warning! Servers identities are different $CLEAR"
 	echo "Current Identity = $IDENTITY"
 	echo "Remote Identity  = $remote_identity"
