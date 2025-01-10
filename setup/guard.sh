@@ -647,7 +647,7 @@ IdentityFile $KEYS/*.ssh
 SSH "$SOL_BIN/solana address"
 remote_identity=$command_output
 if [ $command_exit_status -eq  0 ]; then
-	LOG "SSH connection succesful"	
+	echo " SSH connection succesful "	
 else
 	echo -e "$RED SSH connection with remote server not available  $CLEAR" 
 	return
@@ -689,11 +689,11 @@ else
 fi
 
 echo -e "$GREEN Remote Server checkup successful $CLEAR" | tee -a $LOG_FILE
-LOG " remote identity  = $remote_identity"
-LOG " remote validator = $remote_validator"
-LOG " remote empty_adr = $remote_empty"
-LOG " remote IP = $REMOTE_IP"
-LOG " remote server is $REMOTE_SERVER_STATUS"
+echo " remote identity  = $remote_identity"
+echo " remote validator = $remote_validator"
+echo " remote empty_adr = $remote_empty"
+echo " remote IP = $REMOTE_IP"
+echo " remote server is $REMOTE_SERVER_STATUS"
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
 SSH "echo '$CUR_IP' > $HOME/remote_ip" # send 'current IP' to remote server
