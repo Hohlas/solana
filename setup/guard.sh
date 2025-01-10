@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.6.2
+GUARD_VER=v1.6.3
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -571,7 +571,8 @@ SECONDARY_SERVER(){ ############################################################
 
 ##########################################################################
 
-echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR" | tee -a $LOG_FILE
+echo ""; echo "";
+echo -e " == SOLANA GUARD $BLUE$GUARD_VER $CLEAR ==  " | tee -a $LOG_FILE
 #source ~/sol_git/setup/check.sh
 GET_VOTING_IP
 echo "ledger path: [$LEDGER]"
@@ -642,7 +643,7 @@ Port $PORT
 IdentityFile $KEYS/*.ssh
 " > ~/.ssh/config
 
-# check SSH connection to remote server
+# check remote server SSH connection (by reading Identity addr)
 SSH "$SOL_BIN/solana address"
 remote_identity=$command_output
 if [ $command_exit_status -ne  0 ]; then
@@ -653,34 +654,45 @@ fi
 if [ "$remote_identity" = "$IDENTITY" ]; then
 	echo -e "$GREEN SSH connection succesful $CLEAR" | tee -a $LOG_FILE
 else
-    echo -e "$RED Warning! Servers identity are different $CLEAR"
+    echo -e "$RED Warning! Servers identities are different $CLEAR"
 	echo "Current Identity = $IDENTITY"
 	echo "Remote Identity  = $remote_identity"
 	return
 fi
 
+# check remote server validator addr
 SSH "$SOL_BIN/solana-validator --ledger '$LEDGER' contact-info" # get remote validator info
 remote_validator=$(echo "$command_output" | grep "Identity:" | awk '{print $2}') # get remote voting identity
 if [ -z "$remote_validator" ]; then
-	echo -e "$RED remote_validator is empty  $CLEAR"
+	echo -e "$RED remote_validator is missing  $CLEAR"
 	echo "is remote server running?"	
 	return
 fi
+
+# check remote empty addr
 SSH "$SOL_BIN/solana address -k $EMPTY_KEY"
 remote_empty=$command_output
+if [ -z "$remote_empty" ]; then
+	echo -e "$RED remote_empty_key is missing  $CLEAR"	
+	return
+fi
 
-LOG "remote identity  = $remote_identity"
-LOG "remote validator = $remote_validator"
-LOG "remote empty_adr = $remote_empty"
-
+# check remote status
 if [[ "$remote_validator" == "$IDENTITY" ]]; then
-	LOG "remote server is Primary"
+	REMOTE_SERVER_STATUS="Primary"
 elif [[ "$remote_validator" == "$remote_empty" ]]; then
-	LOG "remote server is Secondary"
+	REMOTE_SERVER_STATUS="Secondary"
 else
 	echo -e "$RED remote server unknown status  $CLEAR" 
 	return
 fi
+
+echo -e "$GREEN remote server checkup successfully complete $CLEAR" | tee -a $LOG_FILE
+LOG " remote identity  = $remote_identity"
+LOG " remote validator = $remote_validator"
+LOG " remote empty_adr = $remote_empty"
+LOG " remote IP = $REMOTE_IP"
+LOG " remote server is $REMOTE_SERVER_STATUS"
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
 SSH "echo '$CUR_IP' > $HOME/remote_ip" # send 'current IP' to remote server
