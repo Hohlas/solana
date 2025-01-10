@@ -692,8 +692,8 @@ echo -e "$GREEN Remote Server checkup successful $CLEAR" | tee -a $LOG_FILE
 echo " remote identity  = $remote_identity"
 echo " remote validator = $remote_validator"
 echo " remote empty_adr = $remote_empty"
-echo " remote IP = $REMOTE_IP"
-echo " remote server is $REMOTE_SERVER_STATUS"
+echo " remote server IP = $REMOTE_IP"
+echo " remote server    = $REMOTE_SERVER_STATUS"
 
 echo '0' > $HOME/remote_behind # update local file for stop alarm next 600 seconds
 SSH "echo '$CUR_IP' > $HOME/remote_ip" # send 'current IP' to remote server
