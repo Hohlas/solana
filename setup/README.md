@@ -197,6 +197,29 @@ solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://
 ```
 </details>
 
+<details>
+<summary>UFW</summary>
+
+```bash
+ufw status
+iptables -nvL  # проверить состояние конфигурации
+nft list ruleset
+```
+```bash
+ufw allow 2010
+ufw allow 8000:8020/udp # UDP для Gossip
+ufw allow 8000:8020/tcp # Gossip и RPC порты
+# для релеера
+ufw allow 10000:10007/udp
+ufw allow 11226/tcp
+ufw allow 11227:11229/udp
+ufw enable # Включение ufw
+```
+```bash
+tail -f ~/solana/solana.log | grep "timed out" # check logs for connection loss
+```
+
+</details>
 
 ---
 
