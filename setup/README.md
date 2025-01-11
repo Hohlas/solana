@@ -205,7 +205,8 @@ ufw status
 ```
 ```bash
 ufw allow 2010 # SSH
-ufw allow 8899 # RPC
+ufw allow 8899 # RPC over HTTP
+ufw allow 8900 # RPC over Websockets
 ufw allow 8000:8020/udp # Gossip
 ufw allow 8000:8020/tcp # Gossip & RPC
 # relayer
