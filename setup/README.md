@@ -204,14 +204,15 @@ solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://
 ufw status
 ```
 ```bash
-ufw allow 2010
-ufw allow 8000:8020/udp # UDP для Gossip
-ufw allow 8000:8020/tcp # Gossip и RPC порты
-# для релеера
+ufw allow 2010 # SSH
+ufw allow 8899 # RPC
+ufw allow 8000:8020/udp # Gossip
+ufw allow 8000:8020/tcp # Gossip & RPC
+# relayer
 ufw allow 10000:10007/udp
 ufw allow 11226/tcp
 ufw allow 11227:11229/udp
-ufw enable # Включение ufw
+ufw enable 
 ```
 ```bash
 iptables -nvL  # проверить состояние конфигурации
