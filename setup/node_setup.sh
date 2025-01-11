@@ -25,9 +25,9 @@ echo -e '\n\e[42m set CPU  perfomance mode \e[0m\n'
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
 
 echo -e '\n\e[42m change swappiness \e[0m\n'
-sudo sysctl vm.swappiness=10  # change current SWAPPINESS
-echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf # change after reboot SWAPPINESS
-sudo sysctl -f # обновить параметры из файла настроек
+sysctl vm.swappiness=1  # change current SWAPPINESS
+echo "vm.swappiness=1" | sudo tee -a /etc/sysctl.conf # change after reboot SWAPPINESS
+sysctl -f # обновить параметры из файла настроек
 
 echo -e '\n\e[42m GIT clone \e[0m\n'
 if [ -d ~/sol_git ]; then 
