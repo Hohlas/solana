@@ -202,8 +202,6 @@ solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://
 
 ```bash
 ufw status
-iptables -nvL  # проверить состояние конфигурации
-nft list ruleset
 ```
 ```bash
 ufw allow 2010
@@ -216,6 +214,8 @@ ufw allow 11227:11229/udp
 ufw enable # Включение ufw
 ```
 ```bash
+iptables -nvL  # проверить состояние конфигурации
+nft list ruleset
 tail -f ~/solana/solana.log | grep "timed out" # check logs for connection loss
 ```
 
