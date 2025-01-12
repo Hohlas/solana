@@ -205,10 +205,12 @@ solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://
 ufw status
 ```
 ```bash
+ufw allow from 127.0.0.1
 ufw allow 2010 # SSH
 ufw allow 8899 # RPC over HTTP
 ufw allow 8900 # RPC over Websockets
-ufw allow 8000:8030 # Gossip & RPC
+ufw allow 8000:8030/udp
+ufw allow 8000:8030/tcp
 # relayer
 ufw allow 10000:10007/udp
 ufw allow 11226/tcp
