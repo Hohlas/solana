@@ -157,9 +157,10 @@ git fetch
 git submodule update --init --recursive
 cargo build --release --bin transaction-relayer
 ```
+(block-engines)[https://docs.projectx.run/how-to-connect/block-engines]
 ```bash
-# X_BLOCK_ENGINE=http://jp.projectx.run:11227 # JP location
-X_BLOCK_ENGINE=http://de.projectx.run:11227 # EU location
+X_BLOCK_ENGINE=http://de.projectx.run:11227
+X_BLOCK_ENGINE=http://de.block-engine.com:11227
 echo $X_BLOCK_ENGINE
 ```
 ```bash
