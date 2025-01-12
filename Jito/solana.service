@@ -19,6 +19,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --known-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
 --known-validator CakcnaRDHka2gXyfbEd2d3xsvkJkqsLw2akB3zsN1D2S \
 --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
+--only-known-rpc \
 --wal-recovery-mode skip_any_corrupted_record \
 --minimal-snapshot-download-speed 41943040 \
 --identity /root/solana/empty-validator.json \
@@ -39,8 +40,6 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-full-snapshots-to-retain 1 \
 --maximum-incremental-snapshots-to-retain 4 \
 --maximum-local-snapshot-age 5000 \
-#--accounts-hash-interval-slots 5000 \
-#--no-skip-initial-accounts-db-clean \
 --block-verification-method unified-scheduler \
 --block-production-method central-scheduler \
 --private-rpc \
@@ -51,8 +50,8 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
 --merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
 --commission-bps 900 \
---relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 \
+--relayer-url http://127.0.0.1:11226 \
 --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf \
---shred-receiver-address 145.40.93.84:1002
+--shred-receiver-address 64.130.50.14:1002
 [Install]
 WantedBy=multi-user.target
