@@ -141,6 +141,15 @@ pip3 install -r requirements.txt
 [projectx.run](https://projectx.run) | [validators list](https://projectx.run/validators)
 
 ```bash
+# switch on ProjectX relayer
+solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://127.0.0.1:11226 
+```
+```bash
+# switch on Jito public relayer
+solana-validator -l ~/solana/ledger set-relayer-config --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 
+```
+
+```bash
 # neccesary software install
 sudo apt update && sudo apt upgrade -y
 sudo apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
@@ -158,14 +167,7 @@ git submodule update --init --recursive
 cargo build --release --bin transaction-relayer
 ```
 [block-engines](https://docs.projectx.run/how-to-connect/block-engines)
-```bash
-# switch on ProjectX relayer
-solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://127.0.0.1:11226 
-```
-```bash
-# switch on Jito public relayer
-solana-validator -l ~/solana/ledger set-relayer-config --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 
-```
+
 ```bash
 X_BLOCK_ENGINE=http://de.projectx.run:11227
 X_BLOCK_ENGINE=http://de.block-engine.com:11227
