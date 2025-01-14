@@ -212,12 +212,12 @@ journalctl -u relayer -f
 ufw status
 ```
 ```bash
-ufw allow from 127.0.0.1
+
 ufw allow 2010 # SSH
 ufw allow 8899 # RPC over HTTP
 ufw allow 8900 # RPC over Websockets
-ufw allow 8000:8030/udp
-ufw allow 8000:8030/tcp
+ufw allow 8000:8030/udp # Gossip
+ufw allow 8000:8030/tcp # Gossip & RPC
 # relayer
 ufw allow 10000:10007/udp
 ufw allow 11226/tcp
@@ -225,6 +225,7 @@ ufw allow 11227:11229/udp
 ufw enable 
 ```
 ```bash
+ufw status
 iptables -nvL  # проверить состояние конфигурации
 nft list ruleset
 tail -f ~/solana/solana.log | grep "timed out" # check logs for connection loss
