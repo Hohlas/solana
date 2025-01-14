@@ -645,8 +645,8 @@ IdentityFile $KEYS/*.ssh
 
 # check remote server SSH connection (by reading Identity addr)
 SSH "$SOL_BIN/solana address"
-remote_identity=$command_output
 if [ $command_exit_status -eq  0 ]; then
+	remote_identity=$command_output
 	echo " SSH connection succesful "	
 else
 	echo -e "$RED SSH connection with remote server not available  $CLEAR" 
