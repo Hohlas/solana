@@ -40,6 +40,12 @@ net.ipv4.tcp_wmem = 4096 87380 134217728
 " > /etc/sysctl.d/22-solana-turbo.conf
 sysctl -p /etc/sysctl.d/22-solana-turbo.conf
 ```
+```bash
+# read current
+sysctl net.ipv4.tcp_rmem 
+sysctl net.ipv4.tcp_fin_timeout
+sysctl net.ipv4.tcp_max_syn_backlog
+```
 </details>
 
 <details>
