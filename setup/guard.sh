@@ -68,6 +68,11 @@ if [[ -z "$BOT_TOKEN" ]]; then
 	echo -e "Warning! $RED Telegram BOT_TOKEN is not defined in $HOME/guard.cfg ! $CLEAR"
 fi
 # solana-validator -l /root/solana/ledger/ contact-info
+if ! command -v bc &> /dev/null; then
+    echo "Warning! 'bc' not installed. Please run 'apt install bc'"
+    return 
+fi
+
 
 TIME() {
 	TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
