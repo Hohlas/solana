@@ -34,7 +34,8 @@ if [ -d $REPO_DIR ]; then
   cd $REPO_DIR; 
   git fetch origin; 
   git reset --hard origin/master # сбросить локальную ветку до последнего коммита из git
-else 
+else
+  cd
   git clone $REPO_URL --recurse-submodules $REPO_DIR
   cd $REPO_DIR
 fi
