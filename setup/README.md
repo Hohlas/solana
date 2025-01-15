@@ -25,7 +25,10 @@ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check
 ```bash
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
 ```
-
+```bash
+ulimit -n 2000000  # set ulimit
+ulimit -n # check ulimit 
+```
 </details>
 
 <details>
