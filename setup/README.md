@@ -212,17 +212,27 @@ journalctl -u relayer -f
 ufw status
 ```
 ```bash
-
+ufw reset 
 ufw allow 2010 # SSH
-ufw allow 8899 # RPC over HTTP
-ufw allow 8900 # RPC over Websockets
-ufw allow 8000:8030/udp # Gossip
-ufw allow 8000:8030/tcp # Gossip & RPC
+ufw allow 8000/tcp  # RPC
+ufw allow 8899/tcp  # JSON RPC
+ufw allow 8900/tcp  # WebSocket
+ufw allow 8001/tcp  # Gossip
+ufw allow 8000:8030/udp
 # relayer
 ufw allow 10000:10007/udp
 ufw allow 11226/tcp
 ufw allow 11227:11229/udp
-ufw enable 
+ufw enable
+```
+```bash
+ufw limit 8000:8001/tcp
+ufw limit 8899:8900/tcp
+ufw limit 8000:8030/udp
+# relayer
+ufw limit 10000:10007/udp
+ufw limit 11226/tcp
+ufw limit 11227:11229/udp
 ```
 ```bash
 ufw status
