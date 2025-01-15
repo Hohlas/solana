@@ -44,7 +44,7 @@ sysctl -p /etc/sysctl.d/22-solana-turbo.conf
 # read current
 sysctl net.ipv4.tcp_rmem 
 sysctl net.ipv4.tcp_fin_timeout
-sysctl net.ipv4.tcp_max_syn_backlog
+sysctl net.core.netdev_max_backlog
 ```
 </details>
 
