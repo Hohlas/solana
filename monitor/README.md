@@ -5,13 +5,9 @@
 ```bash
 apt update && apt upgrade && apt install software-properties-common -y
 add-apt-repository -y ppa:deadsnakes/ppa
-apt install python3.11 -y 
+apt install python3.11 python3-pip -y 
 ```
 ```bash
-apt install  
-```
-```bash
-apt install python3-pip  
 pip install openpyxl
 ```
 ```bash
