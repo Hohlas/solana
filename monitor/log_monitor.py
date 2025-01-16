@@ -24,7 +24,7 @@ def extract_metric(log_file_path, metric):
 
 def main():
     # base_path = r'C:\Users\hohla\solana'  # Замените на нужный путь для Windows
-    base_path = '/root/sol_git/monitor'  # Используйте этот путь для Ubuntu
+    base_path = '/root/log_monitor'  # Используйте этот путь для Ubuntu
 
     log_file_path = os.path.join(base_path, 'solana.log')  # Путь к лог-файлу
     metrics_file_path = os.path.join(base_path, 'metrics.txt')  # Путь к файлу с метриками
