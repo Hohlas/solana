@@ -48,6 +48,7 @@ cp ~/sol_git/setup/solana.logrotate /etc/logrotate.d/solana.logrotate
 cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
+echo "DefaultLimitNOFILE=1000000" | sudo tee -a /etc/systemd/system.conf
 
 echo -e '\n\e[42m Set relayer \e[0m\n'
 mkdir -p $HOME/lite-relayer/target/release
