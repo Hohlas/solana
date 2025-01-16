@@ -235,8 +235,8 @@ ufw status
 ufw reset 
 ufw allow 2010 # SSH
 ufw allow 8000/tcp  # RPC
-ufw allow 8899/tcp  # JSON RPC
-ufw allow 8900/tcp  # WebSocket
+ufw allow 8899/tcp  # JSON RPC over HTTP
+ufw allow 8900/tcp  # JSON RPC over Websockets
 ufw allow 8001/tcp  # Gossip
 ufw allow 8005:8020/udp
 # relayer
