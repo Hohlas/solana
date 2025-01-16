@@ -21,7 +21,7 @@ cd $HOME/log_monitor
 
 ```bash
 # cut log from time1 to time2 
-awk '/T06:00:00/,/T12:00:00/' ~/solana/solana.log > $HOME/log_monitor/solana.log
+awk '/T06:00:00/,/T12:00:00/' ~/solana/solana.log > ~/log_monitor/solana.log
 ```
 ```bash
 python3 $HOME/log_monitor/log_monitor.py
