@@ -18,6 +18,7 @@ pip install openpyxl
 mkdir -p $HOME/log_monitor
 curl -o $HOME/log_monitor/log_monitor.py https://raw.githubusercontent.com/Hohlas/solana/main/monitor/log_monitor.py
 curl -o $HOME/log_monitor/metrics.txt https://raw.githubusercontent.com/Hohlas/solana/main/monitor/metrics.txt
+cd $HOME/log_monitor
 ```
 </details>
 
