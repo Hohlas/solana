@@ -6,7 +6,7 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-LimitNOFILE=2048000
+LimitNOFILE=1000000
 Environment="SOLANA_METRICS_CONFIG=host=https://metrics.solana.com:8086,db=mainnet-beta,u=mainnet-beta_write,p=password"
 ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator \
 --entrypoint entrypoint.mainnet-beta.solana.com:8001 \
@@ -21,7 +21,6 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
 --only-known-rpc \
 --wal-recovery-mode skip_any_corrupted_record \
---minimal-snapshot-download-speed 41943040 \
 --identity /root/solana/empty-validator.json \
 --authorized-voter /root/solana/validator-keypair.json \
 --vote-account /root/solana/vote.json \
@@ -41,6 +40,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-full-snapshots-to-retain 1 \
 --maximum-incremental-snapshots-to-retain 4 \
 --maximum-local-snapshot-age 5000 \
+--minimal-snapshot-download-speed 41943040 \
 --block-verification-method unified-scheduler \
 --block-production-method central-scheduler \
 --private-rpc \
