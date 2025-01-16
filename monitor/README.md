@@ -26,4 +26,5 @@ awk '/T06:00:00/,/T12:00:00/' ~/solana/solana.log > ~/log_monitor/solana.log
 ```bash
 python3 $HOME/log_monitor/log_monitor.py
 ```
+![2025-01-16_10-33-20](https://github.com/user-attachments/assets/de8d498a-7b49-4bf0-8290-75c3e8ee3b9c)
 
