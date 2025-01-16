@@ -65,7 +65,7 @@ disk-stats - Статистика операций ввода-вывода на 
 
 </details>
 
-Открыть в екселе, вставить график
+Открыть в екселе, вставить график  
 ![2025-01-16_17-33-46](https://github.com/user-attachments/assets/c98982bf-8dbb-4867-9e22-831292eeef7c)
 
 ![2025-01-16_10-33-20](https://github.com/user-attachments/assets/de8d498a-7b49-4bf0-8290-75c3e8ee3b9c)
