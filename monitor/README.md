@@ -1,7 +1,7 @@
 # LOG Monitor
 <details>
-  
 <summary>python install</summary>
+  
 ```bash
 apt update && apt upgrade -y
 add-apt-repository -y ppa:deadsnakes/ppa
