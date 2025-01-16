@@ -1,7 +1,7 @@
 # LOG Monitor
 Визуализатор метрик лог файла соланы. Формирует таблицы значений из лог файла по заданным метрикам для построения графиков.
 <details>
-<summary>python install</summary>
+<summary>установка</summary>
   
 ```bash
 apt update && apt upgrade && apt install software-properties-common -y
@@ -21,8 +21,8 @@ pip install openpyxl
 
 ![2025-01-16_15-58-32](https://github.com/user-attachments/assets/42677938-2786-4b3c-99e3-4f02caf62443)
 
-metrics.txt - список необходимых метрик  
-result.xlsx - полученный файл с таблицами для построения графиков
+metrics.txt - Список необходимых метрик. Отредактировать по необходимости.  
+result.xlsx - Полученный файл с таблицами для построения графиков.
 
 </details>
 
@@ -38,7 +38,7 @@ source myenv/bin/activate # Активировать виртуальное ок
 python3 $HOME/log_monitor/log_monitor.py
 ```
 <details>
-<summary>some metrics help</summary>
+<summary>описание метрик</summary>
   
 num_errors_cross_beam_recv_timeout - количество таймаутов при получении данных через сеть. Ненулевые значения указывают на проблемы с получением данных из сети (сервер часто теряет соединение).
 
