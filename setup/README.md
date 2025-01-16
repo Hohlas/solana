@@ -238,7 +238,7 @@ ufw allow 8000/tcp  # RPC
 ufw allow 8899/tcp  # JSON RPC
 ufw allow 8900/tcp  # WebSocket
 ufw allow 8001/tcp  # Gossip
-ufw allow 8000:8030/udp
+ufw allow 8005:8020/udp
 # relayer
 ufw allow 10000:10007/udp
 ufw allow 11226/tcp
@@ -248,7 +248,7 @@ ufw enable
 ```bash
 ufw limit 8000:8001/tcp
 ufw limit 8899:8900/tcp
-ufw limit 8000:8030/udp
+ufw limit 8005:8020/udp
 # relayer
 ufw limit 10000:10007/udp
 ufw limit 11226/tcp
