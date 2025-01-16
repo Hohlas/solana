@@ -21,7 +21,7 @@ pip install openpyxl
 
 ```
 
-![2025-01-16_15-58-32](https://github.com/user-attachments/assets/42677938-2786-4b3c-99e3-4f02caf62443)
+![2025-01-16_17-57-11](https://github.com/user-attachments/assets/260e0ab1-3807-491e-bc12-9144bbf68108)
 
 metrics.txt - Список необходимых метрик. Отредактировать по необходимости.  
 result.xlsx - Полученный файл с таблицами для построения графиков.
