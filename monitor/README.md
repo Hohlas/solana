@@ -3,9 +3,9 @@
 <summary>python install</summary>
   
 ```bash
-apt update && apt upgrade -y
+apt update && apt upgrade && apt install software-properties-common -y
 add-apt-repository -y ppa:deadsnakes/ppa
-apt install python3.11 software-properties-common -y 
+apt install python3.11 -y 
 ```
 ```bash
 apt install  
