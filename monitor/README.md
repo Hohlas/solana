@@ -1,10 +1,20 @@
+# LOG Monitor
+<details>
+<summary>rust setup</summary>
 ```bash
-apt update && apt upgrade && apt install -y software-properties-common
+apt update && apt upgrade -y
+add-apt-repository -y ppa:deadsnakes/ppa
+apt install python3.11 software-properties-common -y 
 ```
 ```bash
-sudo add-apt-repository -y ppa:deadsnakes/ppa
-sudo apt install -y python3.11
+apt install  
 ```
+```bash
+apt install python3-pip  
+pip install openpyxl
+```
+</details>
+
 ```bash
 python3 /root/solana_monitor.py
 ```
