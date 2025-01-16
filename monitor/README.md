@@ -9,13 +9,14 @@ add-apt-repository -y ppa:deadsnakes/ppa
 apt install python3.11 python3-pip -y 
 ```
 ```bash
-pip install openpyxl
-```
-```bash
 mkdir -p $HOME/log_monitor
+cd $HOME/log_monitor
 curl -o $HOME/log_monitor/log_monitor.py https://raw.githubusercontent.com/Hohlas/solana/main/monitor/log_monitor.py
 curl -o $HOME/log_monitor/metrics.txt https://raw.githubusercontent.com/Hohlas/solana/main/monitor/metrics.txt
-cd $HOME/log_monitor
+python3 -m venv myenv # Создать виртуальное окружение
+source myenv/bin/activate # Активировать виртуальное окружение
+pip install openpyxl
+
 ```
 
 ![2025-01-16_15-58-32](https://github.com/user-attachments/assets/42677938-2786-4b3c-99e3-4f02caf62443)
@@ -31,6 +32,8 @@ result.xlsx - полученный файл с таблицами для пос�
 awk '/T06:00:00/,/T12:00:00/' ~/solana/solana.log > ~/log_monitor/solana.log
 ```
 ```bash
+cd $HOME/log_monitor
+source myenv/bin/activate # Активировать виртуальное окружение
 python3 $HOME/log_monitor/log_monitor.py
 ```
 <details>
