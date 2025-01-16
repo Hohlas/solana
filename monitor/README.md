@@ -32,6 +32,7 @@ result.xlsx - полученный файл с таблицами для пос�
 awk '/T06:00:00/,/T12:00:00/' ~/solana/solana.log > ~/log_monitor/solana.log
 ```
 ```bash
+# Запуск скрипта log_monitor.py
 cd $HOME/log_monitor
 source myenv/bin/activate # Активировать виртуальное окружение
 python3 $HOME/log_monitor/log_monitor.py
