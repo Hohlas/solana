@@ -23,12 +23,11 @@ def extract_metric(log_file_path, metric):
     return data
 
 def main():
-    # base_path = r'C:\Users\hohla\solana'  # Замените на нужный путь для Windows
-    base_path = '/root/log_monitor'  # Используйте этот путь для Ubuntu
+    base_path = os.path.dirname(os.path.abspath(__file__))  # Относительный путь
 
     log_file_path = os.path.join(base_path, 'solana.log')  # Путь к лог-файлу
     metrics_file_path = os.path.join(base_path, 'metrics.txt')  # Путь к файлу с метриками
-    output_excel_path = os.path.join(base_path, 'result.xlsx')  # Путь к выходному Excel файлу
+    output_excel_path = os.path.join(base_path, 'metrics.xlsx')  # Путь к выходному Excel файлу
 
     # Чтение списка метрик из файла
     with open(metrics_file_path, 'r') as metrics_file:
