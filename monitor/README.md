@@ -16,6 +16,12 @@ curl -o $HOME/log_monitor/log_monitor.py https://raw.githubusercontent.com/Hohla
 curl -o $HOME/log_monitor/metrics.txt https://raw.githubusercontent.com/Hohlas/solana/main/monitor/metrics.txt
 cd $HOME/log_monitor
 ```
+
+![2025-01-16_15-58-32](https://github.com/user-attachments/assets/42677938-2786-4b3c-99e3-4f02caf62443)
+metrics.txt - список необходимых метрик
+solana.log - лог файла для анализа
+result.xlsx - полученный файл с таблицами для построения графиков
+
 </details>
 
 
