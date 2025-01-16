@@ -4,7 +4,9 @@
 
 [Jito setup](https://github.com/Hohlas/solana/tree/main/Jito)
 
-[guard](setup/guard_help.md)
+[GUARD](setup/guard_help.md)
+
+[LOG Monitor](monitor/README.md)
 
 [stat](https://github.com/Hohlas/ubuntu/tree/main/test#readme)
 
