@@ -252,6 +252,16 @@ iptables -nvL  # проверить состояние конфигурации
 nft list ruleset
 tail -f ~/solana/solana.log | grep "timed out" # check logs for connection loss
 ```
+```bash
+iptables -S # разрешать входящие, исходящие и транзитные одной командой
+iptables -P INPUT ACCEPT   # Разрешим все входящие,
+iptables -P FORWARD ACCEPT # перенаправляющие и
+iptables -P OUTPUT ACCEPT  # исходящие соединения
+iptables -F            # очистить 
+iptables -t nat -F     # правила 
+iptables -t mangle -F  # во всех таблицах
+iptables -X # Удаляем все цепочки, которые не используются
+```
 
 </details>
 
