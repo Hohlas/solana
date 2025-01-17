@@ -31,33 +31,33 @@ ulimit -n # check ulimit
 ```
 ```bash
 echo "
-net.ipv4.tcp_fin_timeout = 30
-net.core.netdev_max_backlog = 50000
-net.core.optmem_max = 20480
-
-net.ipv4.tcp_rmem = 4096 87380 134217728
-net.ipv4.tcp_wmem = 4096 87380 134217728
-" > /etc/sysctl.d/22-solana-turbo.conf
-sysctl -p /etc/sysctl.d/22-solana-turbo.conf
-```
-```bash
-# read current
-sysctl net.ipv4.tcp_rmem 
-sysctl net.ipv4.tcp_fin_timeout
-sysctl net.core.netdev_max_backlog
-```
-```bash
-echo "
 net.ipv4.tcp_fin_timeout=30
 net.core.netdev_max_backlog=50000
 net.core.optmem_max=20480
 
 net.ipv4.tcp_rmem=4096 87380 134217728
 net.ipv4.tcp_wmem=4096 87380 134217728
-" > /etc/sysctl.d/22-solana-turbo.conf
+" >> /etc/sysctl.d/22-solana-turbo.conf
 sysctl -p /etc/sysctl.d/22-solana-turbo.conf
 ```
-
+```bash
+# read turbo
+sysctl net.ipv4.tcp_fin_timeout
+sysctl net.core.netdev_max_backlog
+sysctl net.core.optmem_max
+sysctl net.ipv4.tcp_rmem
+sysctl net.ipv4.tcp_wmem
+```
+```bash
+# read standart
+sysctl net.core.rmem_default
+sysctl net.core.rmem_max
+sysctl net.core.wmem_default
+sysctl net.core.wmem_max
+sysctl vm.max_map_count
+sysctl fs.nr_open
+sysctl ulimit
+```
 </details>
 
 <details>
