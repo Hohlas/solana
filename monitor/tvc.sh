@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# Файл с валидаторами
-VALIDATORS_FILE=~/validators.txt
-# Файл для записи результатов
-OUTPUT_FILE=~/TVC.csv
+
+VALIDATORS_FILE=validators.txt # Файл с валидаторами
+OUTPUT_FILE=TVC.csv # Файл для записи результатов
 
 # Проверка на существование файла
 if [ ! -f "$OUTPUT_FILE" ]; then
