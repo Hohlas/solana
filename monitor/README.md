@@ -70,3 +70,12 @@ disk-stats - Статистика операций ввода-вывода на 
 Открыть в екселе metrics.xlsx, вставить графики на листах с метриками  
 ![2025-01-16_17-33-46](https://github.com/user-attachments/assets/c98982bf-8dbb-4867-9e22-831292eeef7c)
 
+## TVC scanner
+
+```bash
+mkdir -p $HOME/tvc_scan
+cd $HOME/tvc_scan
+curl -o $HOME/tvc_scan/tvc.sh https://raw.githubusercontent.com/Hohlas/solana/main/monitor/tvc.sh
+curl -o $HOME/tvc_scan/validators.txt https://raw.githubusercontent.com/Hohlas/solana/main/monitor/validators.txt
+chmod +x $HOME/tvc_scan/tvc.sh
+```
