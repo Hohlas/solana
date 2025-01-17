@@ -46,6 +46,18 @@ sysctl net.ipv4.tcp_rmem
 sysctl net.ipv4.tcp_fin_timeout
 sysctl net.core.netdev_max_backlog
 ```
+```bash
+echo "
+net.ipv4.tcp_fin_timeout=30
+net.core.netdev_max_backlog=50000
+net.core.optmem_max=20480
+
+net.ipv4.tcp_rmem=4096 87380 134217728
+net.ipv4.tcp_wmem=4096 87380 134217728
+" > /etc/sysctl.d/22-solana-turbo.conf
+sysctl -p /etc/sysctl.d/22-solana-turbo.conf
+```
+
 </details>
 
 <details>
