@@ -78,4 +78,5 @@ cd $HOME/tvc_scan
 curl -o $HOME/tvc_scan/tvc.sh https://raw.githubusercontent.com/Hohlas/solana/main/monitor/tvc.sh
 curl -o $HOME/tvc_scan/validators.txt https://raw.githubusercontent.com/Hohlas/solana/main/monitor/validators.txt
 chmod +x $HOME/tvc_scan/tvc.sh
+./tvc.sh
 ```
