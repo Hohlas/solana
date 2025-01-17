@@ -30,6 +30,7 @@ ulimit -n 1000000  # set ulimit
 ulimit -n # check ulimit 
 ```
 ```bash
+# set additional settings
 echo "
 net.ipv4.tcp_fin_timeout=30
 net.core.netdev_max_backlog=50000
@@ -41,7 +42,7 @@ net.ipv4.tcp_wmem=4096 87380 134217728
 sysctl -p /etc/sysctl.d/22-solana-turbo.conf
 ```
 ```bash
-# read turbo
+# read additional settings
 sysctl net.ipv4.tcp_fin_timeout
 sysctl net.core.netdev_max_backlog
 sysctl net.core.optmem_max
@@ -56,7 +57,6 @@ sysctl net.core.wmem_default
 sysctl net.core.wmem_max
 sysctl vm.max_map_count
 sysctl fs.nr_open
-sysctl ulimit
 ```
 </details>
 
