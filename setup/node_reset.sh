@@ -22,27 +22,26 @@ fi
 # remoove accounts-hash-cache-path
 RM_PATH=$(grep -oP '(?<=--accounts-hash-cache-path\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
 if [[ -d "$RM_PATH" ]]; then
-    echo "remoove accounts-hash-cache-path "
+    echo "remoove $RM_PATH "
     rm -r $RM_PATH/*
 fi
 
 # remoove accounts-index-path
 RM_PATH=$(grep -oP '(?<=--accounts-index-path\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
 if [[ -d "$RM_PATH" ]]; then
-    echo "remoove accounts-index-path "
+    echo "remoove $RM_PATH "
     rm -r $RM_PATH/*
 fi
 
-if [ -d $HOME/solana/ledger ]; then
-    rm -rf $HOME/solana/ledger/* && echo "delete ledger/*"
-fi    
-if [ -d /mnt/disk1 ]; then
-    rm -rf /mnt/disk1/* && echo "delete disk1/*"
+# remoove ledger
+RM_PATH=$(grep -oP '(?<=--ledger\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
+if [[ -d "$RM_PATH" ]]; then
+    echo "remoove $RM_PATH "
+    rm -r $RM_PATH/*
 fi
-if [ -d /mnt/disk2 ]; then
-    rm -rf /mnt/disk2/* && echo "delete disk2/*"
-fi
-if [ -d /mnt/disk3 ]; then
-    rm -rf /mnt/disk3/* && echo "delete disk3/*"
-fi    
+
+# remoove mounted disks
+if [ -d /mnt/disk1 ]; then rm -rf /mnt/disk1/* && echo "delete disk1/*"; fi
+if [ -d /mnt/disk2 ]; then rm -rf /mnt/disk2/* && echo "delete disk2/*"; fi
+if [ -d /mnt/disk3 ]; then rm -rf /mnt/disk3/* && echo "delete disk3/*"; fi    
 echo "Solana Node reset complete"
