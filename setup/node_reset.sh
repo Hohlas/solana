@@ -45,7 +45,4 @@ fi
 if [ -d /mnt/disk3 ]; then
     rm -rf /mnt/disk3/* && echo "delete disk3/*"
 fi    
-if [ -d /mnt/ramdisk ]; then
-    rm -r /mnt/ramdisk/*  && echo "delete RAMDISK/*"
-fi
 echo "Solana Node reset complete"
