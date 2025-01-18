@@ -8,7 +8,7 @@ systemctl stop solana
 # remoove LEDGER
 RM_PATH=$(grep -oP '(?<=--ledger\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
 if [[ -d "$RM_PATH" ]]; then
-    echo "remoove LEDGER "
+    echo "remoove $RM_PATH  "
     rm -r $RM_PATH/*
 fi    
 
@@ -28,13 +28,6 @@ fi
 
 # remoove accounts-index-path
 RM_PATH=$(grep -oP '(?<=--accounts-index-path\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
-if [[ -d "$RM_PATH" ]]; then
-    echo "remoove $RM_PATH "
-    rm -r $RM_PATH/*
-fi
-
-# remoove ledger
-RM_PATH=$(grep -oP '(?<=--ledger\s).*?(?=\s)' "$SOLANA_SERVICE") # извлечь путь от '--ledger' до следующего пробела.
 if [[ -d "$RM_PATH" ]]; then
     echo "remoove $RM_PATH "
     rm -r $RM_PATH/*
