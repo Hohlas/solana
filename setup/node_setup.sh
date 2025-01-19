@@ -2,9 +2,7 @@
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
 # create dirs
 # mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
-mkdir -p /mnt/disk1
-mkdir -p /mnt/disk2
-mkdir -p /mnt/disk3
+mkdir -p /mnt/snapshots
 mkdir -p /mnt/ramdisk
 
 if [ ! -d "$HOME/keys" ]; then
