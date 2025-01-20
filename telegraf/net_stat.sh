@@ -28,17 +28,13 @@ collect_statistics() {
     echo -e "\n=== Top IPs by Connection Count ===" >> "$STATS_FILE"
     netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -nr | head -n 10 >> "$STATS_FILE"
     
-    # Статистика использования CPU и памяти процессом solana-validator
-    echo -e "\n=== Solana Validator Resource Usage ===" >> "$STATS_FILE"
-    ps aux | grep solana-validator | grep -v grep >> "$STATS_FILE"
-    
     # Информация о нагрузке на сеть
     echo -e "\n=== Network Interface Statistics ===" >> "$STATS_FILE"
     ip -s link >> "$STATS_FILE"
     
     # Статистика iptables
-    echo -e "\n=== IPTables Statistics ===" >> "$STATS_FILE"
-    iptables -nvL >> "$STATS_FILE"
+    #echo -e "\n=== IPTables Statistics ===" >> "$STATS_FILE"
+    #iptables -nvL >> "$STATS_FILE"
 }
 
 # Функция для анализа логов и выявления аномалий
