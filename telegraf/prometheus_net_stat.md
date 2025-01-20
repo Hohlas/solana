@@ -27,14 +27,15 @@ chmod +x ~/net_stat.sh
 ```
 
 ```bash
+LOG_DIR="/var/log/solana-monitoring"
  # Посмотреть уникальные события в анализе
-grep "WARNING" combined_analysis.log | sort | uniq -c
+grep "WARNING" analysis.log | sort | uniq -c
 
 # Проанализировать топ IP-адресов
-grep -A 10 "Top IPs by Connection Count" combined_stats.log
+grep -A 10 "Top IPs by Connection Count" stats.log
 
 # Посмотреть статистику по состояниям соединений
-grep -A 10 "TCP Connection States" combined_stats.log
+grep -A 10 "TCP Connection States" stats.log
 ```
 
 ```bash
