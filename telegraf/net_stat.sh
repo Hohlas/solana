@@ -43,6 +43,10 @@ collect_statistics() {
 # Функция для анализа логов и выявления аномалий
 analyze_logs() {
     local log_file="$1"
+    if [[ ! -f "$log_file" ]]; then
+        echo "Log file does not exist: $log_file" >> "$LOG_DIR/analysis_$DATE.log"
+        return  # или exit 1, если хотите завершить выполнение функции
+    fi
     echo "=== Connection Analysis === $(date) ===" > "$LOG_DIR/analysis_$DATE.log"
     
     # Анализ количества TIME_WAIT соединений
@@ -61,8 +65,9 @@ analyze_logs() {
     # Анализ топ IP-адресов
     echo -e "\n=== Suspicious IP Analysis ===" >> "$LOG_DIR/analysis_$DATE.log"
     grep "Top IPs by Connection Count" -A 10 "$log_file" | \
-    awk '$1 > 50 {print "WARNING: Suspicious number of connections from IP: " $2 " (Count: " $1 ")"}' \
-    >> "$LOG_DIR/analysis_$DATE.log"
+    if [[ -n "$1" ]]; then
+        awk '$1 > 50 {print "WARNING: Suspicious number of connections from IP: " $2 " (Count: " $1 ")"}' >> "$LOG_DIR/analysis_$DATE.log"
+    fi    
 }
 
 # Функция очистки старых логов (хранить логи за последние 7 дней)
