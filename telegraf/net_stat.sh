@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Директория для хранения логов
+# Директория для хранения логоф
 LOG_DIR="/var/log/solana-monitoring"
 mkdir -p $LOG_DIR
 
@@ -43,17 +43,17 @@ collect_statistics() {
 # Функция для анализа логов и выявления аномалий
 analyze_logs() {
     local log_file="$1"
+
     if [[ ! -f "$log_file" ]]; then
         echo "Log file does not exist: $log_file" >> "$LOG_DIR/analysis_$DATE.log"
-        return  # или exit 1, если хотите завершить выполнение функции
+        return
     fi
+
     echo "=== Connection Analysis === $(date) ===" > "$LOG_DIR/analysis_$DATE.log"
     
     # Анализ количества TIME_WAIT соединений
-    time_wait_count=$(grep "TIME_WAIT" "$log_file" | awk '{print $1}' | awk '{s+=$1} END {print s}')
-    if [ -z "$time_wait_count" ]; then
-        time_wait_count=0
-    fi
+    time_wait_count=$(grep "TIME_WAIT" "$log_file" | wc -l)
+    
     if [ "$time_wait_count" -gt 100 ]; then
         echo "WARNING: High number of TIME_WAIT connections: $time_wait_count" >> "$LOG_DIR/analysis_$DATE.log"
     fi
@@ -64,10 +64,10 @@ analyze_logs() {
     
     # Анализ топ IP-адресов
     echo -e "\n=== Suspicious IP Analysis ===" >> "$LOG_DIR/analysis_$DATE.log"
+    
     grep "Top IPs by Connection Count" -A 10 "$log_file" | \
-    if [[ -n "$1" ]]; then
-        awk '$1 > 50 {print "WARNING: Suspicious number of connections from IP: " $2 " (Count: " $1 ")"}' >> "$LOG_DIR/analysis_$DATE.log"
-    fi    
+        awk '$1 > 50 {print "WARNING: Suspicious number of connections from IP: " $2 " (Count: " $1 ")"}' \
+        >> "$LOG_DIR/analysis_$DATE.log"
 }
 
 # Функция очистки старых логов (хранить логи за последние 7 дней)
