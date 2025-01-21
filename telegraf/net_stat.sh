@@ -101,11 +101,72 @@ monitor_solana_specific() {
     done
 }
 
+# мониторинг ICMP-трафика
+monitor_icmp_traffic() {
+    log_save "\n=== ICMP Traffic Analysis ==="
+    
+    # Подсчитываем общее количество ICMP пакетов за короткий период
+    log_save "Total ICMP packets (10 second sample):"
+    if ! timeout 10 tcpdump -i any 'icmp' -n 2>/dev/null | wc -l | tee -a "$STATS_FILE"; then
+        handle_error "tcpdump ICMP count"
+    fi
+    
+    # Анализируем типы ICMP сообщений
+    log_save "\nICMP message types distribution:"
+    if ! timeout 10 tcpdump -i any 'icmp' -nn -v 2>/dev/null | \
+        awk '/ICMP/ {print $3}' | sort | uniq -c | \
+        while read count type; do
+            # Добавляем описания для основных типов ICMP
+            case "$type" in
+                "echo")
+                    echo "$count $type (ping request)"
+                    ;;
+                "echo-reply")
+                    echo "$count $type (ping response)"
+                    ;;
+                "unreachable")
+                    echo "$count $type (destination unreachable)"
+                    ;;
+                *)
+                    echo "$count $type"
+                    ;;
+            esac
+        done | tee -a "$STATS_FILE"; then
+        handle_error "tcpdump ICMP types analysis"
+    fi
+    
+    # Анализ источников ICMP-трафика
+    log_save "\nTop sources of ICMP traffic:"
+    if ! timeout 10 tcpdump -i any 'icmp' -nn 2>/dev/null | \
+        awk '{print $3}' | sort | uniq -c | sort -nr | head -5 | \
+        while read count ip; do
+            echo "$count packets from $ip"
+        done | tee -a "$STATS_FILE"; then
+        handle_error "tcpdump ICMP sources analysis"
+    fi
+    
+    # Проверка на аномальное количество ICMP-пакетов
+    local icmp_count=$(timeout 5 tcpdump -i any 'icmp' -n 2>/dev/null | wc -l)
+    local threshold=100  # Пороговое значение для 5-секундного периода
+    
+    if [ "$icmp_count" -gt "$threshold" ]; then
+        log_save "WARNING: Повышенный ICMP-трафик: $icmp_count пакетов за 5 секунд"
+        
+        # Детальный анализ при превышении порога
+        log_save "Detailed analysis of high ICMP traffic:"
+        if ! timeout 5 tcpdump -i any 'icmp' -nn -v 2>/dev/null | \
+            awk '/ICMP/ {print $3" from "$5}' | sort | uniq -c | \
+            sort -nr | head -10 | tee -a "$STATS_FILE"; then
+            handle_error "tcpdump ICMP detailed analysis"
+        fi
+    fi
+}
+
 # Основной процесс в цикле
 while true; do
     collect_statistics
     enhance_connection_analysis
     monitor_solana_specific
-    
+    monitor_icmp_traffic  # мониторинг ICMP
     sleep 5  # Задержка между циклами
 done
