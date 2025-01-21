@@ -1,9 +1,8 @@
 ## сбор сетевой статистики 
 
 ```bash
- curl curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/net_stat.sh > ~/net_stat.sh;
-chmod +x ~/net_stat.sh
-(crontab -l 2>/dev/null; echo "*/2 * * * * $HOME/net_stat.sh") | crontab -
+ curl curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/net_stat.sh > $HOME/net_stat/net_stat.sh;
+chmod +x $HOME/net_stat/net_stat.sh
 ```
 ```bash
 LOG_DIR="/var/log/solana-monitoring"
