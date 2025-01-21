@@ -1,8 +1,10 @@
 ## сбор сетевой статистики 
 
 ```bash
- curl curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/net_stat.sh > $HOME/net_stat/net_stat.sh;
+curl curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/net_stat.sh > $HOME/net_stat/net_stat.sh;
 chmod +x $HOME/net_stat/net_stat.sh
+cd $HOME/net_stat
+./net_stat.sh
 ```
 ```bash
 LOG_DIR="/var/log/solana-monitoring"
