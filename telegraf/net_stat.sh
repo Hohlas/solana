@@ -22,34 +22,34 @@ handle_error() {
 
 # Сбор общей статистики
 collect_statistics() {
-    log_save "=== Solana Validator Statistics ==="
+    log_save " === Solana Validator Statistics ==="
     
     # TCP соединения по состояниям
-    log_save "\n=== TCP Connection States ==="
+    log_save " === TCP Connection States ==="
     if ! netstat -ant | awk '{print $6}' | sort | uniq -c | tee -a "$STATS_FILE"; then
         handle_error "netstat -ant"
     fi
     
     # Активные соединения по портам
-    log_save "\n=== Active Connections by Port ==="
+    log_save " === Active Connections by Port ==="
     if ! netstat -tnp | grep ESTABLISHED | awk '{print $4}' | cut -d: -f2 | sort | uniq -c | tee -a "$STATS_FILE"; then
         handle_error "netstat -tnp"
     fi
     
     # UDP трафик на портах Solana
-    log_save "\n=== UDP Traffic on Solana Ports ==="
+    log_save " === UDP Traffic on Solana Ports ==="
     if ! timeout 30 tcpdump -i any 'udp portrange 8000-8020' -n 2>/dev/null | wc -l | tee -a "$STATS_FILE"; then
         handle_error "tcpdump"
     fi
     
     # Топ IP-адресов по количеству соединений
-    log_save "\n=== Top IPs by Connection Count ==="
+    log_save " === Top IPs by Connection Count ==="
     if ! netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -nr | head -n 10 | tee -a "$STATS_FILE"; then
         handle_error "netstat -ntu"
     fi
     
     # Информация о нагрузке на сеть
-    log_save "\n=== Network Interface Statistics ==="
+    log_save " === Network Interface Statistics ==="
     if ! ip -s link | tee -a "$STATS_FILE"; then
         handle_error "ip link"
     fi
@@ -57,7 +57,7 @@ collect_statistics() {
 
 # Расширенный анализ соединений
 enhance_connection_analysis() {
-    log_save "\n=== Enhanced Connection Analysis ==="
+    log_save " === Enhanced Connection Analysis ==="
     
     # Анализ соединений по состояниям для каждого порта
     log_save "Connection states per port:"
@@ -66,13 +66,13 @@ enhance_connection_analysis() {
     fi
     
     # Средняя скорость установки новых соединений
-    log_save "\nNew connection rate:"
+    log_save " New connection rate:"
     if ! ss -tn state syn-recv | wc -l | tee -a "$STATS_FILE"; then
         handle_error "ss syn-recv"
     fi
     
     # Анализ длительности соединений
-    log_save "\nConnection duration analysis:"
+    log_save " Connection duration analysis:"
     if ! ss -tn state established -o | tee -a "$STATS_FILE"; then
         handle_error "ss established connections"
     fi
@@ -80,7 +80,7 @@ enhance_connection_analysis() {
 
 # Мониторинг портов Solana
 monitor_solana_specific() {
-    log_save "\n=== Solana-specific Metrics ==="
+    log_save " === Solana-specific Metrics ==="
     
     local solana_ports=(8000 8001 8899 8900)
     
@@ -92,7 +92,7 @@ monitor_solana_specific() {
     done
     
     # Анализ UDP трафика с разбивкой по портам
-    log_save "\nDetailed UDP traffic analysis:"
+    log_save " Detailed UDP traffic analysis:"
     for port in "${solana_ports[@]}"; do
         log_save "UDP traffic on port $port:"
         if ! timeout 10 tcpdump -i any "udp port $port" -n 2>/dev/null | wc -l | tee -a "$STATS_FILE"; then
@@ -103,7 +103,7 @@ monitor_solana_specific() {
 
 # мониторинг ICMP-трафика
 monitor_icmp_traffic() {
-    log_save "\n=== ICMP Traffic Analysis ==="
+    log_save " === ICMP Traffic Analysis ==="
     
     # Общее количество ICMP пакетов
     log_save "Total ICMP packets (10 second sample):"
@@ -112,7 +112,7 @@ monitor_icmp_traffic() {
     fi
     
     # Краткая статистика по типам (важно для настройки защиты)
-    log_save "\nICMP types summary:"
+    log_save " ICMP types summary:"
     if ! timeout 10 tcpdump -i any 'icmp' -nn 2>/dev/null | \
         awk '/ICMP/ {print $3}' | sort | uniq -c | tee -a "$STATS_FILE"; then
         handle_error "tcpdump ICMP types"
@@ -122,13 +122,13 @@ monitor_icmp_traffic() {
 
 # Мониторинг скорости передачи данных на сетевых интерфейсах. 
 monitor_network_bandwidth() {
-    log_save "\n=== Network Bandwidth Statistics ==="
+    log_save " === Network Bandwidth Statistics ==="
     
     # Получаем список активных сетевых интерфейсов
     local interfaces=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2}')
     
     for interface in $interfaces; do
-        log_save "\nInterface: $interface"
+        log_save " Interface: $interface"
         # Используем sar для измерения скорости передачи данных
         if ! sar -n DEV 1 5 | grep "$interface" | tail -n 1 | tee -a "$STATS_FILE"; then
             handle_error "sar bandwidth measurement for $interface"
@@ -138,7 +138,7 @@ monitor_network_bandwidth() {
 
 # Анализ установленных соединений с учетом времени их существования
 analyze_connection_duration() {
-    log_save "\n=== Connection Duration Analysis ==="
+    log_save " === Connection Duration Analysis ==="
     
     # Анализируем длительность установленных соединений
     log_save "Established connections with duration:"
@@ -150,7 +150,7 @@ analyze_connection_duration() {
 
 # Отслеживание соотношения новых и установленных соединений
 monitor_connection_states() {
-    log_save "\n=== Connection State Ratios ==="
+    log_save " === Connection State Ratios ==="
     
     # Подсчитываем количество соединений в разных состояниях
     local established=$(ss -tn state established | wc -l)
@@ -171,7 +171,7 @@ monitor_connection_states() {
 
 # Мониторинг загрузки системных ресурсов, связанных с сетевой активностью
 monitor_system_resources() {
-    log_save "\n=== System Resource Usage ==="
+    log_save " === System Resource Usage ==="
     
     # Загрузка CPU сетевыми процессами
     log_save "Network-related CPU usage:"
@@ -180,7 +180,7 @@ monitor_system_resources() {
     fi
     
     # Использование сетевых буферов
-    log_save "\nNetwork buffer usage:"
+    log_save " Network buffer usage:"
     if ! sysctl net.ipv4.tcp_mem net.ipv4.tcp_wmem net.ipv4.tcp_rmem | tee -a "$STATS_FILE"; then
         handle_error "network buffer monitoring"
     fi
@@ -188,7 +188,7 @@ monitor_system_resources() {
 
 # Анализ распределения подключений по портам Solana
 analyze_solana_port_distribution() {
-    log_save "\n=== Solana Port Distribution Analysis ==="
+    log_save " === Solana Port Distribution Analysis ==="
     
     # Определяем порты Solana
     local ports=(8000 8001 8899 8900)
