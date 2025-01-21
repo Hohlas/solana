@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Директория для хранения логов
-LOG_DIR="/var/log/solana-monitoring"
+LOG_DIR="$HOME/net_stat"
 mkdir -p "$LOG_DIR"
 
 # Файлы для логирования
