@@ -1,9 +1,9 @@
 ## сбор сетевой статистики 
 
 ```bash
+mkdir -p $HOME/net_stat; cd $HOME/net_stat
 curl curl https://raw.githubusercontent.com/Hohlas/solana/main/telegraf/net_stat.sh > $HOME/net_stat/net_stat.sh;
 chmod +x $HOME/net_stat/net_stat.sh
-cd $HOME/net_stat
 ./net_stat.sh
 ```
 ```bash
