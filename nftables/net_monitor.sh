@@ -1,8 +1,8 @@
 #!/bin/bash
 
-LOG_FILE="/var/log/nftables.log"
-BOT_TOKEN="YOUR_BOT_TOKEN"
-CHAT_INFO="YOUR_CHAT_ID"
+define LOG_FILE = "$HOME/net_monitor/nftables.log"
+define BOT_TOKEN = "5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU"
+define CHAT_INFO = "-1001548522888"
 
 TIME() {
     TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
