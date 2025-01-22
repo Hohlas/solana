@@ -85,8 +85,6 @@ if [ -d /etc/ssh/ssh_config.d ]; then rm -f /etc/ssh/ssh_config.d/*; fi
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/sshd_config > /etc/ssh/sshd_config
 sudo ufw allow 2010  # добавить порт в правила файрвола
 sudo systemctl restart ssh  # перезапустить службу ssh
-touch ~/.ssh/authorized_keys
-chmod 600 ~/.ssh/authorized_keys
 nano ~/.ssh/authorized_keys
 ```
 
