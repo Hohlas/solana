@@ -1,8 +1,8 @@
 #!/bin/bash
 
-define LOG_FILE = "$HOME/net_monitor/nftables.log"
-define BOT_TOKEN = "5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU"
-define CHAT_INFO = "-1001548522888"
+LOG_FILE="$HOME/net_monitor/nftables.log"
+BOT_TOKEN="5076252443:AAF1rtoCAReYVY8QyZcdXGmuUOrNVICllWU"
+CHAT_INFO="-1001548522888"
 
 TIME() {
     TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
@@ -24,9 +24,9 @@ SEND_INFO(){
 check_counters() {
     local counter_name="$1"
     local threshold="$2"
-    local counter_value=$(nft list counter ip filter ${counter_name} | grep -oE 'packets [0-9]+' | awk '{print $2}')
+    local counter_value=$(nft list counter ip filter "$counter_name" 2>/dev/null | grep -oE 'packets [0-9]+' | awk '{print $2}')
     
-    if [ "$counter_value" -gt "$threshold" ]; then
+    if [ -n "$counter_value" ] && [ "$counter_value" -gt "$threshold" ]; then
         SEND_INFO "Alert: $counter_name exceeded threshold ($counter_value > $threshold)"
     fi
 }
@@ -44,6 +44,7 @@ monitor_logs() {
     done
 }
 
+trap 'kill $(jobs -p)' EXIT # Trap для корректного завершения
 # Основной цикл мониторинга
 while true; do
     # Проверяем счетчики каждую минуту
@@ -58,4 +59,4 @@ while true; do
 done &
 
 # Запускаем мониторинг логов
-monitor_logs
+# monitor_logs
