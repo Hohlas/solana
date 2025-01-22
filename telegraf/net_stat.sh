@@ -38,7 +38,7 @@ collect_statistics() {
     
     # UDP трафик на портах Solana
     log_save " === UDP Traffic on Solana Ports ==="
-    if ! timeout 30 tcpdump -i any 'udp portrange 8000-8020' -n 2>/dev/null | wc -l | tee -a "$STATS_FILE"; then
+    if ! timeout 10 tcpdump -i any 'udp portrange 8002-8020' -n 2>/dev/null | wc -l | tee -a "$STATS_FILE"; then
         handle_error "tcpdump"
     fi
     
