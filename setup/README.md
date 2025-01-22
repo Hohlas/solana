@@ -76,7 +76,7 @@ sudo nano /etc/hosts
 # config SSH
 mkdir -p ~/.ssh
 rm ~/.ssh/*
-curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/authorized_keys > ~/.ssh/authorized_keys # add ssh pubkey 'testnet'
+curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/authorized_keys >> ~/.ssh/authorized_keys # add ssh pubkey 'testnet'
 chmod 600 ~/.ssh/authorized_keys
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 mv /etc/ssh/ssh_config /etc/ssh/ssh_config.bak
