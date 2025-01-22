@@ -8,6 +8,8 @@ chmod +x $HOME/net_monitor/net_stat.sh
 
 ### установка и запуск фаервола 
 ```bash
+apt update
+apt install nftables
 mkdir -p $HOME/net_monitor
 curl curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_stat.sh > $HOME/net_monitor/net_monitor.sh;
 curl curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
