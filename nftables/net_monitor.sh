@@ -24,9 +24,14 @@ SEND_INFO(){
 check_counters() {
     local counter_name="$1"
     local threshold="$2"
-    local counter_value=$(nft list counter ip filter "$counter_name" 2>/dev/null | grep -oE 'packets [0-9]+' | awk '{print $2}')
+    local counter_value=$(nft list counter ip _dos_protection_ ${counter_name} | grep -oE 'packets [0-9]+' | awk '{print $2}')
     
-    if [ -n "$counter_value" ] && [ "$counter_value" -gt "$threshold" ]; then
+    if [ -z "$counter_value" ]; then
+        LOG "Counter $counter_name not found or has no packets."
+        return  # Выход из функции
+    fi
+    
+    if [ "$counter_value" -gt "$threshold" ]; then
         SEND_INFO "Alert: $counter_name exceeded threshold ($counter_value > $threshold)"
     fi
 }
