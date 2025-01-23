@@ -28,7 +28,9 @@ chmod +x $HOME/net_monitor/net_monitor.sh
 ```bash
 systemctl restart nftables
 ```
-
+```bash
+~/net_monitor/net_monitor.sh # запускать в отдельном окне
+```
 ```bash
 nft -f nftables.conf # Примените изменения
 systemctl disable nftables
