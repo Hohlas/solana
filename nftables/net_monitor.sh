@@ -24,15 +24,15 @@ SEND_INFO(){
 check_counters() {
     local counter_name="$1"
     local threshold="$2"
-    local counter_value=$(nft list counter ip _dos_protection_ ${counter_name} | grep -oE 'packets [0-9]+' | awk '{print $2}')
+    local counter_value=$(nft list counter ip dos_protection ${counter_name} 2>/dev/null | grep -oE 'packets [0-9]+' | awk '{print $2}')
     
     if [ -z "$counter_value" ]; then
-        LOG "Counter $counter_name not found or has no packets."
-        return  # Выход из функции
+        return  # Молча выходим, если счетчик не найден
     fi
     
     if [ "$counter_value" -gt "$threshold" ]; then
-        SEND_INFO "Alert: $counter_name exceeded threshold ($counter_value > $threshold)"
+        echo $message
+        # SEND_INFO "Alert: $counter_name exceeded threshold ($counter_value > $threshold)"
     fi
 }
 
@@ -40,11 +40,12 @@ check_counters() {
 monitor_logs() {
     tail -fn0 /var/log/kern.log | while read line ; do
         if echo "$line" | grep -q "\[NFT\]"; then
-            attack_type=$(echo "$line" | grep -oE '\[NFT\] [A-Z-]+:')
+            attack_type=$(echo "$line" | grep -oE '\[NFT\] [A-Z-]+' | cut -d' ' -f2)
             ip=$(echo "$line" | grep -oE 'SRC=[0-9.]+' | cut -d= -f2)
             
-            message="Detected $attack_type from IP: $ip"
-            SEND_INFO "$message"
+            message="Detected attack: $attack_type from IP: $ip"
+            echo $message
+            # SEND_INFO "$message"
         fi
     done
 }
@@ -64,4 +65,4 @@ while true; do
 done &
 
 # Запускаем мониторинг логов
-# monitor_logs
+monitor_logs
