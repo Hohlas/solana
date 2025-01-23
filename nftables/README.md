@@ -70,6 +70,7 @@ for i in {1..30}; do
     sleep 0.1
 done 
 ```
+</details>
 
 <details>
 <summary>сбор сетевой статистики</summary>
@@ -82,9 +83,6 @@ chmod +x $HOME/net_monitor/net_stat.sh
 ```
 </details>
 
-
- 
-</details>
 
 <details>
 <summary>empty</summary>
