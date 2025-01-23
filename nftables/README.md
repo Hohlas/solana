@@ -51,9 +51,15 @@ nft flush ruleset # Очистка всех правил
 
 <details>
 <summary>Проверка</summary>
+Мониторинг логов на тестируемом сервере
   
 ```bash
-TEST_IP="195.3.223.66"  
+tail -f /var/log/kern.log | grep NFT 
+```
+
+Имитация атаки с удаленного сервера  
+```bash
+TEST_IP="195.3.223.66" # IP тестируемого сервера 
 ```  
 ```bash
 hping3 -S -p 8899 --flood $TEST_IP # SYN-flood
