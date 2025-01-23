@@ -56,18 +56,18 @@ apt install nmap hping3
 hping3 -S -p 8899 --flood $TEST_IP # SYN-flood
 ```
 ```bash
-nmap -p- -T4 195.3.223.66 # Port scan
+nmap -p- -T4 $TEST_IP # Port scan
 ```
 ```bash
-hping3 --udp -p 8000 --flood 195.3.223.66 # UDP flood
+hping3 --udp -p 8000 --flood $TEST_IP # UDP flood
 ```
 ```bash
-hping3 -1 --flood 195.3.223.66 # ICMP flood
+hping3 -1 --flood $TEST_IP # ICMP flood
 ```
 ```bash
 # TCP atack  
 for i in {1..30}; do 
-    nc -zv 195.3.223.66 8899 & 
+    nc -zv $TEST_IP 8899 & 
     sleep 0.1
 done 
 ```
