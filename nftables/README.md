@@ -25,4 +25,6 @@ nft -f nftables.conf # Примените изменения
 ufw disable
 systemctl disable ufw
 systemctl stop ufw
+iptables -F
+iptables -X 
 ```
