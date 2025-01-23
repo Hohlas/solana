@@ -19,7 +19,7 @@ chmod +x $HOME/net_monitor/net_monitor.sh
 
 ```
 ```bash
-#
+nft -f nftables.conf # Примените изменения
 ```
 ```bash
 ufw disable
