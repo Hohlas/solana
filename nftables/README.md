@@ -29,5 +29,7 @@ ufw disable
 systemctl disable ufw
 systemctl stop ufw
 iptables -F
-iptables -X 
+iptables -S # 
+iptables -X
+iptables -L -n -v  # Показать текущие правила
 ```
