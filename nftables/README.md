@@ -13,17 +13,6 @@ iptables -X
 iptables -L -n -v  # Показать текущие правила
 ```
 
-<details>
-<summary>сбор сетевой статистики</summary>
-
-```bash
-mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
-curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_stat.sh > $HOME/net_monitor/net_stat.sh;
-chmod +x $HOME/net_monitor/net_stat.sh
-./net_stat.sh 
-```
-</details>
-
 
 
 ### установка и запуск фаервола 
@@ -52,12 +41,13 @@ nft flush ruleset # Очистка всех правил
 <details>
 <summary>Проверка</summary>
 Мониторинг логов на тестируемом сервере
-  
+
 ```bash
 tail -f /var/log/kern.log | grep NFT 
 ```
 
-Имитация атаки с удаленного сервера  
+Имитация атаки с удаленного сервера 
+
 ```bash
 TEST_IP="195.3.223.66" # IP тестируемого сервера 
 ```  
@@ -80,11 +70,24 @@ for i in {1..30}; do
     sleep 0.1
 done 
 ```
+
+<details>
+<summary>сбор сетевой статистики</summary>
+
+```bash
+mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_stat.sh > $HOME/net_monitor/net_stat.sh;
+chmod +x $HOME/net_monitor/net_stat.sh
+./net_stat.sh 
+```
+</details>
+
+
  
 </details>
 
 <details>
-<summary>сбор сетевой статистики</summary>
+<summary>empty</summary>
 
 ```bash
  
