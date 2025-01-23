@@ -43,7 +43,8 @@ nft flush ruleset # Очистка всех правил
 Мониторинг логов на тестируемом сервере
 
 ```bash
-tail -f /var/log/kern.log | grep NFT 
+tail -f /var/log/kern.log | grep NFT # логи фильтра
+tail -f ~/net_monitor/nftables.log  # логи скрипта
 ```
 
 Имитация атаки с удаленного сервера 
