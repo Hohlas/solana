@@ -49,7 +49,8 @@ tail -f /var/log/kern.log | grep NFT
 Имитация атаки с удаленного сервера 
 
 ```bash
-TEST_IP="195.3.223.66" # IP тестируемого сервера 
+TEST_IP="195.3.223.66" # IP тестируемого сервера
+apt install nmap hping3
 ```  
 ```bash
 hping3 -S -p 8899 --flood $TEST_IP # SYN-flood
