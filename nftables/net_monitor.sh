@@ -51,7 +51,7 @@ monitor_logs() {
 }
 
 trap 'kill $(jobs -p)' EXIT # Trap для корректного завершения
-# Основной цикл мониторинга
+# Основной цикл мониторинга 
 while true; do
     # Проверяем счетчики каждую минуту
     check_counters "syn_flood_counter" 1000
