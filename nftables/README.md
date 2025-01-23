@@ -20,6 +20,9 @@ chmod +x $HOME/net_monitor/net_monitor.sh
 ```
 ```bash
 nft -f nftables.conf # Примените изменения
+systemctl disable nftables
+systemctl stop nftables
+nft flush ruleset # Очистка всех правил
 ```
 ```bash
 ufw disable
