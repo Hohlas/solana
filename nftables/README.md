@@ -1,7 +1,7 @@
 ## DDOS protection 
 
 ```bash
-# удаление фаервола
+# удаление старого фаервола
 ufw disable
 systemctl disable ufw
 systemctl stop ufw
