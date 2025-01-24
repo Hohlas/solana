@@ -89,8 +89,15 @@ chmod +x $HOME/net_monitor/net_stat.sh
 ./net_stat.sh
 
 
+```
+Находим максимальные значения трафика
+```bash
+awk '/tcp_in:/ { if ($2 > max_tcp) max_tcp = $2 } 
+     /udp_in:/ { if ($2 > max_udp) max_udp = $2 } 
+     END { print "Максимальное значение tcp_in:", max_tcp; print "Максимальное значение udp_in:", max_udp }' ~/net_monitor/rates.log
 
 ```
+
 </details>
 
 <details>
