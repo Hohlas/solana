@@ -80,12 +80,13 @@ done
 <summary>определение пороговых значений для настройки nftables фильтров </summary>
  
 nftables.conf Использует счетчики для отслеживания трафика по типам (TCP/UDP).  
-pocket_counter.sh Каждую минуту считывает показания счетчиков nftables. 
+packets_counter.sh Каждую минуту считывает показания счетчиков nftables. 
 Вычисляет скорость трафика в pps (packets per second) и записывает статистику в rates.csv. 
 Сбрасывает счетчики после каждого измерения. 
+
 ```bash
 mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
-curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/pocket_counter.sh > $HOME/net_monitor/pocket_counter.sh
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/packets_counter.sh > $HOME/net_monitor/packets_counter.sh
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.conf > /etc/nftables.conf
 systemctl enable nftables
 systemctl restart nftables
