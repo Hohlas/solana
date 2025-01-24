@@ -1,7 +1,7 @@
-## DDOS protection 
+## nftables firewall
 
 ```bash
-# удаление старого фаервола
+# удаление старого фаервола iptables
 ufw disable
 systemctl disable ufw
 systemctl stop ufw
@@ -15,7 +15,7 @@ iptables -L -n -v  # Показать текущие правила
 
 
 
-### установка и запуск фаервола 
+### установка и запуск фаервола на nftables
 ```bash
 apt update
 apt install nftables
