@@ -90,8 +90,8 @@ curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/packets_count
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.conf > /etc/nftables.conf
 systemctl enable nftables
 systemctl restart nftables
-chmod +x $HOME/net_monitor/pocket_counter.sh
-./pocket_counter.sh
+chmod +x $HOME/net_monitor/packets_counter.sh
+./packets_counter.sh
 ```
 ![image](https://github.com/user-attachments/assets/14288973-c121-432d-95e4-5e370927bb80)
 
