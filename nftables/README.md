@@ -92,11 +92,25 @@ systemctl restart nftables
 chmod +x $HOME/net_monitor/pocket_counter.sh
 ./pocket_counter.sh
 ```
-Находим максимальные значения из файла rates.log
+![image](https://github.com/user-attachments/assets/14288973-c121-432d-95e4-5e370927bb80)
+
+Находим максимальные значения из файла rates.csv
 ```bash
-awk '/tcp_in:/ { if ($2 > max_tcp) max_tcp = $2 } 
-     /udp_in:/ { if ($2 > max_udp) max_udp = $2 } 
-     END { print "Максимальное значение tcp_in:", max_tcp; print "Максимальное значение udp_in:", max_udp }' ~/net_monitor/rates.log
+awk -F';' '
+NR > 1 {
+   for (i=2; i<=NF; i++) 
+       if ($i+0 > max[i]) max[i] = $i
+} 
+END {
+   print "p2010 max:" max[2]
+   print "p8000 max:" max[3]
+   print "p8001 max:" max[4] 
+   print "p8899 max:" max[5]
+   print "tcp_in max:" max[6]
+   print "tcp_out max:" max[7]
+   print "udp_in max:" max[8]
+   print "udp_out max:" max[9]
+}' "$HOME/net_monitor/rates.csv"
 
 ```
 
