@@ -98,19 +98,14 @@ chmod +x $HOME/net_monitor/pocket_counter.sh
 Находим максимальные значения из файла rates.csv
 ```bash
 awk -F';' '
+NR == 1 { for(i=1;i<=NF;i++) header[i]=$i }
 NR > 1 {
    for (i=2; i<=NF; i++) 
        if ($i+0 > max[i]) max[i] = $i
 } 
 END {
-   print "p2010 max:" max[2]
-   print "p8000 max:" max[3]
-   print "p8001 max:" max[4] 
-   print "p8899 max:" max[5]
-   print "tcp_in max:" max[6]
-   print "tcp_out max:" max[7]
-   print "udp_in max:" max[8]
-   print "udp_out max:" max[9]
+   for (i=2; i<=NF; i++)
+       print header[i] " max:" max[i]
 }' "$HOME/net_monitor/rates.csv"
 
 ```
