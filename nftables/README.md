@@ -79,8 +79,8 @@ done
 <details>
 <summary>определение пороговых значений для настройки nftables фильтров </summary>
  
-<u>nftables.conf</u> Использует счетчики для отслеживания трафика по типам (TCP/UDP).  
-<u>packets_counter.sh</u> Каждую минуту считывает показания счетчиков nftables.  
+<ins>nftables.conf</ins> Использует счетчики для отслеживания трафика по типам (TCP/UDP).  
+<ins>packets_counter.sh</ins> Каждую минуту считывает показания счетчиков nftables.  
 Вычисляет скорость трафика в pps (packets per second) и записывает статистику в rates.csv.  
 Сбрасывает счетчики после каждого измерения. 
 
