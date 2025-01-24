@@ -93,7 +93,7 @@ systemctl restart nftables
 chmod +x $HOME/net_monitor/net_stat.sh
 ./net_stat.sh
 ```
-Находим максимальные значения трафика
+Находим максимальные значения из файла rates.log
 ```bash
 awk '/tcp_in:/ { if ($2 > max_tcp) max_tcp = $2 } 
      /udp_in:/ { if ($2 > max_udp) max_udp = $2 } 
