@@ -79,19 +79,18 @@ done
 <details>
 <summary>определение пороговых значений для настройки nftables фильтров </summary>
  
-nftables.conf Использует счетчики для отслеживания трафика по типам (TCP/UDP).
-net_stat.sh Каждую минуту считывает показания счетчиков nftables. Вычисляет скорость трафика в:
-pps (packets per second)
-bps (bits per second)
-Записывает статистику в rates.log. Сбрасывает счетчики после каждого измерения
+nftables.conf Использует счетчики для отслеживания трафика по типам (TCP/UDP). 
+pocket_counter.sh Каждую минуту считывает показания счетчиков nftables. 
+Вычисляет скорость трафика в pps (packets per second) и записывает статистику в rates.csv. 
+Сбрасывает счетчики после каждого измерения. 
 ```bash
 mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
-curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/pocket_counter.sh > $HOME/net_monitor/net_stat.sh
-curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.sh > /etc/nftables.conf
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/pocket_counter.sh > $HOME/net_monitor/pocket_counter.sh
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.conf > /etc/nftables.conf
 systemctl enable nftables
 systemctl restart nftables
-chmod +x $HOME/net_monitor/net_stat.sh
-./net_stat.sh
+chmod +x $HOME/net_monitor/pocket_counter.sh
+./pocket_counter.sh
 ```
 Находим максимальные значения из файла rates.log
 ```bash
