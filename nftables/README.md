@@ -81,6 +81,23 @@ done
 
 ```bash
 mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/pocket_counter.sh > $HOME/net_monitor/net_stat.sh
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.sh > /etc/nftables.conf
+systemctl enable nftables
+systemctl restart nftables
+chmod +x $HOME/net_monitor/net_stat.sh
+./net_stat.sh
+
+
+
+```
+</details>
+
+<details>
+<summary>сбор сетевой статистики старый метод</summary>
+
+```bash
+mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_stat.sh > $HOME/net_monitor/net_stat.sh;
 chmod +x $HOME/net_monitor/net_stat.sh
 ./net_stat.sh 
