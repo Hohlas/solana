@@ -79,6 +79,7 @@ done
 <details>
 <summary>сбор сетевой статистики</summary>
 
+Собирает статистику соединения в файл ~/net_monitor/rates.log 
 ```bash
 mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/pocket_counter.sh > $HOME/net_monitor/net_stat.sh
