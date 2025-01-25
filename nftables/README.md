@@ -20,8 +20,10 @@ iptables -L -n -v  # Показать текущие правила
 apt update
 apt install nftables
 mkdir -p $HOME/net_monitor
-curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_monitor.sh > $HOME/net_monitor/net_monitor.sh;
+# фаервол, ddos фильтр
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
+# скрипт оповещения в телегу и терминал
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_monitor.sh > $HOME/net_monitor/net_monitor.sh;
 systemctl enable nftables
 chmod +x $HOME/net_monitor/net_monitor.sh
 ```
@@ -43,6 +45,19 @@ nft flush ruleset # Очистка всех правил
 <details>
 <summary>Проверка</summary>
 Мониторинг логов на тестируемом сервере
+
+```bash
+# счетчик пакетов
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.conf > /etc/nftables_counter.conf
+# скрипт для формирования статистики rates.csv
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/packets_counter.sh > $HOME/net_monitor/packets_counter.sh
+```
+```bash
+# раскомментировать include "/etc/nftables_counter.conf"
+nano /etc/nftables.conf 
+```
+
+
 
 ```bash
 tail -f /var/log/kern.log | grep NFT # логи фильтра
