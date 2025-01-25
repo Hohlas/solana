@@ -107,7 +107,7 @@ curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_coun
 systemctl enable nftables
 systemctl restart nftables
 chmod +x $HOME/net_monitor/packets_counter.sh
-./packets_counter.sh
+$HOME/net_monitor/packets_counter.sh
 ```
 ```bash
 nft list counters # Показания счётчиков
