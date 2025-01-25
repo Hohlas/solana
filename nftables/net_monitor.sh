@@ -15,21 +15,24 @@ fi
 TIME() {
     TZ=Europe/Moscow date +"%b %e  %H:%M:%S"
 }
-last_message_file="/tmp/net_monitor_last_message"
+
 # Мониторинг логов nftables
 monitor_logs() {
-   tail -F /var/log/kern.log | grep --line-buffered "\[NFT\]" | while read line; do
-       attack_type=$(echo "$line" | grep -oE '\[NFT\] [A-Z-]+' | cut -d' ' -f2)
-       ip=$(echo "$line" | grep -oP 'SRC=\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-       port=$(echo "$line" | grep -oP 'DPT=\K[0-9]+')
-       message="Detected: $attack_type from: $ip to: $port"
-       
-       if [ ! -f "$last_message_file" ] || [ "$message" != "$(cat "$last_message_file")" ]; then
-           curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
-           echo "$(TIME) $message" | tee -a $LOG_FILE
-           echo "$message" > "$last_message_file"
-       fi
-   done
+    line=$(tail -n 1 /var/log/kern.log | grep "NFT")
+    attack_type=$(echo "$line" | grep -oE '\[NFT\] [A-Z-]+' | cut -d' ' -f2)
+    ip=$(echo "$line" | grep -oP 'SRC=\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+    port=$(echo "$line" | grep -oP 'DPT=\K[0-9]+')
+    message="Detected: $attack_type from: $ip to: $port"
+    
+    if [ -z "$last_message" ]; then
+        last_message="$message"
+    fi
+   
+    if [ "$message" != "$last_message" ]; then
+        curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" -d chat_id=$CHAT_INFO -d text="$message" > /dev/null
+        echo "$(TIME) $message" | tee -a $LOG_FILE
+        last_message=$message 
+    fi
 }
 
 trap 'kill $(jobs -p)' EXIT # Trap для корректного завершения
