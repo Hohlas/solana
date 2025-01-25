@@ -83,7 +83,7 @@ done
 <ins>nftables.conf</ins> - Использует счетчики для отслеживания трафика по типам (TCP/UDP).  
 <ins>packets_counter.sh</ins> - Каждую минуту считывает показания счетчиков nftables.  
 Вычисляет скорость трафика в pps (packets per second) и записывает статистику в rates.csv.  
-Сбрасывает счетчики после каждого измерения. 
+Сбрасывает счетчики раз в минуту после каждого измерения. 
 
 ```bash
 mkdir -p $HOME/net_monitor; cd $HOME/net_monitor
@@ -101,6 +101,9 @@ watch -n 1 'nft list counters'  # Обновление каждую секунд
 ```bash
 
 ```
+Значения используются для выставления ограничений в nftables.conf  
+tcp_in -> TCP flood  
+udp_in -> UDP flood
 
 ![image](https://github.com/user-attachments/assets/14288973-c121-432d-95e4-5e370927bb80)
 
