@@ -74,6 +74,7 @@ for i in {1..30}; do
     sleep 0.1
 done 
 ```
+
 </details>
 
 <details>
@@ -93,10 +94,19 @@ systemctl restart nftables
 chmod +x $HOME/net_monitor/packets_counter.sh
 ./packets_counter.sh
 ```
+```bash
+nft list counters # Показания счётчиков
+watch -n 1 'nft list counters'  # Обновление каждую секунду
+```
+```bash
+
+```
+
 ![image](https://github.com/user-attachments/assets/14288973-c121-432d-95e4-5e370927bb80)
 
-Находим максимальные значения из файла rates.csv
+
 ```bash
+# вывести максимальные значения из rates.csv
 awk -F';' '
 NR == 1 { for(i=1;i<=NF;i++) header[i]=$i }
 NR > 1 {
