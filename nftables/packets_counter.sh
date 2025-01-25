@@ -22,7 +22,7 @@ monitor_rates() {
         
         # Original counters
         for counter in port_2010 port_8000 port_8001 port_8899 tcp_in tcp_out udp_in udp_out; do
-            data=$(nft list counter ip filter ${counter}_counter | grep -oP 'packets \K[0-9]+ bytes [0-9]+')
+            data=$(nft list counter ip packets_counter ${counter}_counter | grep -oP 'packets \K[0-9]+ bytes [0-9]+')
             if [ -n "$data" ]; then
                 packets=$(echo $data | cut -d' ' -f1)
                 rate_pps=$((packets / INTERVAL))
@@ -46,7 +46,7 @@ monitor_rates() {
 
         # UDP port counters
         for port in $(seq 8000 8020); do
-            data=$(nft list counter ip filter port_udp_${port}_counter | grep -oP 'packets \K[0-9]+ bytes [0-9]+')
+            data=$(nft list counter ip packets_counter port_udp_${port}_counter | grep -oP 'packets \K[0-9]+ bytes [0-9]+')
             if [ -n "$data" ]; then
                 packets=$(echo $data | cut -d' ' -f1)
                 rates["udp${port}"]=$((packets / INTERVAL))
@@ -65,10 +65,10 @@ monitor_rates() {
         
         # Reset all counters
         for counter in port_2010 port_8000 port_8001 port_8899 tcp_in tcp_out udp_in udp_out; do
-            nft reset counter ip filter ${counter}_counter
+            nft reset counter ip packets_counter ${counter}_counter
         done
         for port in $(seq 8000 8020); do
-            nft reset counter ip filter port_udp_${port}_counter
+            nft reset counter ip packets_counter port_udp_${port}_counter
         done
         
         sleep $INTERVAL
