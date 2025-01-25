@@ -61,7 +61,7 @@ nano /etc/nftables.conf
 
 ```bash
 tail -f /var/log/kern.log | grep NFT # логи фильтра
-tail -f ~/net_monitor/nftables.log  # логи скрипта
+tail -f ~/net_monitor/nftables.log  # логи скрипта net_monitor.sh
 ```
 
 Имитация атаки с удаленного сервера 
