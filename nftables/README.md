@@ -56,23 +56,21 @@ nft flush ruleset # Очистка всех правил
 mkdir -p $HOME/net_monitor
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_monitor.sh > $HOME/net_monitor/net_monitor.sh
 chmod +x $HOME/net_monitor/net_monitor.sh
-cat << 'EOF' > /etc/systemd/system/net-monitor.service
-[Unit]
+echo "[Unit]
 Description=NFTables Monitor Service
 After=network.target nftables.service
 
 [Service]
 Type=simple
-ExecStart=/root/net_monitor/net_monitor.sh
+ExecStart=$HOME/net_monitor/net_monitor.sh
 Restart=always
-User=root
+User=$USER
 
 [Install]
-WantedBy=multi-user.target
-EOF
+WantedBy=multi-user.target" > /etc/systemd/system/net-monitor.service
 systemctl daemon-reload
 systemctl enable net-monitor
-systemctl start net-monitor
+systemctl restart net-monitor
 ```
 </details>
 
