@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.6.3
+GUARD_VER=v1.6.4
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -214,6 +214,22 @@ RPC_REQUEST() {
 	# echo "$(TIME) REQUEST_ANSWER: $REQUEST_ANSWER" >>  $LOG_FILE
 	}
 
+DDOS_MONITOR() { # check nftables log for DDOS warnings
+    line=$(tail -n 1 /var/log/kern.log | grep "NFT")
+    attack_type=$(echo "$line" | grep -oE '\[NFT\] [A-Z-]+' | cut -d' ' -f2)
+    ip=$(echo "$line" | grep -oP 'SRC=\K[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+    port=$(echo "$line" | grep -oP 'DPT=\K[0-9]+')
+    message="Detected: $attack_type from: $ip to: $port"
+    if [ -z "$last_message" ]; then
+        last_message="$message"
+    fi
+    
+    if [ "$message" != "$last_message" ]; then
+        SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: $message"
+        last_message=$message 
+    fi
+}
+
 GET_VOTING_IP(){
     # Получаем IP-адрес голосующего валидатора 
 	RPC_REQUEST "IP"  
@@ -277,7 +293,8 @@ remote_behind_counter=0
 slots_remaining=0
 disconnect_counter=0
 CHECK_HEALTH() { # self check health every 5 seconds  ###########################################
- 	# check behind slots
+ 	DDOS_MONITOR # check nftables log for DDOS warnings
+	# check behind slots
  	Request_OK='true'
 	RPC_SLOT=$(timeout 5 solana slot -u $rpcURL1 2>> $LOG_FILE)
  	if [[ -z "$RPC_SLOT" ]]; then
