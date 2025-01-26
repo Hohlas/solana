@@ -22,9 +22,9 @@
 ufw disable
 systemctl disable ufw
 systemctl stop ufw
-iptables -F
-iptables -S # 
-iptables -X
+iptables -F # очищает все правила фильтрации в iptables
+iptables -X # удаляет все пользовательские цепочки из iptables
+iptables -S # выводит список всех правил в iptables
 ```
 ```bash
 iptables -L -n -v  # Показать текущие правила
@@ -42,11 +42,7 @@ systemctl enable nftables
 systemctl restart nftables
 ```
 ```bash
-# отправка уведомлений в телегу
-~/net_monitor/net_monitor.sh 
-```
-```bash
-nft -f nftables.conf # Примените изменения
+nft -f nftables.conf # Применение изменений без перезапуска сервиса
 systemctl disable nftables
 systemctl stop nftables
 nft flush ruleset # Очистка всех правил
