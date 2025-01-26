@@ -31,18 +31,12 @@ iptables -L -n -v  # Показать текущие правила
 ```
 
 
-
 ### установка и запуск фаервола на nftables
 ```bash
 apt update
-apt install nftables
-mkdir -p $HOME/net_monitor
-# фаервол, ddos фильтр
+apt install nftables -y
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
-# скрипт оповещения в телегу и терминал
-curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_monitor.sh > $HOME/net_monitor/net_monitor.sh;
 systemctl enable nftables
-chmod +x $HOME/net_monitor/net_monitor.sh
 ```
 ```bash
 systemctl restart nftables
@@ -58,6 +52,33 @@ systemctl stop nftables
 nft flush ruleset # Очистка всех правил
 ```
 
+<details>
+<summary>Сервис отправки уведомлений </summary>
+
+```bash
+# сервис оповещения в телегу и терминал (реализован в guard)
+mkdir -p $HOME/net_monitor
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/net_monitor.sh > $HOME/net_monitor/net_monitor.sh
+chmod +x $HOME/net_monitor/net_monitor.sh
+cat << 'EOF' > /etc/systemd/system/net-monitor.service
+[Unit]
+Description=NFTables Monitor Service
+After=network.target nftables.service
+
+[Service]
+Type=simple
+ExecStart=$HOME/net_monitor/net_monitor.sh
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable net-monitor
+systemctl start net-monitor
+```
+</details>
 
 
 <details>
