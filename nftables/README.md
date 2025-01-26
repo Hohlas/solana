@@ -63,7 +63,7 @@ After=network.target nftables.service
 
 [Service]
 Type=simple
-ExecStart=$HOME/net_monitor/net_monitor.sh
+ExecStart=/root/net_monitor/net_monitor.sh
 Restart=always
 User=root
 
