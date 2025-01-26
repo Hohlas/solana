@@ -48,7 +48,8 @@ chmod +x $HOME/net_monitor/net_monitor.sh
 systemctl restart nftables
 ```
 ```bash
-~/net_monitor/net_monitor.sh # запускать в отдельном окне
+# отправка уведомлений в телегу
+~/net_monitor/net_monitor.sh 
 ```
 ```bash
 nft -f nftables.conf # Примените изменения
