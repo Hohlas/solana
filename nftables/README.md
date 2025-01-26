@@ -6,11 +6,11 @@
 Фильтрация трафика фаерволом для портов соланы  
 Защита от DDOS: Добавляет IP в блэклист на 120сек за подозрительную активность  
 Фиксирует подозрительную активность в /var/log/kern.log  
-Определяет аттаки:
-  ICMP flood
-  TCP flood
-  UDP flood
-  Port scan
+Определяет аттаки:  
+  ICMP flood  
+  TCP flood  
+  UDP flood  
+  Port scan  
 
 ```bash
  
