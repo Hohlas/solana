@@ -1,5 +1,22 @@
 ## nftables firewall
 
+<details>
+<summary>Описание функций</summary>
+
+Фильтрация трафика фаерволом для портов соланы  
+Защита от DDOS: Добавляет IP в блэклист на 120сек за подозрительную активность  
+Фиксирует подозрительную активность в /var/log/kern.log  
+Определяет аттаки:
+  ICMP flood
+  TCP flood
+  UDP flood
+  Port scan
+
+```bash
+ 
+```
+</details>
+
 ```bash
 # удаление старого фаервола iptables
 ufw disable
@@ -151,12 +168,4 @@ chmod +x $HOME/net_monitor/net_stat.sh
 ```
 </details>
 
-
-<details>
-<summary>empty</summary>
-
-```bash
- 
-```
-</details>
 
