@@ -225,7 +225,7 @@ DDOS_MONITOR() { # check nftables log for DDOS warnings
     fi
     
     if [ "$message" != "$last_message" ]; then
-        SEND_INFO "$SERV_TYPE ${NODE}.${NAME}: $message"
+        SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: $message"
         last_message=$message 
     fi
 }
