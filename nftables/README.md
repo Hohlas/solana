@@ -146,7 +146,7 @@ $HOME/net_monitor/packets_counter.sh
 nft list counters # Показания счётчиков
 watch -n 1 'nft list counters'  # Обновление каждую секунду
 ```
-### оценка 'tcp-syn' - количество подключений с одного IP
+### оценка 'tcp-syn' запросов - количество подключений с одного IP
 ```bash
 # Запишите 'tcp-syn' трафик в файл за несколько минут
 tcpdump -i any -ttt 'tcp[tcpflags] & tcp-syn != 0' -n -w syn_packets.pcap
@@ -155,19 +155,25 @@ tcpdump -i any -ttt 'tcp[tcpflags] & tcp-syn != 0' -n -w syn_packets.pcap
 # показать статистику количеств подключений в минуту от каждого IP
 tcpdump -r syn_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f1-4 | sort | uniq -c | sort -k2,2 -k1,1nr
 ```
-### оценка 'ICMP' - запросов (ping)
+### оценка 'ICMP' запросов - (ping)
 ```bash
 # Запишем ICMP-пакеты в файл за несколько минут
 tcpdump -i any icmp -n -w icmp_packets.pcap
 ```
 ```bash
-# После записи проанализируем количество по минутам
+# После записи проанализируем количество для каждого IP
 tcpdump -r icmp_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f1-4 | sort | uniq -c | sort -k2,2 -k1,1nr
 ```
 
-Значения используются для выставления ограничений в nftables.conf  
-tcp_in -> TCP flood  
-udp_in -> UDP flood
+### оценка 'UDP' запросов
+```bash
+# Запишем ICMP-пакеты в файл за несколько минут
+tcpdump -i any udp dst port 8000 -n -w udp_packets.pcap
+```
+```bash
+# После записи проанализируем количество для каждого IP
+tcpdump -r udp_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f1-4 | sort | uniq -c
+```
 
 ![image](https://github.com/user-attachments/assets/14288973-c121-432d-95e4-5e370927bb80)
 
