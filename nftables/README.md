@@ -155,9 +155,14 @@ tcpdump -i any -ttt 'tcp[tcpflags] & tcp-syn != 0' -n -w syn_packets.pcap
 # показать статистику количеств подключений в минуту от каждого IP
 tcpdump -r syn_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f1-4 | sort | uniq -c | sort -k2,2 -k1,1nr
 ```
-### оценка 'ICMP' - 
+### оценка 'ICMP' - запросов (ping)
 ```bash
-
+# Запишем ICMP-пакеты в файл за несколько минут
+tcpdump -i any icmp -n -w icmp_packets.pcap
+```
+```bash
+# После записи проанализируем количество по минутам
+tcpdump -r icmp_packets.pcap -n -tt | awk '{print int($1/60)" "$3}' | cut -d. -f1-4 | sort | uniq -c | sort -k2,2 -k1,1nr
 ```
 
 Значения используются для выставления ограничений в nftables.conf  
