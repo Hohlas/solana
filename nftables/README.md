@@ -157,17 +157,18 @@ tcpdump -r syn_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f1
 ```
 ### оценка 'ICMP' запросов - (ping)
 ```bash
-# Запишем ICMP-пакеты в файл за несколько минут
-tcpdump -i any icmp -n -w icmp_packets.pcap
+# Запуск записи лога подключений на 60 секунд
+timeout --kill-after=1s 60s tcpdump -i any icmp -n -w icmp_packets.pcap
 ```
 ```bash
 # После записи проанализируем количество для каждого IP
-tcpdump -r icmp_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f1-4 | sort | uniq -c | sort -k2,2 -k1,1nr
+tcpdump -r icmp_packets.pcap -n | awk '{print $5}' | cut -d. -f1-4 | sort | uniq -c | sort -nr
 ```
+до 30 запросов/минуту
 
 ### оценка 'UDP' запросов
 ```bash
-# Запуск записи на 60 секунд
+# Запуск записи лога подключений на 60 секунд
 timeout 60s tcpdump -i any udp dst port 8000 -n -w udp_packets.pcap
 ```
 ```bash
