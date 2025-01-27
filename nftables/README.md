@@ -167,13 +167,14 @@ tcpdump -r icmp_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f
 
 ### оценка 'UDP' запросов
 ```bash
-# Запишем ICMP-пакеты в файл за несколько минут
-tcpdump -i any udp dst port 8000 -n -w udp_packets.pcap
+# Запуск записи на 60 секунд
+timeout 60s tcpdump -i any udp dst port 8000 -n -w udp_packets.pcap
 ```
 ```bash
-# После записи проанализируем количество для каждого IP
-tcpdump -r udp_packets.pcap -n -tt | awk '{print int($1/60)" "$5}' | cut -d. -f1-4 | sort | uniq -c
+# После записи проанализируем количество udp запросов для каждого IP
+tcpdump -r udp_packets.pcap -n | awk '{print $5}' | cut -d. -f1-4 | sort | uniq -c | sort -nr > udp_packets.log
 ```
+до 50К пакетов/сек
 
 ![image](https://github.com/user-attachments/assets/14288973-c121-432d-95e4-5e370927bb80)
 
