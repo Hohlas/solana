@@ -227,7 +227,7 @@ WantedBy=multi-user.target
 EOF
 sudo mv $HOME/relayer.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl desable relayer.service
+sudo systemctl disable relayer.service
 # sudo ufw allow 11228,11229/udp
 # sudo systemctl restart relayer
 # journalctl -u relayer -f
