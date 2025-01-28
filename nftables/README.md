@@ -46,6 +46,9 @@ nft -f nftables.conf # Применение изменений без перез
 systemctl disable nftables
 systemctl stop nftables
 nft flush ruleset # Очистка всех правил
+nft list ruleset # просмотр всех правил
+nft list table filter # просмотр таблицы filter
+nft list chain inet filter input # просмотр цепочки input таблицы filter.
 ```
 
 <details>
