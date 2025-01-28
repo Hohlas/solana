@@ -228,7 +228,7 @@ EOF
 sudo mv $HOME/relayer.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl desable relayer.service
-sudo ufw allow 11228,11229/udp
+# sudo ufw allow 11228,11229/udp
 # sudo systemctl restart relayer
 # journalctl -u relayer -f
 ```
