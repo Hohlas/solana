@@ -85,6 +85,7 @@ systemctl restart net-monitor
 mkdir -p $HOME/net_monitor
 # счетчик пакетов
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.conf > /etc/nftables_counter.conf
+# mv /etc/nftables_counter.conf /etc/nftables.conf # заменить сервис фильтра мониторингом
 # скрипт для формирования статистики rates.csv
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/packets_counter.sh > $HOME/net_monitor/packets_counter.sh
 ```
