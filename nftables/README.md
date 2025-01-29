@@ -114,6 +114,7 @@ nmap -p- -T4 $TEST_IP # Port scan
 ```
 ```bash
 hping3 --udp -p 8000 --flood $TEST_IP # UDP flood
+nping --udp -p 8000-8020 --rate 1000 $TEST_IP
 ```
 ```bash
 hping3 -1 --flood $TEST_IP # ICMP flood
