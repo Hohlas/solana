@@ -107,7 +107,7 @@ TEST_IP="195.3.223.66" # IP тестируемого сервера
 apt install nmap hping3
 ```  
 ```bash
-hping3 -S -p 8899 --flood $TEST_IP # SYN-flood
+hping3 -S -p 8900 --flood $TEST_IP # SYN-flood
 ```
 ```bash
 nmap -p- -T4 $TEST_IP # Port scan
