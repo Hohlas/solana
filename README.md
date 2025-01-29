@@ -8,7 +8,7 @@
 
 [LOG Monitor](monitor/README.md)
 
-[nftables firewall](nftables/README.md)
+[nftables](nftables/README.md)
 
 [stat](https://github.com/Hohlas/ubuntu/tree/main/test#readme)
 
