@@ -1,7 +1,7 @@
 #!/bin/bash
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
 # create dirs
-mkdir -p ~/solana/ledger  # ln -sf /mnt/disk2/ledger ~/solana
+mkdir -p ~/solana  # ln -sf /mnt/disk2/ledger ~/solana
 mkdir -p /mnt/snapshots
 mkdir -p /mnt/ramdisk
 
@@ -9,9 +9,6 @@ if [ ! -d "$HOME/keys" ]; then
 	echo "# keys to RAM" | sudo tee -a /etc/fstab 
 	echo "tmpfs /mnt/keys tmpfs nodev,nosuid,noexec,nodiratime,size=1M 0 0" | sudo tee -a /etc/fstab
     mkdir -p /mnt/keys
-    #echo "# RAMDISK" | sudo tee -a /etc/fstab 
-    #echo "tmpfs /mnt/ramdisk tmpfs nodev,nosuid,noexec,nodiratime 0 0" | sudo tee -a /etc/fstab
-    #mkdir -p /mnt/ramdisk
 	mount -a
     ln -sf /mnt/keys "$HOME/keys" 
     echo "create RAMDISK for keys"
@@ -87,7 +84,6 @@ source ~/sol_git/setup/install.sh
 source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
 ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
-
 
 systemctl daemon-reload
 systemctl enable cpu_performance.service
