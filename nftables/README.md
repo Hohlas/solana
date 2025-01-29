@@ -79,6 +79,7 @@ systemctl restart net-monitor
 Мониторинг логов на тестируемом сервере
 
 ```bash
+mkdir -p $HOME/net_monitor
 # счетчик пакетов
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_counter.conf > /etc/nftables_counter.conf
 # скрипт для формирования статистики rates.csv
