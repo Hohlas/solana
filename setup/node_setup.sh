@@ -91,5 +91,5 @@ systemctl start cpu_performance.service
 systemctl restart logrotate
 systemctl restart chronyd.service
 chronyc makestep # time correction
-source ~/sol_git/setup/grafana_setup.sh 
+source ~/sol_git/telegraf/grafana_setup.sh 
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
