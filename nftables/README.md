@@ -107,20 +107,21 @@ tail -f ~/net_monitor/nftables.log  # логи скрипта net_monitor.sh
 
 ```bash
 TEST_IP="195.3.223.66" # IP тестируемого сервера
+TIMER="120s"
 apt install nmap hping3
 ```  
 ```bash
-hping3 -S -p 8900 --flood $TEST_IP # SYN-flood
+timeout $TIMER hping3 -S -p 8900 --flood $TEST_IP # SYN-flood
 ```
 ```bash
-nmap -p- -T4 $TEST_IP # Port scan
+timeout $TIMER nmap -p- -T4 $TEST_IP # Port scan
 ```
 ```bash
-hping3 --udp -p 8000 --flood $TEST_IP # UDP flood
+timeout $TIMER hping3 --udp -p 8000 --flood $TEST_IP # UDP flood
 nping --udp -p 8000-8020 --rate 1000 $TEST_IP
 ```
 ```bash
-hping3 -1 --flood $TEST_IP # ICMP flood
+timeout $TIMER hping3 -1 --flood $TEST_IP # ICMP flood
 ```
 ```bash
 # TCP atack  
