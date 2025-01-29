@@ -38,13 +38,14 @@ systemctl enable nftables
 systemctl restart nftables
 ```
 ```bash
-nft -f nftables.conf # Применение изменений без перезапуска сервиса
+grep "NFT" /var/log/kern.log # срабатывания фильтров
 systemctl disable nftables
 systemctl stop nftables
 nft flush ruleset # Очистка всех правил
 nft list ruleset # просмотр всех правил
 nft list table filter # просмотр таблицы filter
 nft list chain inet filter input # просмотр цепочки input таблицы filter.
+nft -f nftables.conf # Применение изменений без перезапуска сервиса
 ```
 
 <details>
