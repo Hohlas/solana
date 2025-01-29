@@ -20,15 +20,16 @@ smartctl -a /dev/nvme0n1
 <summary>Perfomance</summary>
 
 ```bash
-cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check 
-```
-```bash
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
 ```
 ```bash
 ulimit -n 1000000  # set ulimit
 ulimit -n # check ulimit 
 ```
+```bash
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check 
+```
+--- 
 ```bash
 # set additional settings
 echo "
