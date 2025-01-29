@@ -226,52 +226,35 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 EOF
-sudo mv $HOME/relayer.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl disable relayer.service
+mv $HOME/relayer.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl disable relayer.service
 # sudo ufw allow 11228,11229/udp
-# sudo systemctl restart relayer
-# journalctl -u relayer -f
 ```
-
+```bash
+systemctl restart relayer
+journalctl -u relayer -f
+```
 </details>
 
 <details>
-<summary>UFW</summary>
+<summary>nftables</summary>
 
 ```bash
-ufw status
+apt update && apt install nftables -y
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
+systemctl enable nftables
+systemctl restart nftables
 ```
 ```bash
-ufw reset 
-ufw allow 2010 # SSH
-ufw allow 8000/tcp  # RPC
-ufw allow 8899/tcp  # JSON RPC over HTTP
-ufw allow 8900/tcp  # JSON RPC over Websockets
-ufw allow 8001/tcp  # Gossip
-ufw allow 8000:8020/udp
-# relayer
-ufw allow 10000:10007/udp
-ufw allow 11226/tcp
-ufw allow 11227:11229/udp
-ufw enable
-```
-
-```bash
-ufw status
-iptables -nvL  # проверить состояние конфигурации
-nft list ruleset
-tail -f ~/solana/solana.log | grep "timed out" # check logs for connection loss
-```
-```bash
+# удаление старого фаервола iptables
+ufw disable
+systemctl disable ufw
+systemctl stop ufw
+iptables -F # очищает все правила фильтрации в iptables
+iptables -X # удаляет все пользовательские цепочки из iptables
 iptables -S # разрешать входящие, исходящие и транзитные одной командой
-iptables -P INPUT ACCEPT   # Разрешим все входящие,
-iptables -P FORWARD ACCEPT # перенаправляющие и
-iptables -P OUTPUT ACCEPT  # исходящие соединения
-iptables -F            # очистить 
-iptables -t nat -F     # правила 
-iptables -t mangle -F  # во всех таблицах
-iptables -X # Удаляем все цепочки, которые не используются
+iptables -L -n -v  # Показать текущие правила
 ```
 
 </details>
