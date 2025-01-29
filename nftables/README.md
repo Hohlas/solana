@@ -30,8 +30,7 @@ iptables -L -n -v  # Показать текущие правила
 
 ### установка и запуск фаервола на nftables
 ```bash
-apt update
-apt install nftables -y
+apt update && apt install nftables -y
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
 systemctl enable nftables
 ```
