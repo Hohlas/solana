@@ -8,7 +8,7 @@ TIME() {
 
 if [ ! -f "$RATE_FILE" ]; then
     # Create header with UDP ports
-    header="Time;p2010;p8000;p8001;p8899;tcp_in;tcp_out;tcp_syn;udp_in;udp_out"
+    header="Time;p2010;p8000;p8001;p8899;p8900;tcp_in;tcp_out;tcp_syn;udp_in;udp_out"
     for port in $(seq 8000 8020); do
         header="${header};udp${port}"
     done
@@ -21,7 +21,7 @@ monitor_rates() {
         declare -A rates
         
         # Original counters
-        for counter in port_2010 port_8000 port_8001 port_8899 tcp_in tcp_out tcp_syn udp_in udp_out; do
+        for counter in port_2010 port_8000 port_8001 port_8899 port_8900 tcp_in tcp_out tcp_syn udp_in udp_out; do
             data=$(nft list counter ip packets_counter ${counter}_counter | grep -oP 'packets \K[0-9]+ bytes [0-9]+')
             if [ -n "$data" ]; then
                 packets=$(echo $data | cut -d' ' -f1)
@@ -35,6 +35,7 @@ monitor_rates() {
                     "port_8000") rates["p8000"]=$rate_pps ;;
                     "port_8001") rates["p8001"]=$rate_pps ;;
                     "port_8899") rates["p8899"]=$rate_pps ;;
+                    "port_8900") rates["p8900"]=$rate_pps ;;
                     *) rates[$counter]=$rate_pps ;;
                 esac
             else
@@ -43,6 +44,7 @@ monitor_rates() {
                     "port_8000") rates["p8000"]=0 ;;
                     "port_8001") rates["p8001"]=0 ;;
                     "port_8899") rates["p8899"]=0 ;;
+                    "port_8900") rates["p8900"]=0 ;;
                     *) rates[$counter]=0 ;;
                 esac
             fi
@@ -60,7 +62,7 @@ monitor_rates() {
         done
         
         # Build CSV line
-        line="$time;${rates[p2010]};${rates[p8000]};${rates[p8001]};${rates[p8899]};${rates[tcp_in]};${rates[tcp_out]};${rates[tcp_syn]};${rates[udp_in]};${rates[udp_out]}"
+        line="$time;${rates[p2010]};${rates[p8000]};${rates[p8001]};${rates[p8899]};${rates[p8900]};${rates[tcp_in]};${rates[tcp_out]};${rates[tcp_syn]};${rates[udp_in]};${rates[udp_out]}"
         for port in $(seq 8000 8020); do
             line="${line};${rates[udp${port}]}"
         done
@@ -68,7 +70,7 @@ monitor_rates() {
         echo "$line" >> "$RATE_FILE"
         
         # Reset all counters
-        for counter in port_2010 port_8000 port_8001 port_8899 tcp_in tcp_out tcp_syn udp_in udp_out; do
+        for counter in port_2010 port_8000 port_8001 port_8899 port_8900 tcp_in tcp_out tcp_syn udp_in udp_out; do
             nft reset counter ip packets_counter ${counter}_counter
         done
         for port in $(seq 8000 8020); do
