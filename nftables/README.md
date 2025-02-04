@@ -40,6 +40,7 @@ systemctl restart nftables
 ```bash
 systemctl disable nftables
 systemctl stop nftables
+systemctl status nftables
 nft flush ruleset # Очистка всех правил
 nft -f nftables.conf # Применение изменений без перезапуска сервиса
 ```
