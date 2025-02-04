@@ -240,6 +240,7 @@ journalctl -u relayer -f
 <details>
 <summary>nftables</summary>
 
+[nftables](nftables/README.md) 
 ```bash
 apt update && apt install nftables -y
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
