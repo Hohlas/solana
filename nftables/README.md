@@ -56,7 +56,7 @@ nft list chain filter input # просмотр цепочки input таблиц
 nft list chain filter ddos_protection # # просмотр цепочки ddos_protection таблицы filter.
 ```
 <details>
-<summary>Сервис отправки уведомлений </summary>
+<summary>Сервис отправки уведомлений (реализован в guard) </summary>
 
 ```bash
 # сервис оповещения в телегу и терминал (реализован в guard)
