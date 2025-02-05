@@ -102,10 +102,18 @@ nano /etc/nftables.conf
 ```
 
 
-
 ```bash
 tail -f /var/log/kern.log | grep NFT # логи фильтра
 tail -f ~/net_monitor/nftables.log  # логи скрипта net_monitor.sh
+netstat -nat | grep $TEST_IP # Просмотр текущих соединений
+nft list set ip filter blacklist # Просмотр заблокированных IP
+nft list counters # Проверка счетчиков
+```
+
+```bash
+# Мониторинг нагрузки на сеть
+ETH_DEVICE=$(ip route | grep default | awk '{print $5}')
+iftop -i $ETH_DEVICE -B -p 
 ```
 
 Имитация атаки с удаленного сервера 
@@ -113,7 +121,7 @@ tail -f ~/net_monitor/nftables.log  # логи скрипта net_monitor.sh
 ```bash
 TEST_IP="195.3.223.66" # IP тестируемого сервера
 TIMER="120s"
-apt install nmap hping3
+apt install nmap hping3 stress-ng slowhttptest
 ```  
 ```bash
 timeout $TIMER hping3 -S -p 8900 --flood $TEST_IP # SYN-flood
