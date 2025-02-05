@@ -138,10 +138,8 @@ timeout $TIMER hping3 -1 --flood $TEST_IP # ICMP flood
 ```
 ```bash
 # TCP atack  
-for i in {1..30}; do 
-    nc -zv $TEST_IP 8899 & 
-    sleep 0.1
-done 
+for i in {1..3000}; do nc -zv $TEST_IP 8900 & done
+for i in {1..3000}; do nc -w1 $TEST_IP 8900 & done
 ```
 
 </details>
