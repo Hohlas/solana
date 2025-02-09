@@ -57,8 +57,17 @@ tail -f /var/log/dancer/solana.log
 /root/firedancer/build/native/gcc/bin/fdctl run --config /home/dancer/dance_config.toml
 ```
 ```bash
-
-
+# LogRotate #
+echo "/var/log/dancer/solana.log {
+  rotate 1
+  daily
+  dateext  
+  missingok
+  postrotate
+    systemctl kill -s USR1 solana.service
+  endscript
+}" > /etc/logrotate.d/dancer.logrotate
+systemctl restart logrotate
 ```
 
 
