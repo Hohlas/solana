@@ -46,7 +46,7 @@ dynamic_port_range = "8000-8020"
 [snapshots]
 	minimum_snapshot_download_speed = 41943040
 	full_snapshot_interval_slots = 25000
-    incremental_snapshot_interval_slots = 6250
-    maximum_full_snapshots_to_retain = 1
-    maximum_incremental_snapshots_to_retain = 1
+	incremental_snapshot_interval_slots = 6250
+	maximum_full_snapshots_to_retain = 1
+	maximum_incremental_snapshots_to_retain = 1
 	path = "/mnt/snapshots"
