@@ -1,4 +1,4 @@
-user = "firedancer"
+user = "dancer"
 dynamic_port_range = "8004-8020"
 
 [gossip]
@@ -17,16 +17,13 @@ dynamic_port_range = "8004-8020"
         "eoKpUABi59aT4rR9HGS3LcMecfut9x7zJyodWWP43YQ",
         "9QxCLckBiJc783jnMvXZubK4wH86Eqqvashtrwvcsgkv",
     ]
-	identity_path = "/home/firedancer/solana/validator-keypair.json"
-	vote_account_path = "/home/firedancer/solana/vote.json"
+	identity_path = "/home/dancer/validator-keypair.json"
+	vote_account_path = "/home/dancer/vote.json"
 
 [rpc]
     port = 8899
     full_api = true
     private = true
-
-[log]
-    path = "/home/firedancer/solana/solana.log"
 
 [layout]
 	affinity = "auto"
@@ -39,7 +36,7 @@ dynamic_port_range = "8004-8020"
     solana_metrics_config = "host=https://metrics.solana.com:8086,db=tds,u=testnet_write,p=c4fa841aa918bf8274e3e2a44d77568d9861b3ea"
 
 [ledger]
-    path = "/home/firedancer/solana/ledger"
+    path = "/home/dancer/ledger"
     accounts_path = "/mnt/disk1/accounts"
     limit_size = 50000000
 	
@@ -50,3 +47,6 @@ dynamic_port_range = "8004-8020"
 	maximum_full_snapshots_to_retain = 1
 	maximum_incremental_snapshots_to_retain = 1
 	path = "/mnt/snapshots"
+
+[log]
+    path = "/var/log/dancer/solana.log"
