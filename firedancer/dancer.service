@@ -1,0 +1,13 @@
+[Unit]
+Description=Firedancer Validator
+After=network.target
+
+[Service]
+#User=root
+#Type=oneshot
+ExecStart=/bin/bash -c ' \
+/root/firedancer/build/native/gcc/bin/fdctl configure init all --config /home/dancer/dance_config.toml && \
+/root/firedancer/build/native/gcc/bin/fdctl run --config /home/dancer/dance_config.toml'
+
+[Install]
+WantedBy=multi-user.target
