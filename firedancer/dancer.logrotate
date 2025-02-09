@@ -1,5 +1,5 @@
 /var/log/dancer/solana.log {
-  rotate 1
+  rotate 2
   daily
   dateext  
   missingok
