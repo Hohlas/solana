@@ -12,6 +12,7 @@ echo 'export SOL_DIR='$SOL_DIR >> $HOME/.bashrc
 export PATH="$HOME/firedancer/build/native/gcc/bin/:$PATH"
 echo 'export PATH='$PATH >> ~/.bashrc
 echo "alias logs='tail -f /var/log/dancer/solana.log'" >> $HOME/.bashrc
+echo "alias monitor='agave-validator -l /home/dancer/ledger monitor'" >> $HOME/.bashrc
 DANCE_VER="v0.305.20111"
 adduser dancer
 ```
