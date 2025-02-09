@@ -38,6 +38,7 @@ curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.serv
 ln -sf $SOL_DIR/dancer.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable dancer.service
+systemctl disable solana
 ```
 
 ```bash
@@ -48,10 +49,10 @@ journalctl -u dancer -f
 tail -f /var/log/dancer/solana.log
 ```
 ```bash
-
+/root/firedancer/build/native/gcc/bin/fdctl configure init all --config /home/dancer/dance_config.toml
 ```
 ```bash
-
+/root/firedancer/build/native/gcc/bin/fdctl run --config /home/dancer/dance_config.toml
 ```
 ```bash
 
