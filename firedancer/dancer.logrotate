@@ -4,6 +4,6 @@
   dateext  
   missingok
   postrotate
-    systemctl kill -s USR1 solana.service
+    systemctl kill -s USR1 dancer.service
   endscript
 }
