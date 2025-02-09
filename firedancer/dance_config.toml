@@ -1,5 +1,5 @@
-user = "root"
-dynamic_port_range = "8005-8025"
+user = "firedancer"
+dynamic_port_range = "8000-8020"
 
 [gossip]
     entrypoints = [
@@ -17,11 +17,8 @@ dynamic_port_range = "8005-8025"
         "eoKpUABi59aT4rR9HGS3LcMecfut9x7zJyodWWP43YQ",
         "9QxCLckBiJc783jnMvXZubK4wH86Eqqvashtrwvcsgkv",
     ]
-	identity_path = "/root/solana/empty-validator.json"
+	identity_path = "/root/solana/validator-keypair.json"
 	vote_account_path = "/root/solana/vote.json"
-	authorized_voter_paths = [
-		"/root/solana/validator-keypair.json"
-	]
 
 [rpc]
     port = 8899
