@@ -10,7 +10,7 @@ source $HOME/.cargo/env
 cd
 git clone --recurse-submodules https://github.com/firedancer-io/firedancer.git
 cd firedancer
-git checkout v0.302.20104 # Or the latest Frankendancer release
+git checkout v0.305.20111 # Or the latest Frankendancer release
 ```
 ```bash
 ./deps.sh # script to install system packages and compile library dependencies
