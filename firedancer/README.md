@@ -8,7 +8,10 @@ source $HOME/.cargo/env
 ```
 ```bash
 SOL_DIR="/home/dancer" # SOL_DIR="/root/solana"
-DANCER="/root/firedancer/build/native/gcc/bin/fdctl"
+echo 'export SOL_DIR='$SOL_DIR >> $HOME/.bashrc
+export PATH="$HOME/firedancer/build/native/gcc/bin/:$PATH"
+echo 'export PATH='$PATH >> ~/.bashrc
+echo "alias logs='tail -f /var/log/dancer/solana.log'" >> $HOME/.bashrc
 DANCE_VER="v0.305.20111"
 adduser dancer
 ```
@@ -30,8 +33,6 @@ make -j fdctl solana # build Firedancer
 ~/firedancer/build/native/gcc/bin/solana --version
 ```
 ```bash
-export PATH="$HOME/firedancer/build/native/gcc/bin/:$PATH"
-echo 'export PATH='$PATH >> ~/.bashrc
 curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dance_config.toml > $SOL_DIR/dance_config.toml
 curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.service > $SOL_DIR/dancer.service
 ln -sf $SOL_DIR/dancer.service /etc/systemd/system
