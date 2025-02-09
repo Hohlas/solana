@@ -25,24 +25,28 @@ dynamic_port_range = "8000-8020"
     full_api = true
     private = true
 
+[log]
+    path = "/home/firedancer/solana/solana.log"
+
 [layout]
-    # Configure 2 shred tiles to handle the increased computational
-    # overhead of shred destination calculation, which scales with
-    # testnet's expanded validator peer set
-    shred_tile_count = 2
+	affinity = "auto"
+	agave_affinity = "auto"
+	verify_tile_count = 1
+	bank_tile_count = 1
+	shred_tile_count = 2
 
 [reporting]
     solana_metrics_config = "host=https://metrics.solana.com:8086,db=tds,u=testnet_write,p=c4fa841aa918bf8274e3e2a44d77568d9861b3ea"
 
 [ledger]
-    path = "/root/solana/ledger"
+    path = "/home/firedancer/solana/ledger"
     accounts_path = "/mnt/disk1/accounts"
     limit_size = 50000000
 	
 [snapshots]
 	minimum_snapshot_download_speed = 41943040
 	full_snapshot_interval_slots = 25000
-	incremental_snapshots = false
-	maximum_full_snapshots_to_retain = 2
-	maximum_incremental_snapshots_to_retain = 4
-	
+    incremental_snapshot_interval_slots = 6250
+    maximum_full_snapshots_to_retain = 1
+    maximum_incremental_snapshots_to_retain = 1
+	path = "/mnt/snapshots"
