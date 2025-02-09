@@ -1,0 +1,9 @@
+/var/log/dancer/solana.log {
+  rotate 1
+  daily
+  dateext  
+  missingok
+  postrotate
+    systemctl kill -s USR1 solana.service
+  endscript
+}
