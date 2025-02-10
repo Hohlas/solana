@@ -45,6 +45,7 @@ sed -i "/^[ \t]*results\[ 1 \] = pwd\.pw_gid/c results[ 1 ] = 1002;" ~/firedance
 make -j fdctl solana 
 ~/firedancer/build/native/gcc/bin/solana --version
 ```
+copy 'vote.json' & 'validator-keypair.json' to /root/solana/ 
 ```bash
 systemctl restart dancer
 journalctl -u dancer -f
