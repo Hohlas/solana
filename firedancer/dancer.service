@@ -3,11 +3,15 @@ Description=Firedancer Validator
 After=network.target
 
 [Service]
-#User=root
-#Type=oneshot
+User=root
+Type=simple
+Restart=always
+RestartSec=1
 ExecStart=/bin/bash -c ' \
-/root/firedancer/build/native/gcc/bin/fdctl configure init all --config /home/dancer/dance_config.toml && \
-/root/firedancer/build/native/gcc/bin/fdctl run --config /home/dancer/dance_config.toml'
+/root/firedancer/build/native/gcc/bin/fdctl configure init all --config /root/solana/dance_config.toml && \
+/root/firedancer/build/native/gcc/bin/fdctl run --config /root/solana/dance_config.toml'
 
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
 [Install]
 WantedBy=multi-user.target
