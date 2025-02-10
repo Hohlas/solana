@@ -7,22 +7,27 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source $HOME/.cargo/env
 ```
 ```bash
-SOL_DIR="/home/dancer" # SOL_DIR="/root/solana"
-echo 'export SOL_DIR='$SOL_DIR >> $HOME/.bashrc
-export PATH="$HOME/firedancer/build/native/gcc/bin/:$PATH"
-echo 'export PATH='$PATH >> ~/.bashrc
 echo "alias logs='tail -f /var/log/dancer/solana.log'" >> $HOME/.bashrc
 echo "alias monitor='agave-validator -l /home/dancer/ledger monitor'" >> $HOME/.bashrc
+export PATH="$HOME/firedancer/build/native/gcc/bin/:$PATH"
+echo 'export PATH='$PATH >> ~/.bashrc
 source ~/.bashrc
-DANCE_VER="v0.305.20111"
-adduser dancer
+mkdir -p /mnt/disk1/accounts /mnt/ledger /mnt/snapshots /var/log/dancer /root/solana
+ln -sf /mnt/ledger /root/solana/ledger
+# chown -R root:root /mnt /var/log/dancer
+chmod -R u=rwx,g=rwx /mnt /var/log/dancer
+curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dance_config.toml > /root/solana/dance_config.toml
+curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.service > /root/solana/dancer.service
+ln -sf /root/solana/dancer.service /etc/systemd/system
+systemctl daemon-reload
+systemctl enable dancer.service
+systemctl disable solana.service
+# LogRotate #
+curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.logrotate > /etc/logrotate.d/dancer.logrotate
+systemctl restart logrotate
 ```
 ```bash
-mkdir -p $SOL_DIR/ledger
-mkdir -p /mnt/disk1/accounts
-mkdir -p /var/log/dancer
-chown -R dancer:dancer $SOL_DIR /mnt /var/log/dancer
-chmod -R 755 $SOL_DIR /mnt /var/log/dancer
+DANCE_VER="v0.305.20111"
 ```
 ```bash
 cd
@@ -31,42 +36,29 @@ cd ~/firedancer
 git checkout $DANCE_VER
 git submodule update
 ./deps.sh # install libraries/dependencies
-make -j fdctl solana # build Firedancer
-~/firedancer/build/native/gcc/bin/solana --version
 ```
 ```bash
-curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dance_config.toml > $SOL_DIR/dance_config.toml
-curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.service > $SOL_DIR/dancer.service
-ln -sf $SOL_DIR/dancer.service /etc/systemd/system
-systemctl daemon-reload
-systemctl enable dancer.service
-systemctl disable solana
+# make root
+sed -i "/^[ \t]*results\[ 0 \] = pwd\.pw_uid/c results[ 0 ] = 1001;" ~/firedancer/src/app/fdctl/config.c
+sed -i "/^[ \t]*results\[ 1 \] = pwd\.pw_gid/c results[ 1 ] = 1002;" ~/firedancer/src/app/fdctl/config.c
+# build
+make -j fdctl solana 
+~/firedancer/build/native/gcc/bin/solana --version
 ```
-
 ```bash
 systemctl restart dancer
 journalctl -u dancer -f
 ```
+--- 
+
 ```bash
 tail -f /var/log/dancer/solana.log
 ```
 ```bash
-/root/firedancer/build/native/gcc/bin/fdctl configure init all --config /home/dancer/dance_config.toml
+fdctl configure init all --config /root/solana/dance_config.toml
 ```
 ```bash
-/root/firedancer/build/native/gcc/bin/fdctl run --config /home/dancer/dance_config.toml
-```
-```bash
-# LogRotate #
-curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.logrotate > /etc/logrotate.d/dancer.logrotate
-systemctl restart logrotate
-```
-
-
-```bash
-# configure and check: hugetlbfs, sysctl, ethtool-channels, ethtool-gro
-fdctl configure init all
-fdctl configure check all 
+fdctl run --config /root/solana/dance_config.toml
 ```
 
 
