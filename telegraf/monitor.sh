@@ -29,9 +29,7 @@ else
 fi
 
 if [ -z $rpcURL ]; then
-   rpcPort=$(ps aux | grep solana-validator | grep -Po "\-\-rpc\-port\s+\K[0-9]+")
-   if [ -z $rpcPort ]; then echo "nodemonitor,pubkey=$identityPubkey status=4 $now"; exit 1; fi
-   rpcURL="http://127.0.0.1:$rpcPort"
+   rpcURL="http://127.0.0.1:8899"
 fi
 
 noVoting=$(ps aux | grep solana-validator | grep -c "\-\-no\-voting")
