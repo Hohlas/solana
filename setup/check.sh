@@ -1,14 +1,25 @@
 #!/bin/bash
-#===========================================
-CHECK_VER=v1.3.8
-SOLANA_SERVICE="$HOME/solana/solana.service"
-#===========================================
-LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
-VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-IDENTITY=$(solana address) 
-VOTE_ACC_KEY=$(grep -oP '(?<=--vote-account\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+
+CHECK_VER=v1.3.9
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
+#===========================================
+if [ $rpcURL = https://api.testnet.solana.com ]; then 
+	NODE="test";
+	SOLANA_SERVICE="$HOME/solana/dancer.service"
+	LEDGER="$HOME/solana/ledger"
+	EMPTY_KEY="$HOME/solana/empty-validator.json"
+	VOTING_KEY="$HOME/solana/validator-keypair.json"
+	VOTE_ACC_KEY="$HOME/solana/vote.json"
+elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
+	NODE="main"; 
+	SOLANA_SERVICE="$HOME/solana/solana.service"
+	LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+	EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
+	VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+	IDENTITY=$(solana address) 
+	VOTE_ACC_KEY=$(grep -oP '(?<=--vote-account\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+fi
+#===========================================
 version=$(solana-validator --version 2>/dev/null)
 if [ $? -ne 0 ]; then
     echo "Error! Can't run 'solana-validator'"
@@ -18,7 +29,7 @@ else
 fi	
 client=$(solana --version | awk -F'client:' '{print $2}' | tr -d ')')
 current_validator=$(timeout 3 stdbuf -oL solana-validator --ledger $LEDGER monitor 2>/dev/null | grep -m1 Identity | awk -F': ' '{print $2}')
-#current_validator=$(solana-validator --ledger $HOME/solana/ledger contact-info | grep "Identity:" | awk '{print $2}')
+#===========================================
 EMPTY_ADDR=$(solana address -k $EMPTY_KEY)
 VOTING_ADDR=$(solana address -k $VOTING_KEY)
 VOTE_ACC_ADDR=$(solana address -k $VOTE_ACC_KEY)
@@ -27,10 +38,7 @@ VOTE_IP=$(solana gossip | grep $VOTING_ADDR | awk '{print $1}')
 GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
 
 
-if [ $rpcURL = https://api.testnet.solana.com ]; then 
-	NODE="test";
-elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
-	NODE="main"; fi
+
 
 
 if [[ $current_validator == $EMPTY_ADDR ]]; then VAL_CLR=$GRAY # set gray color
