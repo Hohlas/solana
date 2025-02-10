@@ -49,6 +49,15 @@ copy 'vote.json' & 'validator-keypair.json' to /root/solana/
 ```bash
 chmod -R 777 /mnt /var/log/dancer /root/solana
 chmod 777 /root/solana/vote.json /root/solana/validator-keypair.json
+chmod 755 /root/firedancer/build/native/gcc/bin/fdctl
+```
+```bash
+chmod 755 /root
+chmod 755 /root/firedancer
+chmod 755 /root/firedancer/build
+chmod 755 /root/firedancer/build/native
+chmod 755 /root/firedancer/build/native/gcc
+chmod 755 /root/firedancer/build/native/gcc/bin
 ```
 ```bash
 systemctl restart dancer
