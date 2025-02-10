@@ -8,7 +8,7 @@ source $HOME/.cargo/env
 ```
 ```bash
 echo "alias logs='tail -f /var/log/dancer/solana.log'" >> $HOME/.bashrc
-echo "alias monitor='agave-validator -l /home/dancer/ledger monitor'" >> $HOME/.bashrc
+echo "alias monitor='agave-validator -l /root/solana/ledger monitor'" >> $HOME/.bashrc
 export PATH="$HOME/firedancer/build/native/gcc/bin/:$PATH"
 echo 'export PATH='$PATH >> ~/.bashrc
 source ~/.bashrc
