@@ -47,6 +47,10 @@ make -j fdctl solana
 ```
 copy 'vote.json' & 'validator-keypair.json' to /root/solana/ 
 ```bash
+chmod -R u=rwx,g=rwx /root /root/solana /mnt
+chmod 600 /root/solana/vote.json /root/solana/validator-keypair.json
+```
+```bash
 systemctl restart dancer
 journalctl -u dancer -f
 ```
