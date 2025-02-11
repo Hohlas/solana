@@ -17,11 +17,10 @@ ln -sf /mnt/ledger /root/solana/ledger
 # chown -R root:root /mnt /var/log/dancer
 chmod -R 777 /mnt /var/log/dancer /root/solana
 curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dance_config.toml > /root/solana/dance_config.toml
-curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.service > /root/solana/dancer.service
-ln -sf /root/solana/dancer.service /etc/systemd/system
+curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.service > /root/solana/solana.service
+ln -sf /root/solana/solana.service /etc/systemd/system
 systemctl daemon-reload
-systemctl enable dancer.service
-systemctl disable solana.service
+systemctl enable solana.service
 # LogRotate #
 curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.logrotate > /etc/logrotate.d/dancer.logrotate
 systemctl restart logrotate
