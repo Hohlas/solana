@@ -19,7 +19,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --known-validator DE1bawNcRJB9rVm3buyMVfr8mBEoyyu73NBovf2oXJsJ \
 --known-validator CakcnaRDHka2gXyfbEd2d3xsvkJkqsLw2akB3zsN1D2S \
 --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
---only-known-rpc \
+#--only-known-rpc \
 --wal-recovery-mode skip_any_corrupted_record \
 --identity /root/solana/empty-validator.json \
 --authorized-voter /root/solana/validator-keypair.json \
@@ -51,7 +51,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
 --merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
 --commission-bps 1000 \
---relayer-url http://127.0.0.1:11226 \
+--relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 \
 --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf \
 --shred-receiver-address 64.130.50.14:1002
 ExecReload=/bin/kill -s HUP $MAINPID
