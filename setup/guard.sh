@@ -450,7 +450,7 @@ PRIMARY_SERVER(){ ##############################################################
 		CHECK_CONNECTION
 		CHECK_HEALTH
 		GET_VOTING_IP
-  		sleep 1
+  		sleep 3
 	done
 	LOG "PRIMARY status ended"
  	sleep 20
