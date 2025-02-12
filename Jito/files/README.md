@@ -54,73 +54,7 @@ git checkout tags/$TAG
 git submodule update --init --recursive
 ```
 
-<details>
-<summary>check TAGs differences </summary>
 
-[JitoGit](https://github.com/jito-foundation/jito-solana/releases) | [AgaveGit](https://github.com/anza-xyz/agave/releases)
-```bash
-TAG1=v2.0.15-jito
-```
-
-```bash
-GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
-FILES=(
-    "core/src/consensus.rs"
-    "core/src/consensus/progress_map.rs"
-    "core/src/consensus/fork_choice.rs"
-    "core/src/replay_stage.rs"
-    "core/src/vote_simulator.rs"
-    "programs/vote/src/vote_state/mod.rs"
-    "sdk/program/src/vote/state/mod.rs"
-)
-echo -e "\n  - TAGs $BLUE$TAG$CLEAR & $BLUE$TAG1$CLEAR differences - "
-for FILE in "${FILES[@]}"; do
-    DIFF=$(git diff "$TAG" "$TAG1" -- "$FILE") # различия между тегами
-    if [ -n "$DIFF" ]; then
-        echo -e "${RED}files are different:${CLEAR} $FILE"
-        # echo "$DIFF"  # Выводим различия
-    else
-        echo -e "${GREEN}files the same:${CLEAR} $FILE"
-    fi
-done
-
-```
-
-</details>
-
-<details>
-<summary> Update files </summary>
-
-### v2.1.xx
-```bash
-
-curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/consensus.rs
-curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/progress_map.rs
-curl -o $REPO_DIR/core/src/consensus/fork_choice.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/fork_choice.rs
-curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/replay_stage.rs
-curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/vote_simulator.rs
-curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/mod.rs
-curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/mod_sdk.rs
-curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.1/mostly_confirmed_threshold
-echo -e "replace files for \033[32m V2.1.x \033[0m versions "
-```
-
-
-### v2.0.xx
-```bash
-
-curl -o $REPO_DIR/core/src/consensus.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/consensus.rs
-curl -o $REPO_DIR/core/src/consensus/progress_map.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/progress_map.rs
-curl -o $REPO_DIR/core/src/replay_stage.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/replay_stage.rs
-curl -o $REPO_DIR/core/src/vote_simulator.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/vote_simulator.rs
-curl -o $REPO_DIR/programs/vote/src/vote_state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/mod.rs
-curl -o $REPO_DIR/sdk/program/src/vote/state/mod.rs https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/mod_sdk.rs
-curl -o $HOME/solana/mostly_confirmed_threshold https://raw.githubusercontent.com/Hohlas/solana/main/Jito/files/v2.0/mostly_confirmed_threshold
-echo -e "replace files for \033[32m V2.0.x \033[0m versions "
-```
----
-
-</details>
 
 ```bash
 cd $REPO_DIR;
