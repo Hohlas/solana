@@ -95,7 +95,7 @@ SEND_ALARM(){
 	}
  
 REQUEST_IP(){
-	sleep 0.5
+	#sleep 0.5
 	local RPC_URL="$1"
 	VALIDATOR_REQUEST=$(timeout 5 solana gossip --url $RPC_URL 2>> $LOG_FILE)
 	if [ $? -ne 0 ]; then 
@@ -108,7 +108,7 @@ REQUEST_IP(){
 	}
 
 REQUEST_DELINK(){
-	sleep 0.5
+	#sleep 0.5
 	local RPC_URL="$1"
 	VALIDATORS_LIST=$(timeout 5 solana validators --url $RPC_URL --output json 2>> $LOG_FILE)
 	if [ $? -ne 0 ]; then 
@@ -315,7 +315,7 @@ CHECK_HEALTH() { # self check health every 5 seconds  ##########################
    	else
    		BEHIND=555;
    	fi
-	sleep 1
+	# sleep 1
 	# epoch info
 	EPOCH_INFO=$(timeout 5 solana epoch-info --output json 2>> $LOG_FILE)
 	if [[ $? -ne 0 ]]; then
