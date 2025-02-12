@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.6.4
+GUARD_VER=v1.6.5
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -475,6 +475,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
+    	timeout 5 scp -q -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
   		if [[ "$SERV_TYPE" == "PRIMARY" ]]; then
     		return
        	fi
