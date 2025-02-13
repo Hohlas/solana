@@ -470,6 +470,28 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
 	fi
   }
 
+COPY_TOWER(){ # copy tower file from PRIMARY to SECONDARY
+    timeout 2 scp -q -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
+    local scp_status=$?
+    
+    case $scp_status in
+        0)  # success
+            return 0
+            ;;
+        124)  # timeout
+            LOG "Error: SCP timeout while copying tower file"
+            ;;
+        1)    # General SCP error
+            LOG "Error: Failed to copy tower file"
+            ;;
+        *)
+            LOG "Error: SCP failed with exit code $scp_status"
+            ;;
+    esac
+    
+    return $scp_status
+}
+
 PRIMARY_SERVER(){ #######################################################################
 	#echo -e "\n = PRIMARY  SERVER ="
 	SEND_INFO "PRIMARY ${NODE}.${NAME} $CUR_IP start"
@@ -502,7 +524,7 @@ SECONDARY_SERVER(){ ############################################################
 		fi	
 		CHECK_HEALTH #  self check node health
   		GET_VOTING_IP
-    	timeout 5 scp -q -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
+    	COPY_TOWER
   		if [[ "$SERV_TYPE" == "PRIMARY" ]]; then
     		return
        	fi
@@ -532,20 +554,9 @@ SECONDARY_SERVER(){ ############################################################
 	fi
  	LOG "Let's start voting on current server"
 
-	# remove old tower
-	#if [[ -f $LEDGER/tower-1_9-$IDENTITY.bin ]]; then
-	#	rm $LEDGER/tower-1_9-$IDENTITY.bin 
-	#	if [ $? -eq 0 ]; then LOG "remove old tower OK"
-	#	else LOG "remove old tower Error: $remove_status"
-	#	fi
-	#fi
-
 	# copy tower from remote server
-	timeout 5 scp -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
-	copy_status=$?
-	if [ $copy_status -eq 0 ]; then LOG "copy tower from $SERV OK"
-	elif [ $copy_status -eq 124 ]; then LOG "Error! Copy tower from $SERV timeout exceed"
-	else LOG "Error! Copy tower from $SERV $copy_status"
+	if COPY_TOWER; then
+    	LOG "Tower copy successfully"
 	fi
 
  	# check tower age
@@ -565,7 +576,7 @@ SECONDARY_SERVER(){ ############################################################
 		LOG "remote_validator=$remote_validator, IDENTITY=$IDENTITY"
 		return
 	else
-		LOG "remote_validator change OK, so can start voting"
+		LOG "Remote_validator change OK"
 	fi
    
    # START SOLANA on LOCAL server
