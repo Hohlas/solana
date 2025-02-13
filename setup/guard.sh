@@ -292,6 +292,15 @@ SSH(){
 			1)    # Общие ошибки выполнения
 				LOG "SSH Error: General error"
 				;;
+    		5)    # I/O error или ошибка сети
+                LOG "SSH Error: I/O or network error"
+                ;;
+            6)    # Ошибка разрешения имени хоста
+                LOG "SSH Error: Host name resolution error"
+                ;;
+            7)    # Ошибка протокола
+                LOG "SSH Error: Protocol error"
+                ;;
 			*)
 				LOG "SSH Error: Command failed with exit code $command_exit_status"
 				;;
