@@ -16,8 +16,8 @@ mkdir -p /mnt/disk1/accounts /mnt/ledger /mnt/snapshots /var/log/dancer /root/so
 ln -sf /mnt/ledger /root/solana/ledger
 # chown -R root:root /mnt /var/log/dancer
 chmod -R 777 /mnt /var/log/dancer /root/solana
-curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dance_config.toml > /root/solana/dance_config.toml
-curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.service > /root/solana/solana.service
+curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/config.toml > /root/solana/config.toml
+curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/solana.service > /root/solana/solana.service
 ln -sf /root/solana/solana.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable solana.service
@@ -69,10 +69,10 @@ journalctl -u dancer -f
 tail -f /var/log/dancer/solana.log
 ```
 ```bash
-fdctl configure init all --config /root/solana/dance_config.toml
+fdctl configure init all --config /root/solana/config.toml
 ```
 ```bash
-fdctl run --config /root/solana/dance_config.toml
+fdctl run --config /root/solana/config.toml
 ```
 
 
