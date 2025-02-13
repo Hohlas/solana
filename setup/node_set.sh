@@ -40,7 +40,7 @@ if [[ $NODE == "main" ]]; then
     fi
 elif [[ $NODE == "test" ]]; then
     solana config set --url https://api.testnet.solana.com --keypair ~/solana/validator-keypair.json
-    cp ~/sol_git/test/solana.service ~/solana/solana.service
+    cp ~/sol_git/firedancer/solana.service ~/solana/solana.service
 else
     echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
     exit
