@@ -17,7 +17,7 @@ dynamic_port_range = "8004-8020"
         "eoKpUABi59aT4rR9HGS3LcMecfut9x7zJyodWWP43YQ",
         "9QxCLckBiJc783jnMvXZubK4wH86Eqqvashtrwvcsgkv",
     ]
-	authorized_voter_paths = "/root/solana/validator-keypair.json"
+	authorized_voter_paths = ["/root/solana/validator-keypair.json"]
  	identity_path = "/root/solana/empty-validator.json"
 	vote_account_path = "/root/solana/vote.json"
 
