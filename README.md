@@ -4,6 +4,8 @@
 
 [Jito setup](https://github.com/Hohlas/solana/tree/main/Jito)
 
+[FireDancer](firedancer/README.md)
+
 [GUARD](setup/guard_help.md)
 
 [LOG Monitor](monitor/README.md)
