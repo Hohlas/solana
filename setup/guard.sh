@@ -553,7 +553,14 @@ SECONDARY_SERVER(){ ############################################################
     	if [ $command_exit_status -eq 0 ]; then
 			SEND_INFO "restart solana on remote server"
       	else
-			SEND_ALARM "Can't restart solana on REMOTE server"
+			SEND_ALARM "Can't restart solana on REMOTE server, try to reboot it"
+   			SSH "reboot"
+	  		if [ $command_exit_status -eq 0 ]; then
+				SEND_INFO "reboot REMOTE server OK"
+      		else
+				SEND_ALARM "Can't reboot REMOTE server"
+			fi
+	  		sleep 5
 			if ping -c 3 -W 1 "$REMOTE_IP" > /dev/null 2>&1; then
    				LOG "Remote server ping OK, may be it's still voting"
 				return
