@@ -55,7 +55,7 @@ chmod -R 777 /mnt /var/log/dancer /root/solana
 chmod 777 ~/solana/vote.json ~/solana/validator-keypair.json ~/solana/empty-validator.json
 chmod 755 /root/firedancer/build/native/gcc/bin/fdctl
 chmod 755 /root
-
+# ### #
 chmod 755 /root/firedancer
 chmod 755 /root/firedancer/build
 chmod 755 /root/firedancer/build/native
@@ -63,8 +63,12 @@ chmod 755 /root/firedancer/build/native/gcc
 chmod 755 /root/firedancer/build/native/gcc/bin
 ```
 ```bash
-systemctl restart dancer
-journalctl -u dancer -f
+systemctl restart solana
+journalctl -u solana -f
+```
+```bash
+# !!! start voting !!! #
+solana-validator -l ~/solana/ledger set-identity ~/solana/validator-keypair.json
 ```
 --- 
 
