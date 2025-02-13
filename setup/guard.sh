@@ -471,7 +471,7 @@ CHECK_CONNECTION() { # self check connection every 5 seconds ###################
   }
 
 COPY_TOWER(){ # copy tower file from PRIMARY to SECONDARY
-    timeout 2 scp -q -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
+    timeout 3 scp -q -P $PORT -i $KEYS/*.ssh -p $SERV:$LEDGER/tower-1_9-$IDENTITY.bin $LEDGER
     local scp_status=$?
     
     case $scp_status in
