@@ -262,26 +262,53 @@ GET_VOTING_IP(){
     fi
 	}
 
-command_exit_status=0; command_output='' # set global variable
+command_exit_status=0; command_output=''; ssh_alarm_time=0 # set global variable
 SSH(){
 	local ssh_command="$1"
-  	command_output=$(ssh -o ConnectTimeout=5 REMOTE $ssh_command 2>> $LOG_FILE)
-  	command_exit_status=$?
+	local err_file="/tmp/ssh_error.tmp"
+	trap 'rm -f "$err_file"' EXIT # Trap для удаления временного файла при выходе
+
+  	command_output=$(ssh -o ConnectTimeout=1 -o ServerAliveInterval=1 -o ServerAliveCountMax=1 REMOTE $ssh_command 2>$err_file)
+	command_exit_status=$?
+		
+	# Диагностика SSH ошибок
   	if [ $command_exit_status -ne 0 ]; then
-    	LOG "SSH Error: command_output=$command_output"
-    	LOG "SSH Error: command_exit_status=$command_exit_status"
-    	if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
+    	case $command_exit_status in
+			255)  # Стандартные SSH ошибки
+				LOG "SSH Error: $(cat $err_file)"
+				;;
+			130)  # Ctrl+C
+				LOG "SSH Error: Connection interrupted"
+				;;
+			137)  # SIGKILL
+				LOG "SSH Error: Connection killed"
+				;;
+			143)  # SIGTERM
+				LOG "SSH Error: Connection terminated"
+				;;
+			124)  # timeout
+				LOG "SSH Error: Connection timeout"
+				;;
+			1)    # Общие ошибки выполнения
+				LOG "SSH Error: General error"
+				;;
+			*)
+				LOG "SSH Error: Command failed with exit code $command_exit_status"
+				;;
+		esac
+		LOG "SSH Error: command_output=$command_output"
+    	if ping -c 3 -W 1 "$REMOTE_IP" > /dev/null 2>&1; then
 			LOG "remote server $REMOTE_IP ping OK"
 		else
 			LOG "Error: remote server $REMOTE_IP did not ping"
-			if ping -c 3 -W 3 "www.google.com" > /dev/null 2>&1; then
+			if ping -c 3 -W 1 "www.google.com" > /dev/null 2>&1; then
 				LOG "Google ping OK"
 			else
 				LOG "Error: Google did not ping too"
 			fi
 		fi
 		if [ $((current_time - ssh_alarm_time)) -ge 120 ]; then
-      		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: SSH Error $REMOTE_IP"
+      		SEND_ALARM "$SERV_TYPE ${NODE}.${NAME}: SSH Error $(cat $err_file)"
       		ssh_alarm_time=$current_time
     	fi
   	fi
@@ -496,8 +523,8 @@ SECONDARY_SERVER(){ ############################################################
 			SEND_INFO "restart solana on remote server"
       	else
 			SEND_ALARM "Can't restart solana on REMOTE server"
-			if ping -c 3 -W 3 "$REMOTE_IP" > /dev/null 2>&1; then
-   				LOG "Remote server ping OK, so can't start voting in current situation"
+			if ping -c 3 -W 1 "$REMOTE_IP" > /dev/null 2>&1; then
+   				LOG "Remote server ping OK, may be it's still voting"
 				return
 			fi
 			SEND_ALARM "Can't ping REMOTE server"
