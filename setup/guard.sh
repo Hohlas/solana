@@ -268,7 +268,7 @@ SSH(){
 	local err_file="/tmp/ssh_error.tmp"
 	trap 'rm -f "$err_file"' EXIT # Trap для удаления временного файла при выходе
 
-  	command_output=$(ssh -o ConnectTimeout=1 -o ServerAliveInterval=1 -o ServerAliveCountMax=1 REMOTE $ssh_command 2>$err_file)
+  	command_output=$(ssh -o ConnectTimeout=2 -o ServerAliveInterval=2 -o ServerAliveCountMax=2 REMOTE $ssh_command 2>$err_file)
 	command_exit_status=$?
 		
 	# Диагностика SSH ошибок
