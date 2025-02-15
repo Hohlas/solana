@@ -43,12 +43,13 @@ dynamic_port_range = "8004-8020"
     limit_size = 50000000
 	
 [snapshots]
-	minimum_snapshot_download_speed = 41943040
-	full_snapshot_interval_slots = 25000
-	incremental_snapshot_interval_slots = 6250
-	maximum_full_snapshots_to_retain = 1
-	maximum_incremental_snapshots_to_retain = 1
-	path = "/mnt/snapshots"
+	enabled = false
+ 	path = "/mnt/snapshots"
+ 	#minimum_snapshot_download_speed = 41943040
+	#full_snapshot_interval_slots = 25000
+	#incremental_snapshot_interval_slots = 6250
+	#maximum_full_snapshots_to_retain = 1
+	#maximum_incremental_snapshots_to_retain = 1
 
 [log]
     path = "/var/log/dancer/solana.log"
