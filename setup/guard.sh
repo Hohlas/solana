@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.6.7
+GUARD_VER=v1.6.8
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
