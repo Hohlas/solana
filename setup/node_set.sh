@@ -45,5 +45,10 @@ else
     echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
     exit
 fi
+# Chande telegraf NAME
+source ~/.bashrc
+tmp="\"$NAME\""
+sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
+
 systemctl daemon-reload
 ~/sol_git/setup/check.sh
