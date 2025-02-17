@@ -13,7 +13,8 @@ IP=(149.50.110.199 149.50.110.94 149.50.110.231 80.77.161.200)
 # CHAT_INFO=-100...888
 # BOT_TOKEN=507...lWU
 #======================
-source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+# source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+source "$HOME/guard.cfg" # get settings
 NODE_NAME=("BUKA" "HOHLA" "VALERA" "Stepan")
 BALANCEWARN=(1 1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
