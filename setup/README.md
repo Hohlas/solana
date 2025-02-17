@@ -108,7 +108,7 @@ fail2ban-client status
 ```   copy validator.json, vote.json to ~/keys   ```
 ```bash
 # MAIN #
-export TAG=v2.0.15-jito
+export TAG=v2.1.11-jito
 export NODE=main
 export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
 ```
