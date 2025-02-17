@@ -1,6 +1,6 @@
 #!/bin/bash
 # мониторинг нод, ставится на удаленный сервер.
-export LC_NUMERIC="en_US.UTF-8"
+# export LC_NUMERIC="en_US.UTF-8"
 SOLANA_PATH="$HOME/.local/share/solana/install/active_release/bin/solana" #Поменять на свой путь к active_release. обрати вниманеи что путь со словом "solana" его не удалять!!!
 #Cluster: m-mainnet-beta или t-testnet
 CLUSTER=t
@@ -13,7 +13,8 @@ IP=(212.23.222.40 149.50.116.96 185.225.191.203)
 # CHAT_INFO=-100...888
 # BOT_TOKEN=507...lWU
 #======================
-source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+# source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
+source "$HOME/guard.cfg" # get settings
 NODE_NAME=("buka" "hohla" "valera")
 BALANCEWARN=(1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
