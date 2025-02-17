@@ -83,7 +83,7 @@ source $HOME/.bashrc
 source ~/sol_git/setup/install.sh
 source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
-ln -sf ~/solana/solana.service /etc/systemd/system  # solana.service
+ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
 
 systemctl daemon-reload
 systemctl enable cpu_performance.service
