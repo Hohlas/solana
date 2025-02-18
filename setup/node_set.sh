@@ -23,7 +23,7 @@ if [[ $NODE == "main" ]]; then
     solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
     cp ~/sol_git/Jito/solana.service ~/solana/solana.service
     read -p " modify for big RAM? (y/n)" BIG_RAM; 
-    export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
+    export NAME=$(echo "$NAME" | tr '[:lower:]' '[:upper:]') # имя большими буквами
     if [[ "$BIG_RAM" == "y" ]]; then 
         echo -e "\033[31m modify solana.service for big RAM \033[0m"
         # add snapshots
@@ -41,7 +41,7 @@ if [[ $NODE == "main" ]]; then
 elif [[ $NODE == "test" ]]; then
     solana config set --url https://api.testnet.solana.com --keypair ~/solana/validator-keypair.json
     cp ~/sol_git/firedancer/solana.service ~/solana/solana.service
-    export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
+    export NAME=$(echo "$NAME" | tr '[:upper:]' '[:lower:]') # имя малыми буквами
 else
     echo -e "\033[31m Warning, unknown node type: $NODE \033[0m"
     exit
