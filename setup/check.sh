@@ -3,16 +3,15 @@
 CHECK_VER=v1.3.9
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 #===========================================
+SOLANA_SERVICE="$HOME/solana/solana.service"
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 	NODE="test";
-	SOLANA_SERVICE="$HOME/solana/dancer.service"
 	LEDGER="$HOME/solana/ledger"
 	EMPTY_KEY="$HOME/solana/empty-validator.json"
 	VOTING_KEY="$HOME/solana/validator-keypair.json"
 	VOTE_ACC_KEY="$HOME/solana/vote.json"
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
 	NODE="main"; 
-	SOLANA_SERVICE="$HOME/solana/solana.service"
 	LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 	EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 	VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
@@ -36,11 +35,7 @@ VOTE_ACC_ADDR=$(solana address -k $VOTE_ACC_KEY)
 CUR_IP=$(wget -q -4 -O- http://icanhazip.com)
 VOTE_IP=$(solana gossip | grep $VOTING_ADDR | awk '{print $1}')
 GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
-
-
-
-
-
+#===========================================
 if [[ $current_validator == $EMPTY_ADDR ]]; then VAL_CLR=$GRAY # set gray color
 elif [[ $current_validator == $VOTING_ADDR ]]; then VAL_CLR=$GREEN # set green color
 else
@@ -58,6 +53,8 @@ else TME_CLR=$GREEN; fi
 echo " == SOLANA CHECK $CHECK_VER"
 echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
 echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$score"
+echo "voting  IP=$VOTE_IP"
+echo "current IP=$CUR_IP"
 echo '--'
 echo -e " vote account:      $VOTE_ACC_ADDR"
 echo -e " epmty_keypair:     $GRAY$EMPTY_ADDR \033[0m"   
