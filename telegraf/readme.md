@@ -27,7 +27,10 @@ systemctl restart telegraf
 journalctl -u telegraf -f
 ```
 ```bash
-nano /etc/telegraf/telegraf.conf  # add config
+nano /etc/telegraf/telegraf.conf  # config
+```
+```bash
+nano $HOME/solanamonitoring/monitor.sh
 ```
 ### price service
 ```bash
