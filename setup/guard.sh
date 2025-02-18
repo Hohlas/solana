@@ -19,7 +19,7 @@ configDir="$HOME/.config/solana"
 # "https://mainnet.helius-rpc.com..."
 # )
 #======================================================
-LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\' | xargs)
 EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
 VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 IDENTITY=$(solana address 2>/dev/null)
