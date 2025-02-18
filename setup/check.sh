@@ -53,8 +53,8 @@ else TME_CLR=$GREEN; fi
 echo " == SOLANA CHECK $CHECK_VER"
 echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
 echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$score"
-echo "voting  IP=$VOTE_IP"
-echo "current IP=$CUR_IP"
+echo " voting  IP=$VOTE_IP"
+echo " current IP=$CUR_IP"
 echo '--'
 echo -e " vote account:      $VOTE_ACC_ADDR"
 echo -e " epmty_keypair:     $GRAY$EMPTY_ADDR \033[0m"   
