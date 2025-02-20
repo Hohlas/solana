@@ -1,4 +1,4 @@
-# [guard.sh](https://github.com/Hohlas/solana/blob/main/setup/guard.sh)
+# [guard.sh](https://github.com/Hohlas/solana/blob/main/guard/guard.sh)
 Скрипт бесшовного переключения голосования ноды соланы между основным и резервным серверами
 ![image](https://github.com/user-attachments/assets/fc4895a3-e356-43f4-b807-dd3a020a8925)
 
@@ -59,7 +59,7 @@
 # download guard.sh
 LATEST_TAG_URL=https://api.github.com/repos/Hohlas/solana/releases/latest
 TAG=$(curl -sSL "$LATEST_TAG_URL" | jq -r '.tag_name')
-curl "https://raw.githubusercontent.com/Hohlas/solana/$TAG/setup/guard.sh" > $HOME/guard.sh
+curl "https://raw.githubusercontent.com/Hohlas/solana/$TAG/guard/guard.sh" > $HOME/guard.sh
 if [ $? -eq 0 ]; then
 	echo "Downloaded guard.sh ($TAG) successfully"
 	chmod +x $HOME/guard.sh
