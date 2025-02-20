@@ -11,3 +11,21 @@ fi
 chmod +x ~/sol_git/setup/*.sh
 chmod +x ~/sol_git/telegram_bot/watch_test.sh
 chmod +x ~/sol_git/telegram_bot/watch_main.sh
+
+# ##########################################
+
+BASHRC_FILE="$HOME/.bashrc"
+NEW_ALIAS="alias guard='source ~/sol_git/guard/guard.sh'"
+
+if [ -f "$BASHRC_FILE" ]; then
+    # Заменяем строку, если она существует, или добавляем её, если строки нет
+    if grep -q "^alias guard" "$BASHRC_FILE"; then
+        # Заменяем строку, начинающуюся с "alias guard"
+        sed -i.bak "s|^alias guard.*|$NEW_ALIAS|" "$BASHRC_FILE"
+        echo "Строка успешно заменена на: $NEW_ALIAS"
+    else
+        echo "Строка 'alias guard' не найдена. Добавьте её вручную."
+    fi
+else
+    echo "Файл $BASHRC_FILE не найден."
+fi
