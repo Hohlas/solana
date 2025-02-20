@@ -6,7 +6,7 @@
 
 [FireDancer](firedancer/README.md)
 
-[GUARD](setup/guard_help.md)
+[GUARD](guard/README.md)
 
 [LOG Monitor](monitor/README.md)
 
