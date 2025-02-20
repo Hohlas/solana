@@ -29,3 +29,4 @@ if [ -f "$BASHRC_FILE" ]; then
 else
     echo "Файл $BASHRC_FILE не найден."
 fi
+source ~/.bashrc
