@@ -32,7 +32,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --accounts-index-path /mnt/ramdisk/accounts_index \
 --log /root/solana/solana.log \
 --limit-ledger-size 50000000 \
---dynamic-port-range 8002-8020 \
+--dynamic-port-range 8000-8020 \
 --gossip-port 8001 \
 # SNAPSHOTS full/incremental: 25000 / 2500
 --full-snapshot-interval-slots 0 \
