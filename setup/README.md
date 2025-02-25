@@ -33,7 +33,7 @@ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check
 ```bash
 # set additional settings
 echo "
-net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_fin_timeout = 15
 net.core.netdev_max_backlog = 50000
 net.core.optmem_max = 20480
 net.core.somaxconn = 65535
