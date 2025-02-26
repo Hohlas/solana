@@ -109,7 +109,9 @@ def calculate_processing_times(new_fork_events, replay_stats_events, tower_vote_
         if slot in new_fork_events:
             fork_time = new_fork_events[slot]
             time_diff_ms = (replay_time - fork_time).total_seconds() * 1000  # в миллисекундах
-            fork_to_replay_times.append([slot, time_diff_ms])
+            # Добавляем форматированное время
+            formatted_time = replay_time.strftime('%Y-%m-%d %H:%M:%S')
+            fork_to_replay_times.append([slot, time_diff_ms, formatted_time])
         
         # Время от replay-slot-stats до tower-vote latest
         # Ищем ближайшее по времени событие tower-vote для этого слота
@@ -117,7 +119,9 @@ def calculate_processing_times(new_fork_events, replay_stats_events, tower_vote_
         for vote_slot, vote_time in tower_vote_events.items():
             if vote_slot == slot and vote_time >= replay_time:
                 time_diff_ms = (vote_time - replay_time).total_seconds() * 1000  # в миллисекундах
-                replay_to_vote_times.append([slot, time_diff_ms])
+                # Добавляем форматированное время
+                formatted_time = vote_time.strftime('%Y-%m-%d %H:%M:%S')
+                replay_to_vote_times.append([slot, time_diff_ms, formatted_time])
                 
                 # Добавляем детальную информацию для анализа
                 detailed_replay_vote_info.append({
@@ -143,19 +147,32 @@ def add_chart(worksheet, title=None):
         chart.title = worksheet.title
         
     chart.style = 2
-    chart.x_axis.title = "Samples"
     chart.y_axis.title = "Values"
     
     # Отключаем легенду
     chart.legend = None
     
+    # Проверяем, есть ли колонка временных меток
+    has_timestamp = False
+    if worksheet.max_column >= 3:
+        header = worksheet.cell(row=1, column=3).value
+        has_timestamp = header == 'timestamp'
+    
     # Добавляем данные без заголовков
     data = Reference(worksheet, min_col=2, min_row=2, max_row=worksheet.max_row, max_col=2)
     chart.add_data(data, titles_from_data=False)
     
-    # Добавляем категории (слоты или индексы)
-    cats = Reference(worksheet, min_col=1, min_row=2, max_row=worksheet.max_row)
-    chart.set_categories(cats)
+    # Используем временные метки для оси X, если они есть
+    if has_timestamp:
+        chart.x_axis.title = "Time"
+        # Используем метки времени как категории
+        cats = Reference(worksheet, min_col=3, min_row=2, max_row=worksheet.max_row)
+        chart.set_categories(cats)
+    else:
+        chart.x_axis.title = "Samples"
+        # Используем слоты/индексы как категории
+        cats = Reference(worksheet, min_col=1, min_row=2, max_row=worksheet.max_row)
+        chart.set_categories(cats)
     
     # Настраиваем тонкие линии синего цвета
     for series in chart.series:
@@ -244,13 +261,13 @@ def main():
     
     # Создаем лист для времени между new fork и replay-slot-stats
     sheet_fork_to_replay = workbook.create_sheet(title="fork_to_replay_time")
-    sheet_fork_to_replay.append(['slot', 'time_ms'])  # Заголовки столбцов
+    sheet_fork_to_replay.append(['slot', 'time_ms', 'timestamp'])  # Заголовки столбцов
     for entry in fork_to_replay_times:
         sheet_fork_to_replay.append(entry)
     
     # Создаем лист для времени между replay-slot-stats и tower-vote latest
     sheet_replay_to_vote = workbook.create_sheet(title="replay_to_vote_time")
-    sheet_replay_to_vote.append(['slot', 'time_ms', 'comment'])  # Заголовки столбцов
+    sheet_replay_to_vote.append(['slot', 'time_ms', 'timestamp', 'comment'])  # Заголовки столбцов
     
     # Находим среднее и стандартное отклонение для определения выбросов
     if replay_to_vote_times:
@@ -269,7 +286,7 @@ def main():
                 comment = "Выброс! Возможные причины: высокая загрузка CPU, сетевые задержки, форк-выбор"
                 print(f"Обнаружен выброс для слота {slot}: {time_ms} мс (порог: {threshold:.2f} мс)")
                 
-            sheet_replay_to_vote.append([slot, time_ms, comment])
+            sheet_replay_to_vote.append([slot, time_ms, entry[2], comment])
     else:
         # Если данных нет
         sheet_replay_to_vote.append([0, 0, "Нет данных"])
