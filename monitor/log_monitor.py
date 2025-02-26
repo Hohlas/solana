@@ -3,6 +3,8 @@ import os
 import openpyxl
 from datetime import datetime
 from collections import defaultdict
+from openpyxl.chart import LineChart, Reference
+from openpyxl.chart.axis import ChartLines
 
 def extract_metric(log_file_path, metric):
     data = []
@@ -108,6 +110,43 @@ def calculate_processing_times(new_fork_events, replay_stats_events, tower_vote_
     
     return fork_to_replay_times, replay_to_vote_times
 
+def add_chart(worksheet, title=None):
+    """
+    Добавляет график на лист Excel с одной синей линией
+    """
+    chart = LineChart()
+    if title:
+        chart.title = title
+    else:
+        chart.title = worksheet.title
+        
+    chart.style = 2
+    chart.x_axis.title = "Samples"
+    chart.y_axis.title = "Values"
+    
+    # Отключаем легенду
+    chart.legend = None
+    
+    # Добавляем данные без заголовков
+    data = Reference(worksheet, min_col=2, min_row=2, max_row=worksheet.max_row, max_col=2)
+    chart.add_data(data, titles_from_data=False)
+    
+    # Добавляем категории (слоты или индексы)
+    cats = Reference(worksheet, min_col=1, min_row=2, max_row=worksheet.max_row)
+    chart.set_categories(cats)
+    
+    # Настраиваем тонкие линии синего цвета
+    for series in chart.series:
+        series.graphicalProperties.line.solidFill = "0000FF"  # Синий цвет
+        series.graphicalProperties.line.width = 7200  # Минимальная толщина (0.75 pt)
+    
+    # Устанавливаем размер графика
+    chart.height = 15  # высота в сантиметрах
+    chart.width = 20   # ширина в сантиметрах
+    
+    # Добавляем график на лист
+    worksheet.add_chart(chart, "E2")
+
 def main():
     base_path = os.path.dirname(os.path.abspath(__file__))  # Относительный путь
 
@@ -134,12 +173,17 @@ def main():
         
         for entry in data:
             sheet.append(entry)  # Запись данных
+            
+        # Добавляем график, если есть данные
+        if len(data) > 0:
+            add_chart(sheet)
 
     # Установка формата для второго столбца (числа) начиная со второй строки
-    for sheet in workbook.sheetnames:
-        ws = workbook[sheet]
+    for sheet_name in workbook.sheetnames:
+        ws = workbook[sheet_name]
         for row in range(2, ws.max_row + 1):  # Начинаем со второй строки
-            ws.cell(row=row, column=2).number_format = '0.00'  # Форматируем как число с двумя знаками после запятой
+            if ws.cell(row=row, column=2).value is not None:
+                ws.cell(row=row, column=2).number_format = '0.00'  # Форматируем как число с двумя знаками после запятой
 
     # Анализ временных разниц между событиями
     new_fork_events, replay_stats_events, tower_vote_events = extract_slot_events(log_file_path)
@@ -159,11 +203,12 @@ def main():
     for entry in replay_to_vote_times:
         sheet_replay_to_vote.append(entry)
     
-    # Форматируем числовые данные на новых листах
-    for sheet_name in ["fork_to_replay_time", "replay_to_vote_time"]:
-        ws = workbook[sheet_name]
-        for row in range(2, ws.max_row + 1):
-            ws.cell(row=row, column=2).number_format = '0.00'
+    # Добавляем графики для новых листов
+    if len(fork_to_replay_times) > 0:
+        add_chart(sheet_fork_to_replay, "Time from New Fork to Replay")
+    
+    if len(replay_to_vote_times) > 0:
+        add_chart(sheet_replay_to_vote, "Time from Replay to Vote")
 
     # Удаление стандартного листа, если он пустой
     if 'Sheet' in workbook.sheetnames:
