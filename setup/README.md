@@ -49,8 +49,10 @@ sysctl -p /etc/sysctl.d/22-solana-turbo.conf
 sysctl net.ipv4.tcp_fin_timeout
 sysctl net.core.netdev_max_backlog
 sysctl net.core.optmem_max
+sysctl net.core.somaxconn
 sysctl net.ipv4.tcp_rmem
 sysctl net.ipv4.tcp_wmem
+sysctl net.ipv4.tcp_mem
 ```
 ```bash
 # read standart
