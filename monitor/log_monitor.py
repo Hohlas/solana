@@ -19,8 +19,20 @@ def extract_metric(log_file_path, metric):
                 metric_match = re.search(rf'{metric}=(\d+(\.\d+)?)', line)  # Поддержка дробных чисел
 
                 if timestamp_match and metric_match:
+                    # Преобразуем временную метку в формат, понятный Excel
+                    time_str = timestamp_match.group(1)
+                    try:
+                        # Разбираем ISO формат и преобразуем в понятный Excel формат
+                        parts = time_str.split('T')
+                        date_part = parts[0]
+                        time_part = parts[1].split('.')[0]  # Убираем микросекунды и Z
+                        excel_time = f"{date_part} {time_part}"
+                    except:
+                        # Если что-то пошло не так, оставляем исходный формат
+                        excel_time = time_str
+                        
                     data.append([
-                        timestamp_match.group(1),  # Время
+                        excel_time,  # Время в более читаемом формате
                         float(metric_match.group(1))  # Значение заданной метрики как число
                     ])
     
@@ -89,6 +101,7 @@ def calculate_processing_times(new_fork_events, replay_stats_events, tower_vote_
     """
     fork_to_replay_times = []  # Время от new fork до replay-slot-stats
     replay_to_vote_times = []  # Время от replay-slot-stats до tower-vote latest
+    detailed_replay_vote_info = []  # Детальная информация для анализа выбросов
     
     # Для каждого слота с replay-slot-stats находим соответствующие события
     for slot, replay_time in replay_stats_events.items():
@@ -105,10 +118,19 @@ def calculate_processing_times(new_fork_events, replay_stats_events, tower_vote_
             if vote_slot == slot and vote_time >= replay_time:
                 time_diff_ms = (vote_time - replay_time).total_seconds() * 1000  # в миллисекундах
                 replay_to_vote_times.append([slot, time_diff_ms])
+                
+                # Добавляем детальную информацию для анализа
+                detailed_replay_vote_info.append({
+                    'slot': slot,
+                    'replay_time': replay_time.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                    'vote_time': vote_time.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                    'time_diff_ms': time_diff_ms
+                })
+                
                 found = True
                 break
     
-    return fork_to_replay_times, replay_to_vote_times
+    return fork_to_replay_times, replay_to_vote_times, detailed_replay_vote_info
 
 def add_chart(worksheet, title=None):
     """
@@ -187,9 +209,38 @@ def main():
 
     # Анализ временных разниц между событиями
     new_fork_events, replay_stats_events, tower_vote_events = extract_slot_events(log_file_path)
-    fork_to_replay_times, replay_to_vote_times = calculate_processing_times(
+    fork_to_replay_times, replay_to_vote_times, detailed_replay_vote_info = calculate_processing_times(
         new_fork_events, replay_stats_events, tower_vote_events
     )
+    
+    # Создаем лист для детального анализа задержек, если есть выбросы
+    if detailed_replay_vote_info:
+        times_ms = [info['time_diff_ms'] for info in detailed_replay_vote_info]
+        avg_time = sum(times_ms) / len(times_ms)
+        std_dev = (sum([(x - avg_time) ** 2 for x in times_ms]) / len(times_ms)) ** 0.5
+        threshold = avg_time + 3 * std_dev  # 3 сигмы для выбросов
+        
+        # Создаем лист с детальной информацией о выбросах
+        has_outliers = any(info['time_diff_ms'] > threshold for info in detailed_replay_vote_info)
+        if has_outliers:
+            sheet_outliers = workbook.create_sheet(title="vote_delay_outliers")
+            sheet_outliers.append(['slot', 'replay_time', 'vote_time', 'delay_ms', 'threshold'])
+            
+            for info in detailed_replay_vote_info:
+                if info['time_diff_ms'] > threshold:
+                    sheet_outliers.append([
+                        info['slot'],
+                        info['replay_time'],
+                        info['vote_time'],
+                        info['time_diff_ms'],
+                        threshold
+                    ])
+                    
+                    print(f"Детальный анализ выброса для слота {info['slot']}:")
+                    print(f"  Время replay: {info['replay_time']}")
+                    print(f"  Время vote:   {info['vote_time']}")
+                    print(f"  Задержка:     {info['time_diff_ms']:.2f} мс (порог: {threshold:.2f} мс)")
+                    print("")
     
     # Создаем лист для времени между new fork и replay-slot-stats
     sheet_fork_to_replay = workbook.create_sheet(title="fork_to_replay_time")
@@ -199,9 +250,29 @@ def main():
     
     # Создаем лист для времени между replay-slot-stats и tower-vote latest
     sheet_replay_to_vote = workbook.create_sheet(title="replay_to_vote_time")
-    sheet_replay_to_vote.append(['slot', 'time_ms'])  # Заголовки столбцов
-    for entry in replay_to_vote_times:
-        sheet_replay_to_vote.append(entry)
+    sheet_replay_to_vote.append(['slot', 'time_ms', 'comment'])  # Заголовки столбцов
+    
+    # Находим среднее и стандартное отклонение для определения выбросов
+    if replay_to_vote_times:
+        times_ms = [entry[1] for entry in replay_to_vote_times]
+        avg_time = sum(times_ms) / len(times_ms)
+        std_dev = (sum([(x - avg_time) ** 2 for x in times_ms]) / len(times_ms)) ** 0.5
+        threshold = avg_time + 3 * std_dev  # 3 сигмы для выбросов
+        
+        # Добавляем данные с комментариями о выбросах
+        for entry in replay_to_vote_times:
+            slot = entry[0]
+            time_ms = entry[1]
+            
+            comment = ""
+            if time_ms > threshold:
+                comment = "Выброс! Возможные причины: высокая загрузка CPU, сетевые задержки, форк-выбор"
+                print(f"Обнаружен выброс для слота {slot}: {time_ms} мс (порог: {threshold:.2f} мс)")
+                
+            sheet_replay_to_vote.append([slot, time_ms, comment])
+    else:
+        # Если данных нет
+        sheet_replay_to_vote.append([0, 0, "Нет данных"])
     
     # Добавляем графики для новых листов
     if len(fork_to_replay_times) > 0:
