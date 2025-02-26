@@ -1,6 +1,8 @@
 import re
 import os
 import openpyxl
+from datetime import datetime
+from collections import defaultdict
 
 def extract_metric(log_file_path, metric):
     data = []
@@ -22,6 +24,90 @@ def extract_metric(log_file_path, metric):
     
     return data
 
+def extract_slot_events(log_file_path):
+    """
+    Извлекает информацию о событиях для каждого слота:
+    - new fork
+    - replay-slot-stats
+    - tower-vote latest
+    """
+    new_fork_events = {}
+    replay_stats_events = {}
+    tower_vote_events = {}
+    
+    with open(log_file_path, 'r') as log_file:
+        for line in log_file:
+            # Извлекаем временную метку
+            timestamp_match = re.match(r'\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z)', line)
+            
+            if not timestamp_match:
+                continue
+                
+            timestamp_str = timestamp_match.group(1)
+            # Обрабатываем нестандартный формат микросекунд
+            parts = timestamp_str.split('.')
+            if len(parts) == 2:
+                # Формат ISO с Z в конце
+                date_part = parts[0]
+                # Берем только первые 6 знаков микросекунд и удаляем Z в конце
+                micro_part = parts[1][:-1]
+                if len(micro_part) > 6:
+                    micro_part = micro_part[:6]
+                # Пересобираем строку
+                timestamp_str = f"{date_part}.{micro_part}"
+                timestamp = datetime.strptime(timestamp_str, '%Y-%m-%dT%H:%M:%S.%f')
+            else:
+                # Формат без микросекунд
+                timestamp = datetime.strptime(timestamp_str.rstrip('Z'), '%Y-%m-%dT%H:%M:%S')
+            
+            # Проверяем события для каждого слота
+            # 1. new fork событие
+            new_fork_match = re.search(r'new fork:(\d+)', line)
+            if new_fork_match:
+                slot = int(new_fork_match.group(1))
+                new_fork_events[slot] = timestamp
+            
+            # 2. replay-slot-stats событие
+            replay_stats_match = re.search(r'replay-slot-stats slot=(\d+)i', line)
+            if replay_stats_match:
+                slot = int(replay_stats_match.group(1))
+                replay_stats_events[slot] = timestamp
+            
+            # 3. tower-vote latest событие
+            tower_vote_match = re.search(r'tower-vote latest=(\d+)i', line)
+            if tower_vote_match:
+                slot = int(tower_vote_match.group(1))
+                tower_vote_events[slot] = timestamp
+    
+    return new_fork_events, replay_stats_events, tower_vote_events
+
+def calculate_processing_times(new_fork_events, replay_stats_events, tower_vote_events):
+    """
+    Рассчитывает временные разницы между событиями для каждого слота
+    """
+    fork_to_replay_times = []  # Время от new fork до replay-slot-stats
+    replay_to_vote_times = []  # Время от replay-slot-stats до tower-vote latest
+    
+    # Для каждого слота с replay-slot-stats находим соответствующие события
+    for slot, replay_time in replay_stats_events.items():
+        # Время от new fork до replay-slot-stats
+        if slot in new_fork_events:
+            fork_time = new_fork_events[slot]
+            time_diff_ms = (replay_time - fork_time).total_seconds() * 1000  # в миллисекундах
+            fork_to_replay_times.append([slot, time_diff_ms])
+        
+        # Время от replay-slot-stats до tower-vote latest
+        # Ищем ближайшее по времени событие tower-vote для этого слота
+        found = False
+        for vote_slot, vote_time in tower_vote_events.items():
+            if vote_slot == slot and vote_time >= replay_time:
+                time_diff_ms = (vote_time - replay_time).total_seconds() * 1000  # в миллисекундах
+                replay_to_vote_times.append([slot, time_diff_ms])
+                found = True
+                break
+    
+    return fork_to_replay_times, replay_to_vote_times
+
 def main():
     base_path = os.path.dirname(os.path.abspath(__file__))  # Относительный путь
 
@@ -36,11 +122,14 @@ def main():
     # Создаем новый Excel файл
     workbook = openpyxl.Workbook()
 
+    # Извлекаем данные метрик
     for metric in metrics:
         data = extract_metric(log_file_path, metric)
 
         # Создаем новую вкладку для каждой метрики
-        sheet = workbook.create_sheet(title=metric)
+        # Ограничиваем имя листа до 31 символа максимум, как требует Excel
+        sheet_name = metric[:31]
+        sheet = workbook.create_sheet(title=sheet_name)
         sheet.append(['time', metric])  # Заголовки столбцов
         
         for entry in data:
@@ -51,6 +140,30 @@ def main():
         ws = workbook[sheet]
         for row in range(2, ws.max_row + 1):  # Начинаем со второй строки
             ws.cell(row=row, column=2).number_format = '0.00'  # Форматируем как число с двумя знаками после запятой
+
+    # Анализ временных разниц между событиями
+    new_fork_events, replay_stats_events, tower_vote_events = extract_slot_events(log_file_path)
+    fork_to_replay_times, replay_to_vote_times = calculate_processing_times(
+        new_fork_events, replay_stats_events, tower_vote_events
+    )
+    
+    # Создаем лист для времени между new fork и replay-slot-stats
+    sheet_fork_to_replay = workbook.create_sheet(title="fork_to_replay_time")
+    sheet_fork_to_replay.append(['slot', 'time_ms'])  # Заголовки столбцов
+    for entry in fork_to_replay_times:
+        sheet_fork_to_replay.append(entry)
+    
+    # Создаем лист для времени между replay-slot-stats и tower-vote latest
+    sheet_replay_to_vote = workbook.create_sheet(title="replay_to_vote_time")
+    sheet_replay_to_vote.append(['slot', 'time_ms'])  # Заголовки столбцов
+    for entry in replay_to_vote_times:
+        sheet_replay_to_vote.append(entry)
+    
+    # Форматируем числовые данные на новых листах
+    for sheet_name in ["fork_to_replay_time", "replay_to_vote_time"]:
+        ws = workbook[sheet_name]
+        for row in range(2, ws.max_row + 1):
+            ws.cell(row=row, column=2).number_format = '0.00'
 
     # Удаление стандартного листа, если он пустой
     if 'Sheet' in workbook.sheetnames:
