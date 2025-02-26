@@ -38,9 +38,9 @@ net.core.netdev_max_backlog = 50000
 net.core.optmem_max = 20480
 net.core.somaxconn = 65535
 
-net.ipv4.tcp_rmem = 4096 87380 268435456
-net.ipv4.tcp_wmem = 4096 87380 268435456
-net.ipv4.tcp_mem = 4096 87380 268435456
+net.ipv4.tcp_rmem = 4096 87380 134217728
+net.ipv4.tcp_wmem = 4096 87380 134217728
+net.ipv4.tcp_mem = 4096 87380 134217728
 " > /etc/sysctl.d/22-solana-turbo.conf
 sysctl -p /etc/sysctl.d/22-solana-turbo.conf
 ```
