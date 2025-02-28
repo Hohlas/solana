@@ -149,6 +149,39 @@ def add_chart(worksheet, title=None):
     chart.style = 2
     chart.y_axis.title = "Values"
     
+    # Настройка оси Y с четкими метками шкалы
+    from openpyxl.chart.axis import ChartLines
+    
+    # Правильно настраиваем линии сетки
+    chart.y_axis.majorGridlines = ChartLines()  # Показываем горизонтальные линии сетки
+    chart.y_axis.numFmt = "0.00"  # Формат чисел с двумя знаками после запятой
+    chart.y_axis.scaling.min = 0  # Начинаем с нуля для лучшего понимания масштаба
+    
+    # Обеспечиваем отображение подписей вдоль оси
+    chart.y_axis.delete = False
+    chart.y_axis.tickLblPos = "nextTo"  # Располагаем метки рядом с осью
+    
+    # Если это график с задержками, настраиваем специальные интервалы
+    if "delay" in str(title).lower() or "time" in str(title).lower():
+        max_value = 0
+        for row in range(2, worksheet.max_row + 1):
+            val = worksheet.cell(row=row, column=2).value
+            if val and val > max_value:
+                max_value = val
+        
+        # Определяем подходящий интервал для делений оси
+        if max_value > 1000:
+            # Для больших значений (выбросы) используем больший интервал
+            chart.y_axis.majorUnit = max_value / 10
+        elif max_value > 100:
+            chart.y_axis.majorUnit = 20
+        elif max_value > 50:
+            chart.y_axis.majorUnit = 10
+        elif max_value > 10:
+            chart.y_axis.majorUnit = 5
+        else:
+            chart.y_axis.majorUnit = 1
+    
     # Отключаем легенду
     chart.legend = None
     
@@ -163,13 +196,16 @@ def add_chart(worksheet, title=None):
     chart.add_data(data, titles_from_data=False)
     
     # Используем временные метки для оси X, если они есть
+    # Убираем заголовки осей
+    chart.x_axis.title = None
+    chart.y_axis.title = None
+    
+    # Используем временные метки или слоты как категории
     if has_timestamp:
-        chart.x_axis.title = "Time"
         # Используем метки времени как категории
         cats = Reference(worksheet, min_col=3, min_row=2, max_row=worksheet.max_row)
         chart.set_categories(cats)
     else:
-        chart.x_axis.title = "Samples"
         # Используем слоты/индексы как категории
         cats = Reference(worksheet, min_col=1, min_row=2, max_row=worksheet.max_row)
         chart.set_categories(cats)
@@ -178,6 +214,8 @@ def add_chart(worksheet, title=None):
     for series in chart.series:
         series.graphicalProperties.line.solidFill = "0000FF"  # Синий цвет
         series.graphicalProperties.line.width = 7200  # Минимальная толщина (0.75 pt)
+        # Убираем все подписи данных на графике
+        series.dLbls = None
     
     # Устанавливаем размер графика
     chart.height = 15  # высота в сантиметрах
