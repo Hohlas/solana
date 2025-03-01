@@ -24,14 +24,15 @@ systemctl enable solana.service
 # LogRotate #
 curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.logrotate > /etc/logrotate.d/dancer.logrotate
 systemctl restart logrotate
+cd
+git clone --recurse-submodules https://github.com/firedancer-io/firedancer.git
 ```
 ```bash
 DANCE_VER="v0.403.20113"
 ```
 ```bash
-cd
-git clone --recurse-submodules https://github.com/firedancer-io/firedancer.git
 cd ~/firedancer
+git fetch
 git checkout $DANCE_VER
 git submodule update
 ./deps.sh # install libraries/dependencies
