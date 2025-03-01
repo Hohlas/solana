@@ -67,8 +67,10 @@ disk-stats - Статистика операций ввода-вывода на 
 
 </details>
 
-Открыть в екселе metrics.xlsx, вставить графики на листах с метриками  
-![2025-01-16_17-33-46](https://github.com/user-attachments/assets/c98982bf-8dbb-4867-9e22-831292eeef7c)
+Открыть в екселе metrics.xlsx
+![image](https://github.com/user-attachments/assets/4e553fb8-e21e-435a-8e5d-4026574f60aa)
+
+
 
 ## TVC scanner
 
