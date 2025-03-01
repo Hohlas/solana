@@ -25,6 +25,7 @@ systemctl enable solana.service
 curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.logrotate > /etc/logrotate.d/dancer.logrotate
 systemctl restart logrotate
 cd
+rm -r firedancer
 git clone --recurse-submodules https://github.com/firedancer-io/firedancer.git
 ```
 ```bash
@@ -43,7 +44,7 @@ sed -i "/^[ \t]*results\[ 0 \] = pwd\.pw_uid/c results[ 0 ] = 1001;" ~/firedance
 sed -i "/^[ \t]*results\[ 1 \] = pwd\.pw_gid/c results[ 1 ] = 1002;" ~/firedancer/src/app/fdctl/config.c
 # build
 make -j fdctl solana 
-~/firedancer/build/native/gcc/bin/solana --version
+fdctl --version
 ```
 copy 'vote.json' & 'validator-keypair.json' to /root/solana/ 
 ```bash
