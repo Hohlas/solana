@@ -26,7 +26,7 @@ curl https://raw.githubusercontent.com/Hohlas/solana/main/firedancer/dancer.logr
 systemctl restart logrotate
 ```
 ```bash
-DANCE_VER="v0.305.20111"
+DANCE_VER="v0.403.20113"
 ```
 ```bash
 cd
