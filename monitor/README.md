@@ -66,6 +66,8 @@ disk-stats - Статистика операций ввода-вывода на 
 
 
 </details>
+В терминале появится вывод статистики выбросов по слотам 
+![image](https://github.com/user-attachments/assets/c1735afd-bc05-438a-bc36-4450804c5692)
 
 Открыть в екселе metrics.xlsx
 ![image](https://github.com/user-attachments/assets/4e553fb8-e21e-435a-8e5d-4026574f60aa)
