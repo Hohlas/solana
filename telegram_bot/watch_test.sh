@@ -16,7 +16,7 @@ IP=(212.23.222.40 149.50.116.96 149.50.116.254)
 # source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
 source "$HOME/guard.cfg" # get settings
 NODE_NAME=("buka" "hohla" "valera")
-BALANCEWARN=(1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
+BALANCEWARN=(0 0 0) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
 date
 for index in ${!PUB_KEY[*]}
