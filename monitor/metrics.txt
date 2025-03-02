@@ -7,3 +7,13 @@ gossip_transmit_loop_time
 fetch_stage_packets_forwarded
 total_elapsed_us
 average_load_one_minute
+validator-duplicate-confirmation duration_ms
+fork_weight
+bank-forks_set_root elapsed_ms
+block-commitment-cache aggregate-commitment-ms
+replay-loop-voting-stats generate_vote_us
+replay-loop-timing-stats loop_count
+vote_txn_processing_us
+slot_confirming_time_us
+writes_completed
+writes_merged
