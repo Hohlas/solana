@@ -29,12 +29,12 @@ if [[ $NODE == "main" ]]; then
         # add snapshots
         sed -i "/^--ledger /c --ledger /mnt/ramdisk/ledger \\\\" ~/solana/solana.service
         #sed -i "/^--snapshots /c --snapshots /mnt/ramdisk/snapshots \\\\" ~/solana/solana.service
-        sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
-        sed -i "/^--snapshot-interval-slots /c --snapshot-interval-slots 5000 \\\\" ~/solana/solana.service
+        #sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
+        #sed -i "/^--snapshot-interval-slots /c --snapshot-interval-slots 5000 \\\\" ~/solana/solana.service
         # remove lines
         sed -i "/^--accounts /d" ~/solana/solana.service
         sed -i "/^--accounts /d" ~/solana/solana.service
-        sed -i "/^--accounts-hash-cache-path /d" ~/solana/solana.service
+        #sed -i "/^--accounts-hash-cache-path /d" ~/solana/solana.service
         sed -i "/^--accounts-index-path /d" ~/solana/solana.service
         sed -i "/^--no-skip-initial-accounts-db-clean /d" ~/solana/solana.service
     fi
