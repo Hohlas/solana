@@ -21,8 +21,8 @@ if [ -f "$BASHRC_FILE" ]; then
     # Заменяем строку, если она существует, или добавляем её, если строки нет
     if grep -q "^alias guard" "$BASHRC_FILE"; then
         # Заменяем строку, начинающуюся с "alias guard"
-        sed -i.bak "s|^alias guard.*|$NEW_ALIAS|" "$BASHRC_FILE"
-        echo "Строка успешно заменена на: $NEW_ALIAS"
+        #sed -i.bak "s|^alias guard.*|$NEW_ALIAS|" "$BASHRC_FILE"
+        #echo "Строка успешно заменена на: $NEW_ALIAS"
     else
         echo "Строка 'alias guard' не найдена. Добавьте её вручную."
     fi
