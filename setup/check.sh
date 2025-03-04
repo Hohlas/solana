@@ -47,12 +47,12 @@ current_slot=$(solana slot)
 my_slot=$(solana leader-schedule -v | grep $VOTING_ADDR | awk -v var=$current_slot '$1>=var' | head -n1 | cut -d ' ' -f3)
 slots_remaining=$((my_slot-current_slot))
 minutes_remaining=$((($slots_remaining * 459) / 60000))
-score=$(solana validators --sort=credits -r -n | grep $VOTING_ADDR | awk '{print $1}'); 
+TVC=$(solana validators --sort=credits -r -n | grep $VOTING_ADDR | awk '{print $1}'); 
 if [[ $minutes_remaining -lt 2 ]]; then TME_CLR=$RED
 else TME_CLR=$GREEN; fi
 echo " == SOLANA CHECK $CHECK_VER"
 echo -e " $BLUE$NODE.$NAME $YELLOW$version $client $CLEAR"
-echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  score=$BLUE$score $CLEAR"
+echo -e " next:$TME_CLR$minutes_remaining\033[0mmin,  TVC=$BLUE$TVC $CLEAR"
 echo " voting  IP=$VOTE_IP"
 echo " current IP=$CUR_IP"
 echo '--'
