@@ -52,6 +52,7 @@ nft -f nftables.conf # Применение изменений без перез
 ```bash
 grep "NFT" /var/log/kern.log # срабатывания фильтров
 nft list ruleset # просмотр всех правил
+nft list ruleset | grep dport # открытые порты 
 nft list table filter # просмотр таблицы filter
 nft list chain filter input # просмотр цепочки input таблицы filter.
 nft list chain filter ddos_protection # # просмотр цепочки ddos_protection таблицы filter.
