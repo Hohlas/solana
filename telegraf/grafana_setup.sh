@@ -22,7 +22,7 @@ deb https://repos.influxdata.com/ubuntu focal stable
 EOF
 
 sudo apt-get update && sudo apt -y install telegraf git jq bc -y
-sudo systemctl enable telegraf
+# systemctl enable telegraf
 
 echo -e '\n\e[42m install monitor.sh \e[0m\n'
 if id "telegraf" &>/dev/null; then
