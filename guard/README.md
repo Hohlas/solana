@@ -142,3 +142,15 @@ RPC_LIST=(
 Ключи private_key.ssh от обоих серверов должны находиться в папках ~/keys.
 В первый раз скрипт резервного сервера должен запускаться перед запуском на основном сервере. 
 При этом на основной сервер копируется файл с IP адресом резервного. Даллее порядок запуска не имеет значения.  
+
+## check.sh
+Удобное отслеживание статуса сервера  
+
+![image](https://github.com/user-attachments/assets/efe5076e-ead2-4ec9-841a-e9ed61a4d309)
+
+```bash
+# установка
+curl "https://raw.githubusercontent.com/Hohlas/solana/main/setup/check.sh" > $HOME/check.sh
+chmod +x $HOME/check.sh
+echo "alias check='source $HOME/check.sh'" >> $HOME/.bashrc
+```
