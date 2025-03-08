@@ -37,7 +37,6 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 # SNAPSHOTS full/incremental: 25000 / 5000
 --full-snapshot-interval-slots 0 \
 --snapshot-interval-slots 0 \
-#--no-incremental-snapshots \
 --maximum-full-snapshots-to-retain 1 \
 --maximum-incremental-snapshots-to-retain 1 \
 --maximum-local-snapshot-age 5000 \
