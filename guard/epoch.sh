@@ -20,19 +20,20 @@ while true; do
 
     # Проверка попадания в заданные диапазоны
     if (( $(echo "$epoch_percent > 99.7" | bc -l) )); then
+        echo $soft_settings > $set_file
         echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent% > 99.7: soft $(cat $set_file)"
-        echo $soft_settings > $set_file
     elif (( $(echo "$epoch_percent > 25.5" | bc -l) )); then
+        echo $hard_settings > $set_file
         echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent% > 25.5: hard $(cat $set_file)"
-        echo $hard_settings > $set_file
     elif (( $(echo "$epoch_percent > 24.5" | bc -l) )); then
-        echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent% > 24.5: soft $(cat $set_file)"
         echo $soft_settings > $set_file
+        echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent% > 24.5: soft $(cat $set_file)"
     elif (( $(echo "$epoch_percent > 0.5" | bc -l) )); then
-        echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent% > 0.5: hard $(cat $set_file)"
         echo $hard_settings > $set_file
+        echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent% > 0.5: hard $(cat $set_file)"
     else
-        echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent%, settings=$(cat $set_file)"
+        echo $hard_settings > $set_file
+        echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch percent=$epoch_percent% settings=$(cat $set_file)"
     fi
 
     # Пауза перед следующей проверкой
