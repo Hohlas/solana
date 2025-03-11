@@ -48,6 +48,9 @@ def extract_slot_events(log_file_path):
     new_fork_events = {}
     replay_stats_events = {}
     tower_vote_events = {}
+    tower_observed_root_diff = []  # Структура для хранения разницы tower-observed - root
+    tower_vote_root_diff = []  # Новая структура для хранения разницы tower-vote - root
+    slot_is_dead_data = []  # Новая структура для хранения is_dead статуса
     
     with open(log_file_path, 'r') as log_file:
         for line in log_file:
@@ -74,6 +77,9 @@ def extract_slot_events(log_file_path):
                 # Формат без микросекунд
                 timestamp = datetime.strptime(timestamp_str.rstrip('Z'), '%Y-%m-%dT%H:%M:%S')
             
+            # Форматируем время для Excel
+            excel_time = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            
             # Проверяем события для каждого слота
             # 1. new fork событие
             new_fork_match = re.search(r'new fork:(\d+)', line)
@@ -92,8 +98,57 @@ def extract_slot_events(log_file_path):
             if tower_vote_match:
                 slot = int(tower_vote_match.group(1))
                 tower_vote_events[slot] = timestamp
+
+            # 4. tower-observed и root
+            if 'datapoint: tower-observed' in line:
+                tower_observed_match = re.search(r'tower-observed slot=(\d+)i', line)
+                root_match = re.search(r'root=(\d+)i', line)
+                
+                if tower_observed_match and root_match:
+                    tower_observed = int(tower_observed_match.group(1))
+                    root = int(root_match.group(1))
+                    diff = tower_observed - root
+                    
+                    tower_observed_root_diff.append([
+                        excel_time,         # Время
+                        diff,               # Разница
+                        tower_observed,     # tower-observed
+                        root                # root
+                    ])
+                    
+            # 5. tower-vote latest и root (НОВОЕ)
+            if 'datapoint: tower-vote' in line and 'latest=' in line and 'root=' in line:
+                tower_vote_match = re.search(r'tower-vote latest=(\d+)i', line)
+                root_match = re.search(r'root=(\d+)i', line)
+                
+                if tower_vote_match and root_match:
+                    tower_vote = int(tower_vote_match.group(1))
+                    root = int(root_match.group(1))
+                    diff = tower_vote - root
+                    
+                    tower_vote_root_diff.append([
+                        excel_time,      # Время
+                        diff,            # Разница
+                        tower_vote,      # tower-vote latest
+                        root             # root
+                    ])
+                    
+            # 6. is_dead статус (НОВОЕ)
+            if 'datapoint: slot_stats_tracking_complete' in line:
+                slot_match = re.search(r'slot=(\d+)i', line)
+                is_dead_match = re.search(r'is_dead=(true|false)', line)
+                
+                if slot_match and is_dead_match:
+                    slot = int(slot_match.group(1))
+                    is_dead = 1 if is_dead_match.group(1) == 'true' else 0  # Преобразуем в 0/1
+                    
+                    slot_is_dead_data.append([
+                        excel_time,      # Время
+                        is_dead,         # is_dead статус (0=false, 1=true)
+                        slot             # Номер слота
+                    ])
     
-    return new_fork_events, replay_stats_events, tower_vote_events
+    return new_fork_events, replay_stats_events, tower_vote_events, tower_observed_root_diff, tower_vote_root_diff, slot_is_dead_data
 
 def calculate_processing_times(new_fork_events, replay_stats_events, tower_vote_events):
     """
@@ -262,12 +317,45 @@ def main():
             if ws.cell(row=row, column=2).value is not None:
                 ws.cell(row=row, column=2).number_format = '0.00'  # Форматируем как число с двумя знаками после запятой
 
-    # Анализ временных разниц между событиями
-    new_fork_events, replay_stats_events, tower_vote_events = extract_slot_events(log_file_path)
+    # Анализ временных разниц между событиями и разниц tower-observed - root, tower-vote - root, is_dead
+    new_fork_events, replay_stats_events, tower_vote_events, tower_observed_root_diff, tower_vote_root_diff, slot_is_dead_data = extract_slot_events(log_file_path)
     fork_to_replay_times, replay_to_vote_times, detailed_replay_vote_info = calculate_processing_times(
         new_fork_events, replay_stats_events, tower_vote_events
     )
     
+    # Создаем новый лист для разницы tower-observed - root
+    sheet_tower_observed_root = workbook.create_sheet(title="tower_observed_root_diff")
+    sheet_tower_observed_root.append(['timestamp', 'diff', 'tower_observed', 'root'])  # Заголовки столбцов
+    
+    for entry in tower_observed_root_diff:
+        sheet_tower_observed_root.append(entry)  # Запись данных
+    
+    # Добавляем график для разницы tower-observed - root
+    if len(tower_observed_root_diff) > 0:
+        add_chart(sheet_tower_observed_root, "Tower-Observed - Root (slots)")
+        
+    # Создаем новый лист для разницы tower-vote - root (НОВОЕ)
+    sheet_tower_vote_root = workbook.create_sheet(title="tower_vote_root_diff")
+    sheet_tower_vote_root.append(['timestamp', 'diff', 'tower_vote', 'root'])  # Заголовки столбцов
+    
+    for entry in tower_vote_root_diff:
+        sheet_tower_vote_root.append(entry)  # Запись данных
+    
+    # Добавляем график для разницы tower-vote - root
+    if len(tower_vote_root_diff) > 0:
+        add_chart(sheet_tower_vote_root, "Tower-Vote - Root (slots)")
+        
+    # Создаем новый лист для is_dead статуса (НОВОЕ)
+    sheet_is_dead = workbook.create_sheet(title="slot_is_dead")
+    sheet_is_dead.append(['timestamp', 'is_dead', 'slot'])  # Заголовки столбцов
+    
+    for entry in slot_is_dead_data:
+        sheet_is_dead.append(entry)  # Запись данных
+    
+    # Добавляем график для is_dead статуса
+    if len(slot_is_dead_data) > 0:
+        add_chart(sheet_is_dead, "Slot Is Dead Status (0=false, 1=true)")
+        
     # Создаем лист для детального анализа задержек, если есть выбросы
     if detailed_replay_vote_info:
         times_ms = [info['time_diff_ms'] for info in detailed_replay_vote_info]
