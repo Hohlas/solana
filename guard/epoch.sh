@@ -7,9 +7,6 @@ set_file="$HOME/solana/mostly_confirmed_threshold"
 
 # Бесконечный цикл
 while true; do
-    # Запись hard_settings в файл по умолчанию
-    echo $hard_settings > $set_file
-
     # Получить информацию об эпохе
     output=$(solana epoch-info)
     epoch_percent=$(echo "$output" | grep "Epoch Completed Percent:" | awk '{print $4}' | tr -d '%')
@@ -20,9 +17,6 @@ while true; do
         sleep 10
         continue
     fi
-
-    # Вывести результат с текущим временем
-    
 
     # Проверка попадания в заданные диапазоны
     if (( $(echo "$epoch_percent > 99.7" | bc -l) )); then
@@ -38,9 +32,9 @@ while true; do
         echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent% > 0.5: hard $(cat $set_file)"
         echo $hard_settings > $set_file
     else
-        echo "$(TZ=Europe/Moscow date +"%H:%M:%S")  epoch percent=$epoch_percent%  settings:$(cat $set_file)"    
+        echo -e "$(TZ=Europe/Moscow date +"%H:%M:%S") epoch=$epoch_percent%, settings=$(cat $set_file)"
     fi
-    
+
     # Пауза перед следующей проверкой
     sleep 10
 done
