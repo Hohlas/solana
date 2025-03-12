@@ -15,7 +15,7 @@ chmod +x ~/sol_git/telegram_bot/watch_main.sh
 # ##########################################
 
 BASHRC_FILE="$HOME/.bashrc"
-NEW_ALIAS="alias patch='source ~/sol_git/setup/patch.sh'" # алиас на замену
+NEW_ALIAS="alias patch='~/sol_git/setup/patch.sh'" # алиас на замену
 OLD_ALIAS="${NEW_ALIAS%%=*}" # Вырезаем все после первого "="
 
 : '
