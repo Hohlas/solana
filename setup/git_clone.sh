@@ -28,10 +28,10 @@ if [ -f "$BASHRC_FILE" ]; then
     if grep -q "^$OLD_ALIAS" "$BASHRC_FILE"; then
         # Заменяем строку, начинающуюся с OLD_ALIAS
         sed -i.bak "s|^$OLD_ALIAS.*|$NEW_ALIAS|" "$BASHRC_FILE"
-        echo "Строка успешно заменена на: $NEW_ALIAS"
+        echo "алиас $OLD_ALIAS заменен на: $NEW_ALIAS"
     else
         echo "$NEW_ALIAS" >> "$BASHRC_FILE"
-        echo "Новый алиас добавлен в $BASHRC_FILE: $NEW_ALIAS"
+        echo "добавлен новый алиас: $NEW_ALIAS"
     fi
 else
     echo "Файл $BASHRC_FILE не найден."
