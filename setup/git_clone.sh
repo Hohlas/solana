@@ -18,6 +18,11 @@ BASHRC_FILE="$HOME/.bashrc"
 NEW_ALIAS="alias patch='source ~/sol_git/setup/patch.sh'" # алиас на замену
 OLD_ALIAS="${NEW_ALIAS%%=*}" # Вырезаем все после первого "="
 
+: '
+многострочный 
+комментарий
+'
+
 if [ -f "$BASHRC_FILE" ]; then
     # Заменяем строку, если она существует, или добавляем её, если строки нет
     if grep -q "^$OLD_ALIAS" "$BASHRC_FILE"; then
