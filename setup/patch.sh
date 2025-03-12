@@ -39,5 +39,5 @@ while true; do
         echo "$(TIME) epoch=$epoch_percent% [$(cat $set_file)]"
     fi
 
-    sleep 30
+    sleep 60
 done
