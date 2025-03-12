@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Настройки
-orig_settings="0.45 4 0 24"
-hard_settings="0.5 4 0 24"
-soft_settings="0.55 2 0 24"
+orig="0.45 4 0 24" # настройки Шиноби
+hard="0.5 4 0 24" # чуть более консервативные настройки
+soft="0.55 2 0 24" # очень консервативные настройки
 set_file="$HOME/solana/mostly_confirmed_threshold"
-set_patch=$hard_settings  # Инициализация патча
+
 
 TIME() {
     TZ=Europe/Moscow date +"%b %d %H:%M:%S"
@@ -24,16 +24,16 @@ while true; do
     # Проверка попадания в заданные диапазоны
     if (( $(echo "$epoch_percent > 99.7" | bc -l) )); then
         #rm -f $set_file;                 echo "$(TIME) epoch=$epoch_percent% > 99.7: Path OFF"
-        echo $soft_settings > $set_file; echo "$(TIME) epoch=$epoch_percent% > 99.7: [$(cat $set_file)]" 
+        echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% > 99.7: [$(cat $set_file)]" 
     elif (( $(echo "$epoch_percent > 25.5" | bc -l) )); then
-        echo $set_patch > $set_file;     echo "$(TIME) epoch=$epoch_percent% > 25.5: [$(cat $set_file)]"
+        echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% > 25.5: [$(cat $set_file)]"
     elif (( $(echo "$epoch_percent > 24.5" | bc -l) )); then
         #rm -f $set_file;                 echo "$(TIME) epoch=$epoch_percent% > 24.5: Path OFF"
-        echo $soft_settings > $set_file; echo "$(TIME) epoch=$epoch_percent% > 24.5: [$(cat $set_file)]"
+        echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% > 24.5: [$(cat $set_file)]"
     elif (( $(echo "$epoch_percent > 0.5" | bc -l) )); then
-        echo $set_patch > $set_file;     echo "$(TIME) epoch=$epoch_percent% > 0.5: [$(cat $set_file)]"
+        echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% >  0.5: [$(cat $set_file)]"
     else
-        echo $set_patch > $set_file;     echo "$(TIME) epoch=$epoch_percent% [$(cat $set_file)]"
+        echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% [$(cat $set_file)]"
     fi
 
     sleep 60
