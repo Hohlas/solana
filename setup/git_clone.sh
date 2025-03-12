@@ -25,7 +25,8 @@ if [ -f "$BASHRC_FILE" ]; then
         sed -i.bak "s|^$OLD_ALIAS.*|$NEW_ALIAS|" "$BASHRC_FILE"
         echo "Строка успешно заменена на: $NEW_ALIAS"
     else
-        echo "Строка '$OLD_ALIAS' не найдена. Добавьте её вручную."
+        echo "$NEW_ALIAS" >> "$BASHRC_FILE"
+        echo "Новый алиас добавлен в $BASHRC_FILE: $NEW_ALIAS"
     fi
 else
     echo "Файл $BASHRC_FILE не найден."
