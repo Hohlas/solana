@@ -15,18 +15,19 @@ chmod +x ~/sol_git/telegram_bot/watch_main.sh
 # ##########################################
 
 BASHRC_FILE="$HOME/.bashrc"
-NEW_ALIAS="alias guard='source ~/sol_git/guard/guard.sh'"
+NEW_ALIAS="alias patch='source ~/sol_git/setup/patch.sh'" # алиас на замену
+OLD_ALIAS="${NEW_ALIAS%%=*}" # Вырезаем все после первого "="
 
-#if [ -f "$BASHRC_FILE" ]; then
+if [ -f "$BASHRC_FILE" ]; then
     # Заменяем строку, если она существует, или добавляем её, если строки нет
-    #if grep -q "^alias guard" "$BASHRC_FILE"; then
-        # Заменяем строку, начинающуюся с "alias guard"
-        #sed -i.bak "s|^alias guard.*|$NEW_ALIAS|" "$BASHRC_FILE"
-        #echo "Строка успешно заменена на: $NEW_ALIAS"
-    #else
-       # echo "Строка 'alias guard' не найдена. Добавьте её вручную."
-    #fi
-#else
-    #echo "Файл $BASHRC_FILE не найден."
-#fi
+    if grep -q "^$OLD_ALIAS" "$BASHRC_FILE"; then
+        # Заменяем строку, начинающуюся с OLD_ALIAS
+        sed -i.bak "s|^$OLD_ALIAS.*|$NEW_ALIAS|" "$BASHRC_FILE"
+        echo "Строка успешно заменена на: $NEW_ALIAS"
+    else
+        echo "Строка '$OLD_ALIAS' не найдена. Добавьте её вручную."
+    fi
+else
+    echo "Файл $BASHRC_FILE не найден."
+fi
 source ~/.bashrc
