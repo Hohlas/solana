@@ -237,6 +237,7 @@ systemctl disable relayer.service
 ```
 ```bash
 systemctl restart relayer
+systemctl status relayer
 journalctl -u relayer -f
 ```
 ```bash
