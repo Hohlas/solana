@@ -239,6 +239,14 @@ systemctl disable relayer.service
 systemctl restart relayer
 journalctl -u relayer -f
 ```
+```bash
+# copy relayer bin withour compiling
+mkdir -p $HOME/lite-relayer/target/release
+cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
+ln -sfn ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
+unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release # withour compiling
+```
+
 </details>
 
 <details>
