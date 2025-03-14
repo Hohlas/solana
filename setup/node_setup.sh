@@ -69,7 +69,7 @@ echo 'alias node_reset=~/sol_git/setup/node_reset.sh' >> $HOME/.bashrc
 echo 'alias snap=~/sol_git/setup/snap.sh' >> $HOME/.bashrc
 echo 'alias git_clone=~/sol_git/setup/git_clone.sh' >> $HOME/.bashrc
 echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
-echo "alias guard='source ~/sol_git/setup/guard.sh'" >> $HOME/.bashrc
+echo "alias guard='source ~/sol_git/guard/guard.sh'" >> $HOME/.bashrc
 echo "alias shred_keys='find /root/keys -type f -exec shred -u {} \;'" >> $HOME/.bashrc	
 echo "alias get_tag='source ~/sol_git/setup/get_tag.sh'" >> $HOME/.bashrc
 echo "alias node_install='source ~/sol_git/setup/install.sh'" >> $HOME/.bashrc
@@ -77,6 +77,7 @@ echo "alias node_update='source ~/sol_git/setup/update.sh'" >> $HOME/.bashrc
 echo "alias finder='source ~/sol_git/setup/finder.sh'" >> $HOME/.bashrc
 echo "alias yabs='curl -sL yabs.sh | bash'" >> $HOME/.bashrc
 echo "alias stat='source ~/stat.sh'" >> $HOME/.bashrc
+echo "alias patch='~/sol_git/setup/patch.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 source $HOME/.bashrc
