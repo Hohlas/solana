@@ -31,7 +31,7 @@ metrics.xlsx - Полученный файл с таблицами для пос
 
 ```bash
 # копирование заданного временного отрезка лог файла
-awk '/T01:00:00/,/T12:00:00/' ~/solana/solana.log > ~/log_monitor/solana.log
+awk '/T12:00:00/,/T13:00:00/' ~/solana/solana.log > ~/log_monitor/solana.log
 ```
 ```bash
 # Запуск log_monitor.py для создания файла с таблицами metrics.xlsx
