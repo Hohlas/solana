@@ -624,6 +624,7 @@ SECONDARY_SERVER(){ ############################################################
  		else LOG "stop relayer on remote server Error"
 		fi
 		systemctl start relayer.service
+  		solana-validator -l $LEDGER set-relayer-config --relayer-url http://127.0.0.1:11226
   		LOG "restart relayer service"
 	fi
 	### stop telegraf service on remote server
