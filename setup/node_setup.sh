@@ -48,7 +48,7 @@ echo "DefaultLimitNOFILE=1000000" | sudo tee -a /etc/systemd/system.conf
 echo -e '\n\e[42m Set relayer \e[0m\n'
 mkdir -p $HOME/lite-relayer/target/release
 cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
-ln -sf ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
+ln -sfn ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
 unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release # withour compiling
 
 # create alias #
