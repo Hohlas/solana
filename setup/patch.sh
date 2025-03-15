@@ -8,7 +8,7 @@ set_file="$HOME/solana/mostly_confirmed_threshold"
 
 
 TIME() {
-    TZ=Europe/Moscow date +"%b %d %H:%M:%S"
+    TZ=UTC date +"%b %d %H:%M:%S" # TZ=Europe/Moscow
 }
 
 while true; do
