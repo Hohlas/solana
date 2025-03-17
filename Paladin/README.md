@@ -91,8 +91,8 @@ tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed
 <summary>download original files</summary>
 
 ```bash
-FILES_DIR=$HOME/files
-mkdir -p $HOME/files
+FILES_DIR="$HOME/files_$TAG"
+mkdir -p $FILES_DIR
 REPO_URL="paladin-bladesmith/paladin-solana/refs/tags/$TAG"
 ```
 
