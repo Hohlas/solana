@@ -1,5 +1,8 @@
 ## Paladin setup
 
+(Paladin GitHub)[https://github.com/paladin-bladesmith/paladin-solana#about]
+(Paladin - P3 Runbook)[https://docs.paladin.one]
+
 <details>
 <summary>rust setup</summary>
 
