@@ -47,7 +47,7 @@ systemctl disable nftables
 systemctl stop nftables
 systemctl status nftables
 nft flush ruleset # Очистка всех правил
-nft -f nftables.conf # Применение изменений без перезапуска сервиса
+nft -f /etc/nftables.conf # Применение изменений без перезапуска сервиса
 ```
 ```bash
 grep "NFT" /var/log/kern.log # срабатывания фильтров
