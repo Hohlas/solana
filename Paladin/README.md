@@ -91,12 +91,9 @@ tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed
 <summary>download original files</summary>
 
 ```bash
-TAG=v2..
 FILES_DIR=$HOME/files
 mkdir -p $HOME/files
-rm -r $HOME/files/*
-REPO_URL="jito-foundation/jito-solana/refs/tags/$TAG-jito"
-REPO_URL="anza-xyz/agave/refs/tags/$TAG"
+REPO_URL="paladin-bladesmith/paladin-solana/refs/tags/$TAG"
 ```
 
 ```bash
