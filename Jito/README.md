@@ -111,6 +111,40 @@ echo -e "get files from \033[32m $REPO_URL \033[0m ok "
 
 </details>
 
+<details>
+<summary>check TAGs differences </summary>
+
+[JitoGit](https://github.com/jito-foundation/jito-solana/releases) | [AgaveGit](https://github.com/anza-xyz/agave/releases)
+```bash
+TAG1=v2.0.15-jito
+```
+
+```bash
+GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
+FILES=(
+    "core/src/consensus.rs"
+    "core/src/consensus/progress_map.rs"
+    "core/src/consensus/fork_choice.rs"
+    "core/src/replay_stage.rs"
+    "core/src/vote_simulator.rs"
+    "programs/vote/src/vote_state/mod.rs"
+    "sdk/program/src/vote/state/mod.rs"
+)
+echo -e "\n  - TAGs $BLUE$TAG$CLEAR & $BLUE$TAG1$CLEAR differences - "
+for FILE in "${FILES[@]}"; do
+    DIFF=$(git diff "$TAG" "$TAG1" -- "$FILE") # различия между тегами
+    if [ -n "$DIFF" ]; then
+        echo -e "${RED}files are different:${CLEAR} $FILE"
+        # echo "$DIFF"  # Выводим различия
+    else
+        echo -e "${GREEN}files the same:${CLEAR} $FILE"
+    fi
+done
+
+```
+
+</details>
+
 
 <details>
 <summary>discord post</summary>
