@@ -2,7 +2,9 @@
 
 [Solana setup](setup/README.md)
 
-[Jito setup](https://github.com/Hohlas/solana/tree/main/Jito)
+[Jito setup](Jito/README.md)
+
+[Paladin setup](Paladin/README.md)
 
 [FireDancer](firedancer/README.md)
 
