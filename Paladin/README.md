@@ -1,4 +1,4 @@
-## Jito setup
+## Paladin setup
 
 <details>
 <summary>rust setup</summary>
@@ -23,9 +23,8 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 
 
 ```bash
-REPO_URL="https://github.com/anza-xyz/agave.git"
-REPO_URL="https://github.com/jito-foundation/jito-solana.git"
-REPO_DIR=$HOME/jito-solana
+REPO_URL="https://github.com/paladin-bladesmith/paladin-solana.git"
+REPO_DIR=$HOME/paladin-solana
 # rm -r $REPO_DIR
 ```
 
@@ -43,7 +42,7 @@ git fetch --tags # для загрузки всех тегов из удален
 ```
 
 ```bash
-TAG=v2.1.14-jito
+TAG=v2.1.14-paladin.3
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 ```
 
