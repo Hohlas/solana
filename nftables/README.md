@@ -18,6 +18,7 @@ iptables -nvL  # Показать текущие правила iptables
 ```
 --- 
 </details>
+
 ## install nftables firewall
 
 ```bash
