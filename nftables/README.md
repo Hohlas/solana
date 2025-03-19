@@ -46,8 +46,12 @@ DDOS защита: Добавляет IP в блэклист на 120сек на
 apt update && apt install nftables -y
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_DDOS.conf > /etc/nftables.conf
 systemctl restart nftables
+nft flush ruleset # Очистка всех правил
 ```
-
+```bash
+nft list chain filter ddos_protection # # просмотр цепочки ddos_protection таблицы filter.
+grep "NFT" /var/log/kern.log # срабатывания фильтров
+```
 </details>
 
 
@@ -59,12 +63,12 @@ nft flush ruleset # Очистка всех правил
 nft -f /etc/nftables.conf # Применение изменений без перезапуска сервиса
 ```
 ```bash
-grep "NFT" /var/log/kern.log # срабатывания фильтров
+tail -f /var/log/kern.log | grep nftables 
 nft list ruleset # просмотр всех правил
 nft list ruleset | grep dport # открытые порты 
 nft list table filter # просмотр таблицы filter
 nft list chain filter input # просмотр цепочки input таблицы filter.
-nft list chain filter ddos_protection # # просмотр цепочки ddos_protection таблицы filter.
+
 ```
 <details>
 <summary>Сервис отправки уведомлений (реализован в guard) </summary>
