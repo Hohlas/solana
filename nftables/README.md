@@ -28,7 +28,7 @@ systemctl enable nftables
 ```bash
 systemctl restart nftables
 ```
-
+---
 <details>
 <summary>nftables DDOS protection</summary>
 
