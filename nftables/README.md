@@ -19,7 +19,7 @@ iptables -nvL  # Показать текущие правила iptables
 --- 
 </details>
 
-## install nftables firewall
+### install nftables firewall
 
 ```bash
 apt update && apt install nftables -y
