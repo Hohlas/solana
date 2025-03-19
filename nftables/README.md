@@ -43,7 +43,7 @@ DDOS защита: Добавляет IP в блэклист на 120сек на
 
 ```bash
 apt update && apt install nftables -y
-curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables_DDOS/nftables.conf > /etc/nftables.conf
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables_DDOS.conf > /etc/nftables.conf
 systemctl restart nftables
 ```
 
