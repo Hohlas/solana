@@ -18,7 +18,7 @@ iptables -nvL  # Показать текущие правила iptables
 ```
 --- 
 </details>
-###  Установка и запуск nftables фаервола
+## install nftables firewall
 
 ```bash
 apt update && apt install nftables -y
