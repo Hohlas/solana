@@ -18,7 +18,8 @@ iptables -nvL  # Показать текущие правила iptables
 ```
 --- 
 </details>
-### Установка и запуск nftables фаервола
+### Установка и запуск nftables фаервола  
+
 ```bash
 apt update && apt install nftables -y
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
