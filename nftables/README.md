@@ -25,8 +25,6 @@ iptables -nvL  # Показать текущие правила iptables
 apt update && apt install nftables -y
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
 systemctl enable nftables
-```
-```bash
 systemctl restart nftables
 ```
 ---
