@@ -43,7 +43,8 @@ git submodule update
 sed -i "/^[ \t]*results\[ 0 \] = pwd\.pw_uid/c results[ 0 ] = 1001;" ~/firedancer/src/app/fdctl/config.c
 sed -i "/^[ \t]*results\[ 1 \] = pwd\.pw_gid/c results[ 1 ] = 1002;" ~/firedancer/src/app/fdctl/config.c
 # build
-make -j fdctl solana 
+make -j fdctl solana
+ln -sfn $HOME/firedancer/build/native/gcc/bin/fdctl $HOME/firedancer/build/native/gcc/bin/solana-validator
 fdctl --version
 ```
 copy 'vote.json' & 'validator-keypair.json' to /root/solana/ 
