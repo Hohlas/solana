@@ -1,20 +1,6 @@
 ## nftables firewall
 
 <details>
-<summary>Описание функций</summary>
-
-Фаервол портов соланы  (ssh, 8000-8001, 8900, 11226, ...)
-DDOS защита: Добавляет IP в блэклист на 120сек на основе фильтров, логирует /var/log/kern.log 
-
-<ins>Фильтры:</ins>  
-- ICMP - частота echo-запросов (ping): 30 пакетов/сек, всплески 30 пакетов  
-- TCP - кол-во TCP соединений от одного IP: 100/сек, всплески 100 пакетов  
-- UDP - кол-во UDP-пакетов от одного IP: 100К/сек, всплески 20К пакетов  
-- Port scan - Защита от сканирования портов чаще чем 200 в минуту  
-
-</details>
-
-<details>
 <summary>Удаление старого фаервола iptables</summary>
 
 ```bash
@@ -42,6 +28,28 @@ systemctl enable nftables
 ```bash
 systemctl restart nftables
 ```
+
+<details>
+<summary>nftables DDOS protection</summary>
+
+Фаервол портов соланы  (ssh, 8000-8001, 8900, 11226, ...)
+DDOS защита: Добавляет IP в блэклист на 120сек на основе фильтров, логирует /var/log/kern.log 
+
+<ins>Фильтры:</ins>  
+- ICMP - частота echo-запросов (ping): 30 пакетов/сек, всплески 30 пакетов  
+- TCP - кол-во TCP соединений от одного IP: 100/сек, всплески 100 пакетов  
+- UDP - кол-во UDP-пакетов от одного IP: 100К/сек, всплески 20К пакетов  
+- Port scan - Защита от сканирования портов чаще чем 200 в минуту  
+
+```bash
+apt update && apt install nftables -y
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables_DDOS/nftables.conf > /etc/nftables.conf
+systemctl enable nftables
+```
+
+</details>
+
+
 ```bash
 systemctl disable nftables
 systemctl stop nftables
