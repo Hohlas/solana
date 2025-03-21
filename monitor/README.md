@@ -208,3 +208,5 @@ curl -o $HOME/tvc_scan/validators.txt https://raw.githubusercontent.com/Hohlas/s
 chmod +x $HOME/tvc_scan/tvc.sh
 ./tvc.sh
 ```
+![image](https://github.com/user-attachments/assets/4ce7e7f0-94f3-4c38-aa0e-00d1dc327866)
+
