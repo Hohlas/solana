@@ -196,6 +196,7 @@ python3 $HOME/log_monitor/log_monitor.py
 ![image](https://github.com/user-attachments/assets/4e553fb8-e21e-435a-8e5d-4026574f60aa)
 
 
+[Аналог от Block-Logic](https://github.com/Hohlas/solana-validator-tools/blob/main/README.md#solana-validator-tools)
 
 ## TVC scanner
 
