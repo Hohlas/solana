@@ -22,16 +22,10 @@ while true; do
     fi
 
     # Проверка попадания в заданные диапазоны
-    if (( $(echo "$epoch_percent > 99.7" | bc -l) )); then
-        echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% > 99.7: soft[$(cat $set_file)]" 
-    elif (( $(echo "$epoch_percent > 25.3" | bc -l) )); then
+    if (( $(echo "$epoch_percent > 25.3" | bc -l) )); then
         echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% > 25.5: hard[$(cat $set_file)]"
     elif (( $(echo "$epoch_percent > 24.8" | bc -l) )); then
         echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% > 24.5: soft[$(cat $set_file)]"
-    elif (( $(echo "$epoch_percent > 0.3" | bc -l) )); then
-        echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% >  0.5: hard[$(cat $set_file)]"
-    elif (( $(echo "$epoch_percent > 0" | bc -l) )); then
-        echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% > 0: soft[$(cat $set_file)]"    
     else
         echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% hard[$(cat $set_file)]"
     fi
