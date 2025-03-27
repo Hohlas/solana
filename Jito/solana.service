@@ -28,7 +28,7 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --snapshots /mnt/snapshots \
 --accounts /mnt/disk1/accounts \
 --accounts /mnt/disk2/accounts \
---accounts-hash-cache-path /mnt/disk3/accounts_hash_cache \
+#--accounts-hash-cache-path /mnt/disk3/accounts_hash_cache \
 --accounts-index-path /mnt/ramdisk/accounts_index \
 --log /root/solana/solana.log \
 --limit-ledger-size 50000000 \
