@@ -16,7 +16,8 @@ chmod +x ~/sol_git/telegram_bot/watch_main.sh
 
 BASHRC_FILE="$HOME/.bashrc"
 #NEW_ALIAS="alias patch='~/sol_git/setup/patch.sh'" # алиас на замену
-NEW_ALIAS="alias mon='~/sol_git/setup/mon.sh' && alias monitor='solana-validator --ledger ~/solana/ledger monitor'"
+NEW_ALIAS="alias mon='~/sol_git/setup/mon.sh'
+alias monitor='solana-validator --ledger ~/solana/ledger monitor'"
 OLD_ALIAS="${NEW_ALIAS%%=*}" # Вырезаем все после первого "="
 
 : '
