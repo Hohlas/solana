@@ -34,7 +34,7 @@ if [[ $NODE == "main" ]]; then
         # remove lines
         sed -i "/^--accounts /d" ~/solana/solana.service
         sed -i "/^--accounts /d" ~/solana/solana.service
-        #sed -i "/^--accounts-hash-cache-path /d" ~/solana/solana.service
+        sed -i "/^--accounts-hash-cache-path /d" ~/solana/solana.service
         sed -i "/^--accounts-index-path /d" ~/solana/solana.service
         sed -i "/^--no-skip-initial-accounts-db-clean /d" ~/solana/solana.service
     fi
