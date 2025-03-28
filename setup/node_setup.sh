@@ -78,6 +78,7 @@ echo "alias finder='source ~/sol_git/setup/finder.sh'" >> $HOME/.bashrc
 echo "alias yabs='curl -sL yabs.sh | bash'" >> $HOME/.bashrc
 echo "alias stat='source ~/stat.sh'" >> $HOME/.bashrc
 echo "alias patch='~/sol_git/setup/patch.sh'" >> $HOME/.bashrc
+echo "alias mon='~/sol_git/setup/mon.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
 source $HOME/.bashrc
