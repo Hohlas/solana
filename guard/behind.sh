@@ -1,5 +1,5 @@
 #!/bin/bash
-BEHIND_VER=v1.1.1
+BEHIND_VER=v1.1.2
 #===================++++++++++========================
 LOG_FILE=$HOME/behind.log
 BEHIND_OK_VAL=1 # behind, that seemed ordinary
@@ -15,8 +15,10 @@ TIME() {
 LOG() {
     local message="$1"
     echo "$(TIME) $message" >> $LOG_FILE  # Записываем в лог
+    echo "$(TIME) $message"
 	}
-
+ 
+echo -e " == SOLANA BEHIND $BLUE$GUARD_VER $CLEAR ==  " | tee -a $LOG_FILE
 
 while true  ###  main cycle   #################################################
 do
