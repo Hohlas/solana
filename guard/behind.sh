@@ -18,7 +18,7 @@ LOG() {
     echo "$(TIME) $message"
 	}
  
-echo -e " == SOLANA BEHIND $BLUE$GUARD_VER $CLEAR ==  " | tee -a $LOG_FILE
+echo -e " == SOLANA BEHIND $BLUE$BEHIND_VER $CLEAR ==  " | tee -a $LOG_FILE
 
 while true  ###  main cycle   #################################################
 do
