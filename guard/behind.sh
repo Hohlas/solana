@@ -1,5 +1,5 @@
 #!/bin/bash
-BEHIND_VER=v1.1.2
+BEHIND_VER=v1.1.3
 #===================++++++++++========================
 LOG_FILE=$HOME/behind.log
 BEHIND_OK_VAL=1 # behind, that seemed ordinary
@@ -18,7 +18,7 @@ LOG() {
     echo "$(TIME) $message"
 	}
  
-echo -e " == SOLANA BEHIND $BLUE$BEHIND_VER $CLEAR ==  " | tee -a $LOG_FILE
+echo -e " $(TIME) : SOLANA BEHIND $BLUE$BEHIND_VER $CLEAR   " | tee -a $LOG_FILE
 
 while true  ###  main cycle   #################################################
 do
