@@ -2,7 +2,7 @@
 BEHIND_VER=v1.1.1
 #===================++++++++++========================
 LOG_FILE=$HOME/behind.log
-BEHIND_OK_VAL=0 # behind, that seemed ordinary
+BEHIND_OK_VAL=1 # behind, that seemed ordinary
 #======================================================
 rpcURL1=$(solana config get | grep "RPC URL" | awk '{print $3}')
 GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$'\033[34m'; CLEAR=$'\033[0m'
