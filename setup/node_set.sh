@@ -52,5 +52,9 @@ source ~/.bashrc
 tmp="\"$NAME\""
 sed -i "/^  hostname = /c\  hostname = $tmp" /etc/telegraf/telegraf.conf
 
+guardcfg_name=$(echo "$NAME" | tr '[:upper:]' '[:lower:]') # имя малыми буквами
+curl -H "Authorization: token $PAT" https://raw.githubusercontent.com/Hohlas/private/main/solana/guard/$guardcfg_name.cfg > $HOME/guard.cfg
+echo -e "\n\e[42m download guard.cfg   \e[0m\n"
+
 systemctl daemon-reload
 ~/sol_git/setup/check.sh
