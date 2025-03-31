@@ -71,6 +71,7 @@ sysctl fs.nr_open
   
 ```bash
 export NEWHOSTNAME="hohla"
+# passwd root
 ```
 ```bash
 sudo hostname $NEWHOSTNAME # сменить до перезагрузки
