@@ -90,7 +90,9 @@ if [ -d /etc/ssh/sshd_config.d ]; then rm -f /etc/ssh/sshd_config.d/*; fi
 if [ -d /etc/ssh/ssh_config.d ]; then rm -f /etc/ssh/ssh_config.d/*; fi
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/sshd_config > /etc/ssh/sshd_config
 sudo ufw allow 2010  # добавить порт в правила файрвола
-sudo systemctl restart ssh  # перезапустить службу ssh
+systemctl daemon-reload
+systemctl restart ssh.socket # обновляет порт и адрес, указанные в sshd_config
+systemctl restart ssh  # перезапустить службу sshприменяет остальные настройки
 nano ~/.ssh/authorized_keys
 ```
 
