@@ -18,6 +18,8 @@ fi
 
 echo -e '\n\e[42m set CPU  perfomance mode \e[0m\n'
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check perfomance
+grep 'cpu MHz' /proc/cpuinfo # MHz
 
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sysctl vm.swappiness=1  # change current SWAPPINESS
