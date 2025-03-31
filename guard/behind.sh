@@ -19,6 +19,7 @@ LOG() {
 	}
  
 echo -e " $(TIME) : SOLANA BEHIND $BLUE$BEHIND_VER $CLEAR   " | tee -a $LOG_FILE
+echo " BEHIND_OK=$BEHIND_OK_VAL"
 
 while true  ###  main cycle   #################################################
 do
