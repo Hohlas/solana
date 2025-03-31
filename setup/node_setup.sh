@@ -1,5 +1,7 @@
 #!/bin/bash
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
+apt install sysstat git ncdu nftables tmux htop atop curl nano smartmontools bc man rsync cron chrony logrotate rsyslog jq zip unzip -y
+
 # create dirs
 mkdir -p ~/solana  # ln -sf /mnt/disk2/ledger ~/solana
 mkdir -p /mnt/snapshots
