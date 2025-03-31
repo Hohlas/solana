@@ -1,9 +1,10 @@
 #!/bin/bash
-
+PATCH_VER=v1.1.2
+#===================++++++++++========================
 # Настройки
-orig="0.45 4 0 24" # настройки Шиноби
-#hard="0.5 4 0 24" # чуть более консервативные настройки
-hard="0.45 4 0 24" # чуть более консервативные настройки
+#orig="0.45 4 0 24" # настройки Шиноби
+hard="0.5 4 0 24" # чуть более консервативные настройки
+#hard="0.45 4 0 24" # чуть более консервативные настройки
 soft="0.6 2 0 24" # очень консервативные настройки
 set_file="$HOME/solana/mostly_confirmed_threshold"
 
@@ -11,6 +12,8 @@ set_file="$HOME/solana/mostly_confirmed_threshold"
 TIME() {
     TZ=UTC date +"%b %d %H:%M:%S" # TZ=Europe/Moscow
 }
+echo -e " $(TIME) : SOLANA PATCH SWITCHER $BLUE$PATCH_VER $CLEAR   " | tee -a $LOG_FILE
+echo " hard=$hard  soft=$soft"
 
 while true; do
     output=$(solana epoch-info 2>/dev/null)
