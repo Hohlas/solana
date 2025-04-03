@@ -36,9 +36,9 @@ while true; do
         echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% = 25: soft[$(cat $set_file)]"
     # 65%
     elif (( $(echo "$epoch_percent > 65.3" | bc -l) )); then
-        echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% > 25: hard[$(cat $set_file)]"
+        echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% > 65: hard[$(cat $set_file)]"
     elif (( $(echo "$epoch_percent > 64.8" | bc -l) )); then
-        echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% = 25: soft[$(cat $set_file)]"
+        echo $soft > $set_file; echo "$(TIME) epoch=$epoch_percent% = 65: soft[$(cat $set_file)]"
     # >0%    
     elif (( $(echo "$epoch_percent > 0.3" | bc -l) )); then
         echo $hard > $set_file; echo "$(TIME) epoch=$epoch_percent% < 25: hard[$(cat $set_file)]"
