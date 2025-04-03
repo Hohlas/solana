@@ -12,8 +12,8 @@ GRAY=$'\033[90m'; GREEN=$'\033[32m'; RED=$'\033[31m'; YELLOW=$'\033[33m'; BLUE=$
 TIME() {
     TZ=UTC date +"%b %d %H:%M:%S" # TZ=Europe/Moscow
 }
-echo -e " $(TIME) : SOLANA PATCH SWITCHER $BLUE$PATCH_VER $CLEAR   " | tee -a $LOG_FILE
-echo " hard=$hard  soft=$soft"
+echo -e " SOLANA PATCH SWITCHER $BLUE$PATCH_VER $CLEAR   " | tee -a $LOG_FILE
+echo " hard=[$hard]   soft=[$soft]"
 
 while true; do
     output=$(solana epoch-info 2>/dev/null)
