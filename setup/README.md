@@ -213,6 +213,10 @@ X_BLOCK_ENGINE=http://de.block-engine.com:11227
 echo $X_BLOCK_ENGINE
 ```
 ```bash
+# switch block-engine
+solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url $X_BLOCK_ENGINE
+```
+```bash
 # create relayer.service
 tee $HOME/relayer.service > /dev/null <<EOF
 [Unit]
