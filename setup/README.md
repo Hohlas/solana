@@ -175,85 +175,38 @@ pip3 install -r requirements.txt
 </details>
 
 <details>
-<summary>Project X</summary>
+<summary>Jito relayer</summary>
 
-[projectx.run](https://projectx.run) | [validators list](https://projectx.run/validators)
+[Monitoring](https://grafana.metrics.jito.wtf:3000/) | [Running Relayer](https://jito-foundation.gitbook.io/mev/jito-relayer/running-a-relayer#running-the-relayer) | [releases](https://github.com/jito-foundation/jito-relayer/releases) | [Block Engines](https://jito-foundation.gitbook.io/mev/solana-mev/third-party-block-engines) | 
 
 ```bash
-# switch on ProjectX relayer
+# switch to local relayer
 solana-validator -l $HOME/solana/ledger set-relayer-config --relayer-url http://127.0.0.1:11226 
 ```
 ```bash
-# switch on Jito public relayer
+# switch to public relayer
 solana-validator -l ~/solana/ledger set-relayer-config --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 
-```
-
-```bash
-# neccesary software install
-sudo apt update && sudo apt upgrade -y
-sudo apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
-# source $HOME/.cargo/env
-```
-```bash
-# Clone relayer repo and build binary
-cd $HOME
-git clone https://github.com/projectxsol/lite-relayer.git
-cd lite-relayer
-git fetch
-git submodule update --init --recursive
-cargo build --release --bin transaction-relayer
-```
-[block-engines](https://docs.projectx.run/how-to-connect/block-engines)
-
-```bash
-X_BLOCK_ENGINE=http://de.projectx.run:11227
-X_BLOCK_ENGINE=http://de.block-engine.com:11227
-echo $X_BLOCK_ENGINE
 ```
 ```bash
 # switch block-engine
-solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url $X_BLOCK_ENGINE
+solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url $BLOCK_ENGINE
 ```
 ```bash
-# create relayer.service
-tee $HOME/relayer.service > /dev/null <<EOF
-[Unit]
-Description=X Transaction Relayer
-Requires=network-online.target
-After=network-online.target
-[Service]
-User=$USER
-Type=simple
-ExecStart=$HOME/lite-relayer/target/release/transaction-relayer \
---keypair-path $HOME/solana/relayer-keypair.json \
---signing-key-pem-path $HOME/solana/private.pem \
---verifying-key-pem-path $HOME/solana/public.pem \
---webserver-bind-addr 127.0.0.1:5050 \
---grpc-bind-ip 127.0.0.1 \
---x-block-engine-url $X_BLOCK_ENGINE
-RestartSec=10
-Restart=on-failure
-[Install]
-WantedBy=multi-user.target
-EOF
-mv $HOME/relayer.service /etc/systemd/system/
-systemctl daemon-reload
-systemctl disable relayer.service
-# sudo ufw allow 11228,11229/udp
-```
-```bash
+# copy relayer service
+cp ~/sol_git/Jito/jito-relayer.service ~/solana/relayer.service
+ln -sf ~/solana/relayer.service /etc/systemd/system
 systemctl restart relayer
 systemctl status relayer
 journalctl -u relayer -f
 ```
 ```bash
-# copy relayer bin withour compiling
-mkdir -p $HOME/lite-relayer/target/release
-cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
-ln -sfn ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
-unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release # withour compiling
+# download relayer bin
+JTAG=$(curl -s https://api.github.com/repos/jito-foundation/jito-relayer/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
+echo "latest jito-relayer TAG = $JTAG"
+mkdir -p $HOME/jito-relayer
+wget -P $HOME/jito-relayer https://github.com/jito-foundation/jito-relayer/releases/download/$JTAG/jito-transaction-relayer-x86_64-unknown-linux-gnu
+chmod +x $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu
+$HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu -V
 ```
 
 </details>
