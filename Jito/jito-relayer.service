@@ -17,6 +17,7 @@ Environment=RUST_LOG=info
 Environment=SOLANA_METRICS_CONFIG="host=http://metrics.jito.wtf:8086,db=relayer,u=relayer-operators,p=jito-relayer-write"
 Environment=BLOCK_ENGINE_URL=https://amsterdam.mainnet.block-engine.jito.wtf
 Environment=GRPC_BIND_IP=127.0.0.1
+Environment=ALLOWED_VALIDATORS=5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN,AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd,A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC
 
 ExecStart=/root/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu \
 --keypair-path=/root/solana/relayer-keypair.json \
@@ -24,7 +25,7 @@ ExecStart=/root/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu \
 --verifying-key-pem-path=/root/solana/public.pem \
 --block-engine-url $BLOCK_ENGINE_URL \
 --rpc-servers http://127.0.0.1:8899 \
---allowed-validators 5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC
+--allowed-validators $ALLOWED_VALIDATORS
 
 [Install]
 WantedBy=multi-user.target
