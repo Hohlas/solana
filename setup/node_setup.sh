@@ -49,11 +49,15 @@ cp ~/sol_git/setup/chrony.conf /etc/chrony.conf
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 echo "DefaultLimitNOFILE=1000000" | sudo tee -a /etc/systemd/system.conf
 
-echo -e '\n\e[42m Set relayer \e[0m\n'
-mkdir -p $HOME/lite-relayer/target/release
-cp ~/sol_git/Jito/projectx_relayer.service ~/solana/relayer.service
-ln -sfn ~/solana/relayer.service /etc/systemd/system # projectx-relayer.service
-unzip -oj $HOME/sol_git/Jito/projectx_relayer.zip -d $HOME/lite-relayer/target/release # withour compiling
+echo -e '\n\e[42m Set Jito relayer \e[0m\n'
+JTAG=$(curl -s https://api.github.com/repos/jito-foundation/jito-relayer/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
+echo "latest jito-relayer TAG = $JTAG"
+mkdir -p $HOME/jito-relayer
+wget -P $HOME/jito-relayer https://github.com/jito-foundation/jito-relayer/releases/download/$JTAG/jito-transaction-relayer-x86_64-unknown-linux-gnu
+chmod +x $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu
+$HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu -V
+
+
 
 # create alias #
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
