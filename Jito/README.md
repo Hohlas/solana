@@ -43,7 +43,7 @@ git fetch --tags # для загрузки всех тегов из удален
 ```
 
 ```bash
-TAG=v2.1.16-jito
+TAG=v2.1.21-jito
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 ```
 
