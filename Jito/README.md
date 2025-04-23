@@ -25,6 +25,8 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 ```bash
 TAG=v2.2.11-jito
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
+SOL_BIN="$HOME/.local/share/solana/install/releases/$TAG/solana-release/bin"
+API_URL="https://api.github.com/repos/Hohlas/solana-fork/contents/bin/$TAG"
 REPO_URL="https://github.com/anza-xyz/agave.git"
 REPO_URL="https://github.com/jito-foundation/jito-solana.git"
 REPO_DIR=$HOME/solana-rep
