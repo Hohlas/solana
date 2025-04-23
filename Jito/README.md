@@ -22,7 +22,7 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 </details>
 
 ```bash
-TAG=v2.2.11-jito
+TAG=v2.2.12 #-jito
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 ```
 
