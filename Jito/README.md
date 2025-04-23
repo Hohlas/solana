@@ -23,10 +23,12 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 
 
 ```bash
+TAG=v2.2.11-jito
+# TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 REPO_URL="https://github.com/anza-xyz/agave.git"
 REPO_URL="https://github.com/jito-foundation/jito-solana.git"
-REPO_DIR=$HOME/jito-solana
-# rm -r $REPO_DIR
+REPO_DIR=$HOME/solana-rep
+rm -r $REPO_DIR
 ```
 
 ```bash
@@ -42,10 +44,7 @@ fi
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
 ```
 
-```bash
-TAG=v2.1.21-jito
-# TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
-```
+
 
 ```bash
 echo -e "current TAG: \033[32m $TAG \033[0m"
