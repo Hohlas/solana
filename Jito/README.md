@@ -56,7 +56,7 @@ git fetch --tags # для загрузки всех тегов из удален
 
 
 ```bash
-echo -e "current TAG: \033[32m $TAG \033[0m"
+echo -e "$REPO_URL: \033[32m $TAG \033[0m"
 echo "export TAG=$TAG" >> $HOME/.bashrc
 git checkout tags/$TAG
 git submodule update --init --recursive
