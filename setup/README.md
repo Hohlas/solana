@@ -189,7 +189,7 @@ solana-validator -l ~/solana/ledger set-relayer-config --relayer-url http://fran
 ```
 ```bash
 # switch block-engine
-solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url $BLOCK_ENGINE
+solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf
 ```
 ```bash
 # copy relayer service
@@ -207,6 +207,20 @@ mkdir -p $HOME/jito-relayer
 wget -P $HOME/jito-relayer https://github.com/jito-foundation/jito-relayer/releases/download/$JTAG/jito-transaction-relayer-x86_64-unknown-linux-gnu
 chmod +x $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu
 $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu -V
+```
+```bash
+# set Amsterdam
+sed -i "/^--relayer-url /c --relayer-url http://amsterdam.mainnet.relayer.jito.wtf:8100 \\\\" ~/solana/solana.service
+sed -i "/^--block-engine-url /c --block-engine-url https://amsterdam.mainnet.block-engine.jito.wtf \\\\" ~/solana/solana.service
+sed -i "/^--shred-receiver-address /c --shred-receiver-address 74.118.140.240:1002 \\\\" ~/solana/solana.service
+systemctl daemon-reload
+```
+```bash
+# set Frankfurt
+sed -i "/^--relayer-url /c --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 \\\\" ~/solana/solana.service
+sed -i "/^--block-engine-url /c --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf \\\\" ~/solana/solana.service
+sed -i "/^--shred-receiver-address /c --shred-receiver-address 64.130.50.14:1002 \\\\" ~/solana/solana.service
+systemctl daemon-reload
 ```
 
 </details>
