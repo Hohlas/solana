@@ -214,7 +214,7 @@ $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu -V
 sed -i "/^--relayer-url /c --relayer-url http://amsterdam.mainnet.relayer.jito.wtf:8100 \\\\" ~/solana/solana.service
 sed -i "/^--block-engine-url /c --block-engine-url https://amsterdam.mainnet.block-engine.jito.wtf \\\\" ~/solana/solana.service
 sed -i "/^--shred-receiver-address /c --shred-receiver-address 74.118.140.240:1002 \\\\" ~/solana/solana.service
-sed -i "/^Environment=BLOCK_ENGINE_URL /c Environment=BLOCK_ENGINE_URL=https://amsterdam.mainnet.block-engine.jito.wtf" ~/solana/relayer.service
+sed -i "/^Environment=BLOCK_ENGINE_URL/c Environment=BLOCK_ENGINE_URL=https://amsterdam.mainnet.block-engine.jito.wtf" ~/solana/relayer.service
 systemctl daemon-reload
 ```
 ```bash
@@ -222,7 +222,7 @@ systemctl daemon-reload
 sed -i "/^--relayer-url /c --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 \\\\" ~/solana/solana.service
 sed -i "/^--block-engine-url /c --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf \\\\" ~/solana/solana.service
 sed -i "/^--shred-receiver-address /c --shred-receiver-address 64.130.50.14:1002 \\\\" ~/solana/solana.service
-sed -i "/^Environment=BLOCK_ENGINE_URL /c Environment=BLOCK_ENGINE_URL=https://frankfurt.mainnet.block-engine.jito.wtf" ~/solana/relayer.service
+sed -i "/^Environment=BLOCK_ENGINE_URL/c Environment=BLOCK_ENGINE_URL=https://frankfurt.mainnet.block-engine.jito.wtf" ~/solana/relayer.service
 systemctl daemon-reload
 ```
 
