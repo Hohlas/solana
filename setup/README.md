@@ -196,8 +196,8 @@ solana-validator -l $HOME/solana/ledger set-block-engine-config --block-engine-u
 cp ~/sol_git/Jito/jito-relayer.service ~/solana/relayer.service
 ln -sf ~/solana/relayer.service /etc/systemd/system
 systemctl daemon-reload
-systemctl restart relayer
-systemctl status relayer
+# systemctl restart relayer
+# systemctl status relayer
 # journalctl -u relayer -f
 ```
 ```bash
