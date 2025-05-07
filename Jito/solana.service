@@ -51,8 +51,6 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
 --merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
 --commission-bps 1000 \
---account-index program-id \
---account-index-include-key AddressLookupTab1e1111111111111111111111111 \
 --relayer-url http://frankfurt.mainnet.relayer.jito.wtf:8100 \
 --block-engine-url https://frankfurt.mainnet.block-engine.jito.wtf \
 --shred-receiver-address 64.130.50.14:1002
