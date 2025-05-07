@@ -133,6 +133,7 @@ FILES=(
     "core/src/consensus.rs"
     "core/src/consensus/progress_map.rs"
     "core/src/consensus/fork_choice.rs"
+    "core/src/consensus/tower_vote_state.rs"
     "core/src/replay_stage.rs"
     "core/src/vote_simulator.rs"
     "programs/vote/src/vote_state/mod.rs"
