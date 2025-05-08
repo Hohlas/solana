@@ -225,7 +225,10 @@ sed -i "/^--shred-receiver-address /c --shred-receiver-address 64.130.50.14:1002
 sed -i "/^Environment=BLOCK_ENGINE_URL/c Environment=BLOCK_ENGINE_URL=https://frankfurt.mainnet.block-engine.jito.wtf" ~/solana/relayer.service
 systemctl daemon-reload
 ```
-
+```bash
+ping amsterdam.mainnet.relayer.jito.wtf
+ping frankfurt.mainnet.relayer.jito.wtf
+```
 </details>
 
 <details>
