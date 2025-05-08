@@ -1,8 +1,8 @@
 # Example Systemd File for Co-Hosted Relayer
 [Unit]
 Description=Solana transaction relayer
-Requires=network-online.target #NTP Service connected to Jito NTP server (e.g. chrony)
-After=network-online.target #NTP Service connected to Jito NTP server (e.g. chrony)
+Requires=network-online.target
+After=network-online.target
 
 # User is required to install a keypair here that's used to auth against the block engine
 ConditionPathExists=/root/solana/relayer-keypair.json
@@ -17,15 +17,15 @@ Environment=RUST_LOG=info
 Environment=SOLANA_METRICS_CONFIG="host=http://metrics.jito.wtf:8086,db=relayer,u=relayer-operators,p=jito-relayer-write"
 Environment=BLOCK_ENGINE_URL=https://frankfurt.mainnet.block-engine.jito.wtf
 Environment=GRPC_BIND_IP=127.0.0.1
-Environment=ALLOWED_VALIDATORS=5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN,AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd,A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC
+# Environment=ALLOWED_VALIDATORS=5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN,AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd,A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC
 
 ExecStart=/root/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu \
 --keypair-path=/root/solana/relayer-keypair.json \
 --signing-key-pem-path=/root/solana/private.pem \
---verifying-key-pem-path=/root/solana/public.pem \
---block-engine-url $BLOCK_ENGINE_URL \
---rpc-servers http://127.0.0.1:8899 \
---allowed-validators $ALLOWED_VALIDATORS
+--verifying-key-pem-path=/root/solana/public.pem
+#--block-engine-url $BLOCK_ENGINE_URL \
+#--rpc-servers http://127.0.0.1:8899 \
+#--allowed-validators $ALLOWED_VALIDATORS
 
 [Install]
 WantedBy=multi-user.target
