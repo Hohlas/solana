@@ -618,11 +618,13 @@ SECONDARY_SERVER(){ ############################################################
  	
 	# stop relayer service on remote server
  	if [[ $RELAYER_SERVICE == 'true' ]]; then 
- 		SSH "systemctl stop relayer.service" 
+ 		SSH "systemctl stop relayer.service"
    		if [ $command_exit_status -eq 0 ]; then LOG "stop relayer on remote server OK"
 		elif [ $command_exit_status -eq 124 ]; then LOG "stop relayer on remote server timeout exceed"
  		else LOG "stop relayer on remote server Error"
 		fi
+  		SSH "systemctl disable relayer.service" # on remote server
+  		systemctl enable relayer.service
 		systemctl start relayer.service
   		solana-validator -l $LEDGER set-relayer-config --relayer-url http://127.0.0.1:11226
   		LOG "restart relayer service"
