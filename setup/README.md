@@ -154,6 +154,7 @@ mount_keys | umount_keys | shred_keys
 
 [Grafana](https://github.com/Hohlas/solana/blob/main/telegraf/readme.md)
 
+[export guard.cfg](https://github.com/Hohlas/private/blob/main/solana/patch/README.md#export-guaardcfg)
 
 <details>
 <summary>setup snapshot finder</summary>
