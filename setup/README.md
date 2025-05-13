@@ -27,8 +27,9 @@ ulimit -n 1000000  # set ulimit
 ulimit -n # check ulimit 
 ```
 ```bash
-cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check
-grep 'cpu MHz' /proc/cpuinfo # MHz
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check perfomance mode 
+grep 'cpu MHz' /proc/cpuinfo # cpu MHz
+dmidecode -t memory | grep -i speed # DIMM MT/s
 ```
 --- 
 ```bash
