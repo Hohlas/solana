@@ -1,6 +1,6 @@
 #!/bin/bash
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
-apt install sysstat git ncdu nftables tmux htop atop curl nano smartmontools bc man rsync cron chrony logrotate rsyslog jq zip unzip -y
+apt install sysstat python3-venv git ncdu nftables tmux htop atop curl nano smartmontools bc man rsync cron chrony logrotate rsyslog jq zip unzip -y
 
 # create dirs
 mkdir -p ~/solana  # ln -sf /mnt/disk2/ledger ~/solana
@@ -22,6 +22,8 @@ echo -e '\n\e[42m set CPU  perfomance mode \e[0m\n'
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # set perfomance mode 
 cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check perfomance
 grep 'cpu MHz' /proc/cpuinfo # MHz
+
+ulimit -n 1000000
 
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sysctl vm.swappiness=1  # change current SWAPPINESS
@@ -97,6 +99,11 @@ source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
 ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
 
+# nftables
+curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
+systemctl enable nftables
+systemctl restart nftables
+
 systemctl daemon-reload
 systemctl enable cpu_performance.service
 systemctl start cpu_performance.service
@@ -104,4 +111,14 @@ systemctl restart logrotate
 systemctl restart chronyd.service
 chronyc makestep # time correction
 source ~/sol_git/telegraf/grafana_setup.sh 
+
+# snapshot-finder
+cd
+rm -rf ~/solana-snapshot-finder
+git clone https://github.com/c29r3/solana-snapshot-finder.git
+cd ~/solana-snapshot-finder
+python3 -m venv venv
+source ./venv/bin/activate
+pip3 install -r requirements.txt
+cd; su
 echo -e '\n\e[42m Solana setup complete \e[0m\n'
