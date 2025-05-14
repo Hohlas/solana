@@ -23,8 +23,6 @@ echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governo
 cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor # check perfomance
 grep 'cpu MHz' /proc/cpuinfo # MHz
 
-ulimit -n 1000000
-
 echo -e '\n\e[42m change swappiness \e[0m\n'
 sysctl vm.swappiness=1  # change current SWAPPINESS
 echo "vm.swappiness=1" | sudo tee -a /etc/sysctl.conf # change after reboot SWAPPINESS
@@ -50,6 +48,7 @@ cp ~/sol_git/setup/trim.sh /etc/cron.hourly/trim; chmod +x /etc/cron.hourly/trim
 cp ~/sol_git/setup/chrony.conf /etc/chrony.conf 
 sysctl -p /etc/sysctl.d/21-solana-validator.conf
 echo "DefaultLimitNOFILE=1000000" | sudo tee -a /etc/systemd/system.conf
+ulimit -n 1000000
 
 echo -e '\n\e[42m download Jito relayer gnu \e[0m\n'
 JTAG=$(curl -s https://api.github.com/repos/jito-foundation/jito-relayer/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
@@ -93,6 +92,7 @@ echo "alias patch='~/sol_git/setup/patch.sh'" >> $HOME/.bashrc
 echo "alias mon='~/sol_git/setup/mon.sh'" >> $HOME/.bashrc
 echo ' # --- # ' >> $HOME/.bashrc
 
+echo -e '\n\e[42m install Solana \e[0m\n'
 source $HOME/.bashrc
 source ~/sol_git/setup/install.sh
 source ~/sol_git/setup/get_tag.sh
@@ -100,6 +100,7 @@ source ~/sol_git/setup/node_set.sh
 ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
 
 # nftables
+echo -e '\n\e[42m install nftables \e[0m\n'
 curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf > /etc/nftables.conf
 systemctl enable nftables
 systemctl restart nftables
@@ -113,6 +114,7 @@ chronyc makestep # time correction
 source ~/sol_git/telegraf/grafana_setup.sh 
 
 # snapshot-finder
+echo -e '\n\e[42m install snapshot-finder \e[0m\n'
 cd
 rm -rf ~/solana-snapshot-finder
 git clone https://github.com/c29r3/solana-snapshot-finder.git
