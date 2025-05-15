@@ -22,8 +22,9 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 </details>
 
 ```bash
-TAG=v2.2.14-jito
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
+TAG=v2.2.14-jito
+echo "export TAG=$TAG" >> $HOME/.bashrc
 ```
 
 ```bash
@@ -35,32 +36,21 @@ if [[ $TAG == *"jito"* ]]; then
 else
   REPO_URL="https://github.com/anza-xyz/agave.git"; echo "set agave.git url"
 fi
+
 if [ -d $REPO_DIR ]; then
   rm -r $REPO_DIR
 fi
-```
 
-```bash
-if [ -d $REPO_DIR ]; then 
-  cd $REPO_DIR; 
-  git fetch origin; 
-  git reset --hard origin/master # сбросить локальную ветку до последнего коммита из git
-else
-  cd
-  git clone $REPO_URL --recurse-submodules $REPO_DIR
-  cd $REPO_DIR
-fi
+cd
+git clone $REPO_URL --recurse-submodules $REPO_DIR
+cd $REPO_DIR
 git fetch --tags # для загрузки всех тегов из удаленного репозитория
-```
 
-
-
-```bash
 echo -e "$REPO_URL: \033[32m $TAG \033[0m"
-echo "export TAG=$TAG" >> $HOME/.bashrc
 git checkout tags/$TAG
 git submodule update --init --recursive
 ```
+
 
 ---
 
