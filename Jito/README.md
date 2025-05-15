@@ -30,10 +30,10 @@ TAG=v2.2.14-jito
 SOL_BIN="$HOME/.local/share/solana/install/releases/$TAG/solana-release/bin"
 API_URL="https://api.github.com/repos/Hohlas/solana-fork/contents/bin/$TAG"
 REPO_DIR=$HOME/solana-rep
-if [[ $NODE == "main" ]]; then
-  REPO_URL="https://github.com/jito-foundation/jito-solana.git"
+if [[ $TAG == *"jito"* ]]; then
+  REPO_URL="https://github.com/jito-foundation/jito-solana.git"; echo "set jito-solana.git url"
 else
-  REPO_URL="https://github.com/anza-xyz/agave.git"
+  REPO_URL="https://github.com/anza-xyz/agave.git"; echo "set agave.git url"
 fi
 if [ -d $REPO_DIR ]; then
   rm -r $REPO_DIR
