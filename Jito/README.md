@@ -47,6 +47,7 @@ else
   echo -e "\n\e[42mSet agave.git url\e[0m\n"
 fi
 
+cd
 if [ -d $REPO_DIR ]; then rm -r $REPO_DIR; fi
 git clone $REPO_URL --recurse-submodules $REPO_DIR
 cd $REPO_DIR
