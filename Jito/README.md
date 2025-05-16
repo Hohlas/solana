@@ -33,8 +33,8 @@ SOL_BIN="$HOME/.local/share/solana/install/releases/$TAG/solana-release/bin"
 API_URL="https://api.github.com/repos/Hohlas/solana-fork/contents/bin/$TAG"
 REPO_DIR=$HOME/solana-rep
 
-if [ -z "$TAG" ]; then echo -e "\n\e[41mError: TAG is not set\e[0m\n";
-else echo -e "\033[32m $TAG \033[0m"; fi
+if [ -z "$TAG" ]; then echo -e "\n\e[41mError: TAG is not set \e[0m\n";
+else echo -e "\n\e[32mTAG: $TAG\e[0m\n"; fi
 
 if [[ $TAG == *"jito"* ]]; then
   REPO_URL="https://github.com/jito-foundation/jito-solana.git"
