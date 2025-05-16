@@ -23,7 +23,8 @@ apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make l
 
 ```bash
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
-TAG=v2.2.14-jito
+# TAG=v2.2.14-paladin
+TAG=v2.2.14-jito 
 echo "export TAG=$TAG" >> $HOME/.bashrc
 ```
 
@@ -31,22 +32,27 @@ echo "export TAG=$TAG" >> $HOME/.bashrc
 SOL_BIN="$HOME/.local/share/solana/install/releases/$TAG/solana-release/bin"
 API_URL="https://api.github.com/repos/Hohlas/solana-fork/contents/bin/$TAG"
 REPO_DIR=$HOME/solana-rep
+
+if [ -z "$TAG" ]; then echo -e "\n\e[41mError: TAG is not set\e[0m\n";
+else echo -e "\033[32m $TAG \033[0m"; fi
+
 if [[ $TAG == *"jito"* ]]; then
-  REPO_URL="https://github.com/jito-foundation/jito-solana.git"; echo "set jito-solana.git url"
+  REPO_URL="https://github.com/jito-foundation/jito-solana.git"
+  echo -e "\n\e[42mSet jito.git url\e[0m\n"
+elif [[ $TAG == *"paladin"* ]]; then
+  REPO_URL="https://github.com/paladin-bladesmith/paladin-solana.git"
+  echo -e "\n\e[42mSet paladin.git url\e[0m\n"
 else
-  REPO_URL="https://github.com/anza-xyz/agave.git"; echo "set agave.git url"
+  REPO_URL="https://github.com/anza-xyz/agave.git"
+  echo -e "\n\e[42mSet agave.git url\e[0m\n"
 fi
 
-if [ -d $REPO_DIR ]; then
-  rm -r $REPO_DIR
-fi
-
-cd
+if [ -d $REPO_DIR ]; then rm -r $REPO_DIR; fi
 git clone $REPO_URL --recurse-submodules $REPO_DIR
 cd $REPO_DIR
-git fetch --tags # для загрузки всех тегов из удаленного репозитория
+git fetch --tags # загрузка всех тегов из репа
 
-echo -e "$REPO_URL: \033[32m $TAG \033[0m"
+
 git checkout tags/$TAG
 git submodule update --init --recursive
 ```
