@@ -88,6 +88,85 @@ tail -f ~/solana/solana.log | grep -A 5 'Checking for change to mostly_confirmed
 ```
 
 <details>
+<summary>compare Jito vs Paladin </summary>
+
+```bash
+# Репозитории и теги
+JITO_REPO_URL="https://github.com/jito-foundation/jito-solana.git"
+JITO_TAG="v2.2.14-jito"
+PALADIN_REPO_URL="https://github.com/paladin-bladesmith/paladin-solana.git"
+PALADIN_TAG="v2.2.14-paladin"
+```
+
+```bash
+# Цвета для вывода
+GREEN=$'\033[32m'
+RED=$'\033[31m'
+YELLOW=$'\033[33m'
+BLUE=$'\033[34m'
+CLEAR=$'\033[0m'
+
+# Список файлов для сравнения
+FILES=(
+    "core/src/consensus.rs"
+    "core/src/consensus/progress_map.rs"
+    "core/src/consensus/fork_choice.rs"
+    "core/src/consensus/tower_vote_state.rs"
+    "core/src/replay_stage.rs"
+    "core/src/vote_simulator.rs"
+    "programs/vote/src/vote_state/mod.rs"
+    "sdk/program/src/vote/state/mod.rs"
+)
+
+# Директории для клонирования
+JITO_DIR="$HOME/jito-solana"
+PALADIN_DIR="$HOME/paladin-solana"
+
+# Очистка старых клонов
+echo -e "${YELLOW}Cleaning up old repositories...${CLEAR}"
+rm -rf "$JITO_DIR" "$PALADIN_DIR"
+
+# Клонирование репозиториев
+echo -e "${YELLOW}Cloning repositories...${CLEAR}"
+git clone "$JITO_REPO_URL" "$JITO_DIR"
+git clone "$PALADIN_REPO_URL" "$PALADIN_DIR"
+
+# Переключение на нужные теги
+echo -e "${YELLOW}Checking out tags...${CLEAR}"
+cd "$JITO_DIR" && git checkout "$JITO_TAG" 
+cd "$PALADIN_DIR" && git checkout "$PALADIN_TAG" 
+
+# Сравнение файлов
+echo -e "\n  - Differences between ${BLUE}$JITO_REPO_URL ($JITO_TAG)${CLEAR} and ${BLUE}$PALADIN_REPO_URL ($PALADIN_TAG)${CLEAR} - "
+for FILE in "${FILES[@]}"; do
+    JITO_FILE="$JITO_DIR/$FILE"
+    PALADIN_FILE="$PALADIN_DIR/$FILE"
+
+    # Проверка существования файлов
+    if [ ! -f "$JITO_FILE" ] || [ ! -f "$PALADIN_FILE" ]; then
+        echo -e "${RED}File missing:${CLEAR} $FILE (JITO: $([ -f "$JITO_FILE" ] && echo 'exists' || echo 'missing'), Paladin: $([ -f "$PALADIN_FILE" ] && echo 'exists' || echo 'missing'))"
+        continue
+    fi
+
+    # Сравнение файлов
+    DIFF=$(diff -u "$JITO_FILE" "$PALADIN_FILE")
+    if [ -n "$DIFF" ]; then
+        echo -e "${RED}Files are different:${CLEAR} $FILE"
+        # Раскомментируйте следующую строку, чтобы вывести различия
+        # echo "$DIFF"
+    else
+        echo -e "${GREEN}Files are the same:${CLEAR} $FILE"
+    fi
+done
+
+# Очистка (опционально)
+echo -e "${YELLOW}Cleaning up...${CLEAR}"
+rm -rf "$JITO_DIR" "$PALADIN_DIR"
+```
+
+</details>
+
+<details>
 <summary>download original files</summary>
 
 ```bash
