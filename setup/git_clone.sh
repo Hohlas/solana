@@ -23,7 +23,7 @@ OLD_ALIAS="logs='tail" #
 : '
 многострочный 
 комментарий
-
+'
 
 if [ -f "$BASHRC_FILE" ]; then
     # Заменяем строку, если она существует, или добавляем её, если строки нет
@@ -38,5 +38,5 @@ if [ -f "$BASHRC_FILE" ]; then
 else
     echo "Файл $BASHRC_FILE не найден."
 fi
-'
+
 source ~/.bashrc
