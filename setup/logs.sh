@@ -19,5 +19,5 @@ if [ -z "$1" ]; then
   tail -f "$LOG_FILE"
 else
   echo -e " logs from ${YELLOW}$LOG_FILE grep $1${CLEAR}"
-  tail -f "$LOG_FILE" | grep $1
+  tail -f "$LOG_FILE" | --color=auto -i "$1"
 fi
