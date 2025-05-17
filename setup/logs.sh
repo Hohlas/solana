@@ -15,9 +15,9 @@ fi
 
 # check arguments
 if [ -z "$1" ]; then
-  echo -e "${YELLOW} logs from $LOG_FILE${CLEAR}"
+  echo -e " logs from ${YELLOW}$LOG_FILE${CLEAR}"
   tail -f "$LOG_FILE"
 else
-  echo -e "${YELLOW} logs from $LOG_FILE grep '$1'${CLEAR}"
+  echo -e " logs from ${YELLOW}$LOG_FILE grep '$1'${CLEAR}"
   tail -f "$LOG_FILE" | grep --color=auto -i "$1"
 fi
