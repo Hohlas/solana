@@ -39,4 +39,4 @@ else
     echo "Файл $BASHRC_FILE не найден."
 fi
 
-source ~/.bashrc
+echo "run: source ~/.bashrc"
