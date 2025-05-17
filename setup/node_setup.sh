@@ -94,7 +94,8 @@ echo ' # --- # ' >> $HOME/.bashrc
 
 echo -e '\n\e[42m install Solana \e[0m\n'
 source $HOME/.bashrc
-source ~/sol_git/setup/install.sh
+source ~/sol_git/setup/install.sh # install solana
+source ~/sol_git/telegraf/grafana_setup.sh # install telegraf 
 # source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
 ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
@@ -111,7 +112,6 @@ systemctl start cpu_performance.service
 systemctl restart logrotate
 systemctl restart chronyd.service
 chronyc makestep # time correction
-source ~/sol_git/telegraf/grafana_setup.sh 
 
 # snapshot-finder
 echo -e '\n\e[42m install snapshot-finder \e[0m\n'
