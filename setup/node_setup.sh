@@ -95,7 +95,7 @@ echo ' # --- # ' >> $HOME/.bashrc
 echo -e '\n\e[42m install Solana \e[0m\n'
 source $HOME/.bashrc
 source ~/sol_git/setup/install.sh
-source ~/sol_git/setup/get_tag.sh
+# source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
 ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
 
