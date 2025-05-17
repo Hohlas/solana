@@ -6,6 +6,53 @@ sudo apt update && sudo apt upgrade -y && sudo apt install sysstat git ncdu nfta
 [Create Partitions & SWAP](https://github.com/Hohlas/ubuntu/blob/main/set/disk.md)
 
 <details>
+<summary>SSH settings</summary>
+  
+```bash
+export NEWHOSTNAME="hohla"
+# passwd root
+```
+```bash
+sudo hostname $NEWHOSTNAME # сменить до перезагрузки
+sudo hostnamectl set-hostname $NEWHOSTNAME
+sudo nano /etc/hosts
+```
+
+```bash
+# config SSH
+mkdir -p ~/.ssh
+rm ~/.ssh/*
+curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/authorized_keys >> ~/.ssh/authorized_keys # add ssh pubkey 'testnet'
+chmod 600 ~/.ssh/authorized_keys
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+mv /etc/ssh/ssh_config /etc/ssh/ssh_config.bak
+if [ -d /etc/ssh/sshd_config.d ]; then rm -f /etc/ssh/sshd_config.d/*; fi
+if [ -d /etc/ssh/ssh_config.d ]; then rm -f /etc/ssh/ssh_config.d/*; fi
+curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/sshd_config > /etc/ssh/sshd_config
+sudo ufw allow 2010  # добавить порт в правила файрвола
+systemctl daemon-reload
+systemctl restart ssh.socket # обновляет порт и адрес, указанные в sshd_config
+systemctl restart ssh  # перезапустить службу sshприменяет остальные настройки
+nano ~/.ssh/authorized_keys
+```
+
+```bash
+# config file2ban
+echo "backend = systemd" >> /etc/fail2ban/jail.d/defaults-debian.conf
+echo "authpriv.*      /var/log/auth.log" >> /etc/rsyslog.conf
+systemctl enable fail2ban
+systemctl restart fail2ban
+fail2ban-client status
+
+# config EncFS
+# mkdir -p ~/.crpt ~/keys
+# encfs ~/.crpt ~/keys # 
+```
+
+</details>
+
+
+<details>
 <summary>System check</summary>
 
 ```bash
@@ -67,51 +114,7 @@ sysctl fs.nr_open
 ```
 </details>
 
-<details>
-<summary>SSH settings</summary>
-  
-```bash
-export NEWHOSTNAME="hohla"
-# passwd root
-```
-```bash
-sudo hostname $NEWHOSTNAME # сменить до перезагрузки
-sudo hostnamectl set-hostname $NEWHOSTNAME
-sudo nano /etc/hosts
-```
 
-```bash
-# config SSH
-mkdir -p ~/.ssh
-rm ~/.ssh/*
-curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/authorized_keys >> ~/.ssh/authorized_keys # add ssh pubkey 'testnet'
-chmod 600 ~/.ssh/authorized_keys
-cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
-mv /etc/ssh/ssh_config /etc/ssh/ssh_config.bak
-if [ -d /etc/ssh/sshd_config.d ]; then rm -f /etc/ssh/sshd_config.d/*; fi
-if [ -d /etc/ssh/ssh_config.d ]; then rm -f /etc/ssh/ssh_config.d/*; fi
-curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/crypto/sshd_config > /etc/ssh/sshd_config
-sudo ufw allow 2010  # добавить порт в правила файрвола
-systemctl daemon-reload
-systemctl restart ssh.socket # обновляет порт и адрес, указанные в sshd_config
-systemctl restart ssh  # перезапустить службу sshприменяет остальные настройки
-nano ~/.ssh/authorized_keys
-```
-
-```bash
-# config file2ban
-echo "backend = systemd" >> /etc/fail2ban/jail.d/defaults-debian.conf
-echo "authpriv.*      /var/log/auth.log" >> /etc/rsyslog.conf
-systemctl enable fail2ban
-systemctl restart fail2ban
-fail2ban-client status
-
-# config EncFS
-# mkdir -p ~/.crpt ~/keys
-# encfs ~/.crpt ~/keys # 
-```
-
-</details>
 
 ## Install Solana Node
 ```   copy validator.json, vote.json to ~/keys   ```
@@ -228,9 +231,12 @@ sed -i "/^Environment=BLOCK_ENGINE_URL/c Environment=BLOCK_ENGINE_URL=https://fr
 systemctl daemon-reload
 ```
 ```bash
-ping amsterdam.mainnet.relayer.jito.wtf
 ping frankfurt.mainnet.relayer.jito.wtf
 ```
+```bash
+ping amsterdam.mainnet.relayer.jito.wtf
+```
+
 </details>
 
 <details>
