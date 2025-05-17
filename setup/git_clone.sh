@@ -31,10 +31,7 @@ BASHRC_FILE="$HOME/.bashrc"
 NEW_ALIAS="alias logs='~/sol_git/setup/logs.sh'"
 OLD_ALIAS="alias logs='tail -f ~/solana/solana.log'"
 
-# Проверка существования файла .bashrc
-if [ -f "$BASHRC_FILE" ]; then
-    # Проверяем, есть ли строка с alias logs=
-    if grep -q "^alias logs=" "$BASHRC_FILE"; then
+if grep -q "^alias logs=" "$BASHRC_FILE"; then
         # Экранируем символы в OLD_ALIAS и NEW_ALIAS для sed
         ESCAPED_OLD_ALIAS=$(echo "$OLD_ALIAS" | sed 's/[\/&]/\\&/g')
         ESCAPED_NEW_ALIAS=$(echo "$NEW_ALIAS" | sed 's/[\/&]/\\&/g')
@@ -46,11 +43,9 @@ if [ -f "$BASHRC_FILE" ]; then
         echo "$NEW_ALIAS" >> "$BASHRC_FILE"
         echo -e "${GREEN}Added new alias: [$NEW_ALIAS]${CLEAR}"
     fi
-else
-    echo -e "${RED}Error: File $BASHRC_FILE not found${CLEAR}"
-    exit 1
-fi
 
-# Применяем изменения
-source "$BASHRC_FILE"
-echo -e "${YELLOW}Sourced $BASHRC_FILE to apply changes${CLEAR}"
+    
+
+
+source ~/.bashrc
+echo "source ~/.bashrc"
