@@ -42,7 +42,8 @@ ExecStart=/root/.local/share/solana/install/active_release/bin/solana-validator 
 --maximum-local-snapshot-age 5000 \
 --minimal-snapshot-download-speed 41943040 \
 --block-verification-method unified-scheduler \
---block-production-method central-scheduler \
+#--block-production-method central-scheduler \
+--disable-banking-trace \
 --private-rpc \
 --full-rpc-api \
 --rpc-port 8899 \
