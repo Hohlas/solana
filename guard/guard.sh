@@ -1,14 +1,13 @@
 #!/bin/bash
-GUARD_VER=v1.7.1
+GUARD_VER=v1.7.2
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
-LOG_FILE=$HOME/guard.log
 SOLANA_SERVICE="$HOME/solana/solana.service"
 BEHIND_WARNING=false # 'false'- send telegramm INFO missage, when behind. 'true'-send ALERT message
 WARNING_FREQUENCY=12 # max frequency of warning messages (WARNING_FREQUENCY x 5) seconds
-BEHIND_OK_VAL=3 # behind, that seemed ordinary
-RELAYER_SERVICE=false # use restarting jito-relayer service
+BEHIND_OK_VAL=1 # behind, that seemed ordinary
+RELAYER_SERVICE=true # use restarting jito-relayer service
 configDir="$HOME/.config/solana"
 # CHAT_ALARM=-1001..5684
 # CHAT_INFO=-1001..2888
@@ -19,9 +18,10 @@ configDir="$HOME/.config/solana"
 # "https://mainnet.helius-rpc.com..."
 # )
 #======================================================
-LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\' | xargs)
-EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
-VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
+LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
+EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
+VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
+LOG_FILE=$(grep -oP '(?<=--log\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
 IDENTITY=$(solana address 2>/dev/null)
 if [ $? -ne 0 ]; then  
 	echo "Error! Can't run 'solana'"
