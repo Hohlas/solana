@@ -4,19 +4,14 @@ CHECK_VER=v1.3.9
 rpcURL=$(solana config get | grep "RPC URL" | awk '{print $3}')
 #===========================================
 SOLANA_SERVICE="$HOME/solana/solana.service"
+LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
+EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
+VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
+VOTE_ACC_KEY=$(grep -oP '(?<=--vote-account\s).*' "$SOLANA_SERVICE" | tr -d '\\\r\n' | xargs)
 if [ $rpcURL = https://api.testnet.solana.com ]; then 
 	NODE="test";
-	LEDGER="$HOME/solana/ledger"
-	EMPTY_KEY="$HOME/solana/empty-validator.json"
-	VOTING_KEY="$HOME/solana/validator-keypair.json"
-	VOTE_ACC_KEY="$HOME/solana/vote.json"
 elif [ $rpcURL = https://api.mainnet-beta.solana.com ]; then 
 	NODE="main"; 
-	LEDGER=$(grep -oP '(?<=--ledger\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-	EMPTY_KEY=$(grep -oP '(?<=--identity\s).*' "$SOLANA_SERVICE" | tr -d '\\') # get key path from solana.service
-	VOTING_KEY=$(grep -oP '(?<=--authorized-voter\s).*' "$SOLANA_SERVICE" | tr -d '\\')
-	IDENTITY=$(solana address) 
-	VOTE_ACC_KEY=$(grep -oP '(?<=--vote-account\s).*' "$SOLANA_SERVICE" | tr -d '\\')
 fi
 #===========================================
 version=$(solana-validator --version 2>/dev/null)
