@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.7.3
+GUARD_VER=v1.7.4
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -115,7 +115,7 @@ REQUEST_DELINK(){
 		echo "$(TIME) Error in REQUEST_DELINK for RPC $RPC_URL" >> $LOG_FILE
 	fi
 	if [ -z "$VALIDATORS_LIST" ]; then 
-		echo "$(TIME) Error in REQUEST_DELINK: validators list emty" >> $LOG_FILE
+		echo "$(TIME) Error in REQUEST_DELINK: validators list empty" >> $LOG_FILE
 	fi	
 	JSON=$(echo "$VALIDATORS_LIST" | jq '.validators[] | select(.identityPubkey == "'"${IDENTITY}"'" )')
 	LastVote=$(echo "$JSON" | jq -r '.lastVote')
@@ -135,14 +135,26 @@ RPC_REQUEST() {
         FUNCTION_NAME="REQUEST_DELINK"
 	else
  		REQUEST_ANSWER=""; return
-    fi    	
+    fi 
+	# 1. ОДИН запрос к основному RPC 
+	REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"")
+
+    # Проверка на ошибку или пустой ответ
+    if [[ -n "$REQUEST1" && "$REQUEST1" != "NULL" ]]; then
+        REQUEST_ANSWER="$REQUEST1"
+        Wrong_request_count=0
+        return
+    fi
+	# 2. Если ошибка или пусто — перепроверяем
 	rpcURL2="${RPC_LIST[$rpc_index]}" # Получаем текущий RPC URL из списка
 	REQUEST1=$(eval "$FUNCTION_NAME \"$rpcURL1\"") # запрос к РПЦ соланы
 	REQUEST2=$(eval "$FUNCTION_NAME \"$rpcURL2\"") # запрос к одному из РПЦ хелиуса из списка RPC_LIST
 	
 	# Сравнение результатов
     if [[ "$REQUEST1" == "$REQUEST2" ]]; then
-        REQUEST_ANSWER="$REQUEST1";	return 
+        REQUEST_ANSWER="$REQUEST1";	
+		Wrong_request_count=0
+  		return 
     fi    
 		#echo "$(TIME) Warning! Different answers: RPC1=$REQUEST1, RPC2=$REQUEST2" >> $LOG_FILE
 		# Если результаты разные, опрашиваем в цикле 10 раз
@@ -199,7 +211,7 @@ RPC_REQUEST() {
 		
    	if [[ $percentage -lt 70 ]]; then # не принимаем ответ, если он встречается в менее 70% запросов
   		((Wrong_request_count++))
-		if [[ $Wrong_request_count -ge 5 ]]; then # дохрена ошибок запросов RPC
+		if [[ $Wrong_request_count -ge 3 ]]; then # дохрена ошибок запросов RPC
             SEND_ALARM "$SERV_TYPE ${NODE}.${NAME} RPC.sol='$REQUEST1'/$RQST1_counter, RPC.$rpc_index='$REQUEST2'/$RQST2_counter, differ$percentage%"
             Wrong_request_count=0  # Сбрасываем счетчик после предупреждения
         fi
