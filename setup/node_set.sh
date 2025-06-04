@@ -27,7 +27,7 @@ if [[ $NODE == "main" ]]; then
     if [[ "$MODIFY" == "y" ]]; then 
         echo -e "\033[31m modify solana.service for 3 disks \033[0m"
         awk '
-        /^--ledger /mnt/ramdisk/ledger/ {
+        /^--ledger \/mnt\/ramdisk\/ledger/ {
           print "--ledger /mnt/disk3/ledger \\"
           print "--accounts /mnt/disk1/accounts \\"
           print "--accounts /mnt/disk2/accounts \\"
