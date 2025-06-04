@@ -22,21 +22,20 @@ fi
 if [[ $NODE == "main" ]]; then
     solana config set --url https://api.mainnet-beta.solana.com --keypair ~/solana/validator-keypair.json
     cp ~/sol_git/Jito/solana.service ~/solana/solana.service
-    read -p " modify for big RAM? (y/n)" BIG_RAM; 
+    read -p " modify for 3 disks? (y/n)" MODIFY;
     export NAME=$(echo "$NAME" | tr '[:lower:]' '[:upper:]') # имя большими буквами
-    if [[ "$BIG_RAM" == "y" ]]; then 
-        echo -e "\033[31m modify solana.service for big RAM \033[0m"
-        # add snapshots
-        sed -i "/^--ledger /c --ledger /mnt/ramdisk/ledger \\\\" ~/solana/solana.service
-        #sed -i "/^--snapshots /c --snapshots /mnt/ramdisk/snapshots \\\\" ~/solana/solana.service
-        #sed -i "/^--full-snapshot-interval-slots /c --full-snapshot-interval-slots 25000 \\\\" ~/solana/solana.service
-        #sed -i "/^--snapshot-interval-slots /c --snapshot-interval-slots 5000 \\\\" ~/solana/solana.service
-        # remove lines
-        sed -i "/^--accounts /d" ~/solana/solana.service
-        sed -i "/^--accounts /d" ~/solana/solana.service
-        sed -i "/^--accounts-hash-cache-path /d" ~/solana/solana.service
-        sed -i "/^--accounts-index-path /d" ~/solana/solana.service
-        sed -i "/^--no-skip-initial-accounts-db-clean /d" ~/solana/solana.service
+    if [[ "$MODIFY" == "y" ]]; then 
+        echo -e "\033[31m modify solana.service for 3 disks \033[0m"
+        awk '
+        /^--ledger /mnt/ramdisk/ledger/ {
+          print "--ledger /mnt/disk3/ledger \\"
+          print "--accounts /mnt/disk1/accounts \\"
+          print "--accounts /mnt/disk2/accounts \\"
+          print "--accounts-index-path /mnt/ramdisk/accounts_index \\"
+          next
+        }
+        {print}
+        ' ~/solana/solana.service > ~/solana/solana.service.tmp && mv ~/solana/solana.service.tmp ~/solana/solana.service   
     fi
 elif [[ $NODE == "test" ]]; then
     solana config set --url https://api.testnet.solana.com --keypair ~/solana/validator-keypair.json
