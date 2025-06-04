@@ -34,7 +34,7 @@ if [[ -d "$RM_PATH" ]]; then
 fi
 
 # remoove mounted disks
-if [ -d /mnt/disk1 ]; then rm -rf /mnt/disk1/* && echo "delete disk1/*"; fi
-if [ -d /mnt/disk2 ]; then rm -rf /mnt/disk2/* && echo "delete disk2/*"; fi
-if [ -d /mnt/disk3 ]; then rm -rf /mnt/disk3/* && echo "delete disk3/*"; fi    
+#if [ -d /mnt/disk1 ]; then rm -rf /mnt/disk1/* && echo "delete disk1/*"; fi
+#if [ -d /mnt/disk2 ]; then rm -rf /mnt/disk2/* && echo "delete disk2/*"; fi
+#if [ -d /mnt/disk3 ]; then rm -rf /mnt/disk3/* && echo "delete disk3/*"; fi    
 echo "Solana Node reset complete"
