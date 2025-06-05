@@ -30,13 +30,15 @@ if [ -f "$BASHRC_FILE" ]; then
     if grep -q "^$OLD_ALIAS" "$BASHRC_FILE"; then
         # Заменяем строку, начинающуюся с OLD_ALIAS
         sed -i.bak "s|^$OLD_ALIAS.*|$NEW_ALIAS|" "$BASHRC_FILE"
-        echo "алиас [$OLD_ALIAS] заменен на: [$NEW_ALIAS]"
+        echo "change alias [$OLD_ALIAS]  - >  [$NEW_ALIAS]"
+    elif grep -q "^$NEW_ALIAS" "$BASHRC_FILE"; then
+        echo "alias already in use"
     else
         echo "$NEW_ALIAS" >> "$BASHRC_FILE"
-        echo "добавлен новый алиас: [$NEW_ALIAS]"
+        echo "add new alias: [$NEW_ALIAS]"
     fi
 else
-    echo "Файл $BASHRC_FILE не найден."
+    echo "file $BASHRC_FILE not found."
 fi
 
 echo "run: source ~/.bashrc"
