@@ -1,7 +1,7 @@
 
 ## Server setup
 ```bash
-sudo apt update && sudo apt upgrade -y && sudo apt install sysstat git ncdu nftables tmux htop atop curl nano smartmontools bc man rsync cron chrony logrotate rsyslog encfs jq parted xfsprogs zip unzip -y
+sudo apt update && sudo apt upgrade -y && sudo apt install sysstat git ncdu nftables tmux htop atop curl nano smartmontools bc man rsync cron chrony logrotate rsyslog encfs jq parted xfsprogs fdisk zip unzip -y
 ```
 [Create Partitions & SWAP](https://github.com/Hohlas/ubuntu/blob/main/set/disk.md)
 
