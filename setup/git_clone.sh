@@ -13,8 +13,7 @@ chmod +x ~/sol_git/guard/*.sh
 chmod +x ~/sol_git/telegram_bot/watch_test.sh
 chmod +x ~/sol_git/telegram_bot/watch_main.sh
 
-# ##########################################
-
+########  ADD/CHANGE  ALIAS  #########
 
 BASHRC_FILE="$HOME/.bashrc"
 OLD_ALIAS="alias logs='tail -f ~/solana/solana.log'"
