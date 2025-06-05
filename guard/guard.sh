@@ -1,5 +1,5 @@
 #!/bin/bash
-GUARD_VER=v1.7.4
+GUARD_VER=v1.7.5
 #=================== guard.cfg ========================
 PORT='2010' # remote server ssh port
 KEYS=$HOME/keys
@@ -650,8 +650,10 @@ SECONDARY_SERVER(){ ############################################################
 	elif [ $command_exit_status -eq 124 ]; then LOG "stop telegraf on remote server timeout exceed"
  	else LOG "stop telegraf on remote server Error"
 	fi
+ 	SSH "systemctl disable telegraf"
 	### start telegraf service on local server
- 	systemctl start telegraf
+ 	systemctl enable telegraf
+  	systemctl start telegraf
   	if [[ $? -ne 0 ]]; then LOG "Error! start telegraf"
    	else LOG "start telegraf OK"
 	fi
