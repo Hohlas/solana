@@ -66,7 +66,7 @@ echo -e '\n\e[42m edit bashrc file \e[0m\n'
 echo ' # SOLANA  ALIAS # ' >> $HOME/.bashrc
 echo "alias mount_keys='encfs ~/.crpt ~/keys'" >> $HOME/.bashrc
 echo "alias umount_keys='fusermount -u ~/keys'" >> $HOME/.bashrc
-echo "alias check='source ~/sol_git/setup/check.sh'" >> $HOME/.bashrc
+echo "alias check='source ~/solana-guard/check.sh'" >> $HOME/.bashrc
 echo "alias tower='source ~/sol_git/setup/tower.sh'" >> $HOME/.bashrc
 echo "alias vote_on='source ~/sol_git/setup/vote_on.sh'" >> $HOME/.bashrc
 echo 'alias vote_off=~/sol_git/setup/vote_off.sh' >> $HOME/.bashrc
@@ -79,7 +79,7 @@ echo 'alias node_reset=~/sol_git/setup/node_reset.sh' >> $HOME/.bashrc
 echo 'alias snap=~/sol_git/setup/snap.sh' >> $HOME/.bashrc
 echo 'alias git_clone=~/sol_git/setup/git_clone.sh' >> $HOME/.bashrc
 echo "alias ssh_agent='source ~/sol_git/setup/ssh_agent.sh'" >> $HOME/.bashrc
-echo "alias guard='source ~/sol_git/guard/guard.sh'" >> $HOME/.bashrc
+echo "alias guard='source ~/solana-guard/guard.sh" >> $HOME/.bashrc
 echo "alias behind='source ~/sol_git/guard/behind.sh'" >> $HOME/.bashrc
 echo "alias shred_keys='find /root/keys -type f -exec shred -u {} \;'" >> $HOME/.bashrc	
 echo "alias get_tag='source ~/sol_git/setup/get_tag.sh'" >> $HOME/.bashrc
