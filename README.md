@@ -1,14 +1,14 @@
 # solana.sh
 
-[Solana setup](setup/README.md)
+[Solana-setup](setup/README.md) 
+
+[Solana-guard](https://github.com/Hohlas/solana-guard/tree/main#) 
 
 [Jito setup](Jito/README.md)
 
 [Paladin setup](Paladin/README.md)
 
 [FireDancer](firedancer/README.md)
-
-[GUARD](guard/README.md)
 
 [LOG Monitor](monitor/README.md)
 
