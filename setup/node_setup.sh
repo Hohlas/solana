@@ -30,13 +30,25 @@ sysctl -f # обновить параметры из файла настроек
 
 echo -e '\n\e[42m GIT clone \e[0m\n'
 if [ -d ~/sol_git ]; then 
-cd ~/sol_git; 
-git fetch origin; # get last updates from git
-git reset --hard origin/main # сбросить локальную ветку до последнего коммита из git
+	cd ~/sol_git; 
+	git fetch origin; # get last updates from git
+	git reset --hard origin/main # сбросить локальную ветку до последнего коммита из git
 else 
-cd; git clone https://github.com/Hohlas/solana.git ~/sol_git
+	cd; 
+	git clone https://github.com/Hohlas/solana.git $HOME/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
+
+# solana-guard
+if [ -d ~/solana-guard ]; then 
+    curl https://raw.githubusercontent.com/Hohlas/solana-guard/main/guard.sh > $HOME/solana-guard/guard.sh
+    curl https://raw.githubusercontent.com/Hohlas/solana-guard/main/check.sh > $HOME/solana-guard/check.sh
+else 
+    git clone https://github.com/Hohlas/solana-guard.git $HOME/solana-guard
+fi
+chmod +x $HOME/solana-guard/guard.sh
+chmod +x $HOME/solana-guard/check.sh
+
 curl https://raw.githubusercontent.com/Hohlas/ubuntu/main/test/stat.sh > ~/stat.sh; chmod +x ~/stat.sh
 
 echo -e '\n\e[42m System tune \e[0m\n'
