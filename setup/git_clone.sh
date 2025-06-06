@@ -13,13 +13,13 @@ chmod +x ~/sol_git/telegram_bot/watch_main.sh
 
 # solana-guard
 if [ -d ~/solana-guard ]; then 
-    curl https://raw.githubusercontent.com/Hohlas/solana/main/solana-guard/guard.sh > $HOME/solana-guard/guard.sh
-    curl https://raw.githubusercontent.com/Hohlas/solana/main/solana-guard/check.sh > $HOME/solana-guard/check.sh
+    curl https://raw.githubusercontent.com/Hohlas/solana-guard/main/guard.sh > $HOME/solana-guard/guard.sh
+    curl https://raw.githubusercontent.com/Hohlas/solana-guard/main/check.sh > $HOME/solana-guard/check.sh
 else 
     git clone https://github.com/Hohlas/solana-guard.git $HOME/solana-guard
 fi
-chmod +x ~/solana-guard/guard.sh
-chmod +x ~/solana-guard/check.sh
+chmod +x $HOME/solana-guard/guard.sh
+chmod +x $HOME/solana-guard/check.sh
 
 ########  ADD/CHANGE  ALIAS  #########
 
