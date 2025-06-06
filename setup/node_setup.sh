@@ -1,6 +1,6 @@
 #!/bin/bash
 echo -e '\n\e[42m Install Solana Node \e[0m\n'
-apt install sysstat python3-venv git ncdu nftables tmux htop atop curl nano smartmontools bc man rsync cron chrony logrotate rsyslog jq zip unzip -y
+apt install sysstat python3-venv git ncdu nftables tmux htop atop curl nano smartmontools bc man rsync cron chrony logrotate rsyslog jq zip p7zip-full unzip -y
 
 # create dirs
 mkdir -p ~/solana  # ln -sf /mnt/disk2/ledger ~/solana
