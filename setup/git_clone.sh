@@ -1,11 +1,13 @@
 #!/bin/bash
 # solana-setup
 if [ -d ~/sol_git ]; then 
-  cd ~/sol_git; 
-  git fetch origin; # get last updates from git
-  git reset --hard origin/main # сбросить локальную ветку до последнего коммита из git
+    echo "update solana scripts"
+    cd ~/sol_git; 
+    git fetch origin; # get last updates from git
+    git reset --hard origin/main # сбросить локальную ветку до последнего коммита из git
 else 
-  git clone https://github.com/Hohlas/solana.git ~/sol_git
+    echo "clone solana scripts"
+    git clone https://github.com/Hohlas/solana.git ~/sol_git
 fi
 chmod +x ~/sol_git/setup/*.sh
 chmod +x ~/sol_git/telegram_bot/watch_test.sh
@@ -13,9 +15,11 @@ chmod +x ~/sol_git/telegram_bot/watch_main.sh
 
 # solana-guard
 if [ -d ~/solana-guard ]; then 
-    curl https://raw.githubusercontent.com/Hohlas/solana-guard/main/guard.sh > $HOME/solana-guard/guard.sh
-    curl https://raw.githubusercontent.com/Hohlas/solana-guard/main/check.sh > $HOME/solana-guard/check.sh
+    echo "update solana-guard"
+    curl -sSL https://raw.githubusercontent.com/Hohlas/solana-guard/main/guard.sh > $HOME/solana-guard/guard.sh
+    curl -sSL https://raw.githubusercontent.com/Hohlas/solana-guard/main/check.sh > $HOME/solana-guard/check.sh
 else 
+    echo "clone solana-guard"
     git clone https://github.com/Hohlas/solana-guard.git $HOME/solana-guard
 fi
 chmod +x $HOME/solana-guard/guard.sh
