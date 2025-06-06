@@ -13,11 +13,10 @@ chmod +x ~/sol_git/telegram_bot/watch_main.sh
 
 # solana-guard
 if [ -d ~/solana-guard ]; then 
-  cd ~/solana-guard; 
-  git fetch origin; # get last updates from git
-  git reset --hard origin/main # сбросить локальную ветку до последнего коммита из git
+    curl https://raw.githubusercontent.com/Hohlas/solana/main/solana-guard/guard.sh > $HOME/solana-guard/guard.sh
+    curl https://raw.githubusercontent.com/Hohlas/solana/main/solana-guard/check.sh > $HOME/solana-guard/check.sh
 else 
-  git clone https://github.com/Hohlas/solana-guard.git ~/solana-guard
+    git clone https://github.com/Hohlas/solana-guard.git $HOME/solana-guard
 fi
 chmod +x ~/solana-guard/guard.sh
 chmod +x ~/solana-guard/check.sh
