@@ -50,7 +50,7 @@ fi
 
 
 OLD_ALIAS="alias check='source ~/sol_git/setup/check.sh'"
-NEW_ALIAS="alias guard='source ~/solana-guard/check.sh'"
+NEW_ALIAS="alias check='source ~/solana-guard/check.sh'"
 if [ -f "$BASHRC_FILE" ]; then
     # Заменяем строку, если она существует, или добавляем её, если строки нет
     if grep -q "^$OLD_ALIAS" "$BASHRC_FILE"; then
