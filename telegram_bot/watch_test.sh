@@ -14,7 +14,7 @@ IP=(212.23.222.40 149.50.116.96 149.50.116.254)
 # BOT_TOKEN=507...lWU
 #======================
 # source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
-source "$HOME/guard.cfg" # get settings
+source "$HOME/solana-guard/guard.cfg" # get settings
 NODE_NAME=("buka" "hohla" "valera")
 BALANCEWARN=(0 0 0) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
