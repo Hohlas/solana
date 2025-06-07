@@ -7,7 +7,7 @@ CLUSTER=m
 #если хочешь 1 ноду то в скобках указывается только один pub,vote,ip,TEXT и т.д. Добавить можно сколько угодно нод но каждый новый параметр через пробел!  
 PUB_KEY=(5NiHw5LZn1FiL848XzbEBxuygbNvMJ7CsPvXNC8VmCLN AptafqHRpGk3KCQrGtuPGuPvWMuPc4N15X7NN7VUsfbd A4fxKaaNPBCaMwqKyhHxoWKJ5ybgvmmwTQmNmGtt2aoC)
 VOTE=(5WVvtQDDd3Gsdm3eyDrRAczP9greGmdBjNoyD93iYw9F 3FLezD8GJgnawEHhZcsjdPxZVar9FzqEdViusQ5ZdSwe 9esjPxaUdD7yg4yDrBkP3jLipcAGVjpLDXsddF89avzW)
-IP=(149.50.110.199 149.50.110.94 149.50.110.231)
+IP=(45.139.132.152 45.139.132.135 45.139.132.46)
 #==== tg_bot_token ====
 # CHAT_ALARM=-100...684
 # CHAT_INFO=-100...888
@@ -16,7 +16,7 @@ IP=(149.50.110.199 149.50.110.94 149.50.110.231)
 # source $HOME/keys/tg_bot_token # get CHAT_ALARM, CHAT_INFO, BOT_TOKEN
 source "$HOME/solana-guard/guard.cfg" # get settings
 NODE_NAME=("BUKA" "HOHLA" "VALERA")
-BALANCEWARN=(1 1 1 0) # если меньше этого числа на балансе то будет тревожное сообщение!
+BALANCEWARN=(1 1 1) # если меньше этого числа на балансе то будет тревожное сообщение!
 echo -e
 date
 for index in ${!PUB_KEY[*]}
