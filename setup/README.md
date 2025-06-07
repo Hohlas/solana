@@ -153,6 +153,7 @@ check | logs | next | monitor | catch
 guard | vote_on | vote_off | ssh_agent
 mount_keys | umount_keys | shred_keys
 ```
+[Export guard.cfg](https://github.com/Hohlas/private/tree/main/solana/patch#export-guardcfg)
 
 [Jito](https://github.com/Hohlas/solana/tree/main/Jito)
 
