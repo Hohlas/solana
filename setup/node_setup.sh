@@ -119,6 +119,7 @@ systemctl enable nftables
 systemctl restart nftables
 
 systemctl daemon-reload
+systemctl disable relayer
 systemctl enable cpu_performance.service
 systemctl start cpu_performance.service
 systemctl restart logrotate
