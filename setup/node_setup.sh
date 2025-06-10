@@ -109,8 +109,6 @@ source ~/sol_git/setup/install.sh # install solana
 source ~/sol_git/telegraf/grafana_setup.sh # install telegraf 
 # source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
-ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
-ln -sfn ~/solana/relayer.service /etc/systemd/system # relayer.service
 
 # nftables
 echo -e '\n\e[42m install nftables \e[0m\n'
@@ -119,6 +117,8 @@ systemctl enable nftables
 systemctl restart nftables
 
 systemctl daemon-reload
+ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
+ln -sfn ~/solana/relayer.service /etc/systemd/system # relayer.service
 systemctl disable relayer
 systemctl enable cpu_performance.service
 systemctl start cpu_performance.service
