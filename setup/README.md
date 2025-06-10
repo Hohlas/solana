@@ -120,13 +120,13 @@ sysctl fs.nr_open
 ```   copy validator.json, vote.json to ~/keys   ```
 ```bash
 # MAIN #
-export TAG=v2.1.16-jito
+export TAG=v2.2.15-jito
 export NODE=main
 export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
 ```
 ```bash
 # TEST #
-export TAG=v2.1.13
+export TAG=v2.2.15
 export NODE=test  # test or main
 export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
 ```
