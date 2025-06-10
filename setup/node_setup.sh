@@ -71,7 +71,6 @@ chmod +x $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu
 $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu -V
 echo -e '\n\e[42m copy Jito relayer service \e[0m\n'
 cp ~/sol_git/Jito/jito-relayer.service ~/solana/relayer.service
-ln -sf ~/solana/relayer.service /etc/systemd/system # relayer.service
 
 # create alias #
 echo -e '\n\e[42m edit bashrc file \e[0m\n'
@@ -111,6 +110,7 @@ source ~/sol_git/telegraf/grafana_setup.sh # install telegraf
 # source ~/sol_git/setup/get_tag.sh
 source ~/sol_git/setup/node_set.sh
 ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
+ln -sfn ~/solana/relayer.service /etc/systemd/system # relayer.service
 
 # nftables
 echo -e '\n\e[42m install nftables \e[0m\n'
