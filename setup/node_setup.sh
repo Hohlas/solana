@@ -116,9 +116,9 @@ curl https://raw.githubusercontent.com/Hohlas/solana/main/nftables/nftables.conf
 systemctl enable nftables
 systemctl restart nftables
 
-systemctl daemon-reload
 ln -sfn ~/solana/solana.service /etc/systemd/system  # solana.service
 ln -sfn ~/solana/relayer.service /etc/systemd/system # relayer.service
+systemctl daemon-reload
 systemctl disable relayer
 systemctl enable cpu_performance.service
 systemctl start cpu_performance.service
