@@ -126,7 +126,7 @@ export NAME=$(echo $(hostname) | tr '[:lower:]' '[:upper:]') #
 ```
 ```bash
 # TEST #
-export TAG=v2.2.15
+export TAG=v2.3.0
 export NODE=test  # test or main
 export NAME=$(echo $(hostname) | tr '[:upper:]' '[:lower:]')
 ```
