@@ -62,7 +62,13 @@ do
 		HEALTH_PRN="$RED$HEALTH"
 		LOG "Health=$HEALTH "  # log every warning_message
 	fi  
-	
+
+	# Network connection
+	if ! ping -c 3 -W 1 "www.google.com" > /dev/null 2>&1; then
+    	LOG "Network Error: Google did not ping"
+	fi
+
+ 
 	# check behind
 	if [[ $BEHIND -le $BEHIND_OK_VAL ]]; then #  && $BEHIND -gt -1000  проверка на "число" и -1000<BEHIND<1 
   		BEHIND_PRN="$GREEN$BEHIND"
