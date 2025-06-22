@@ -1,5 +1,5 @@
 #!/bin/bash
-BEHIND_VER=v1.1.4
+BEHIND_VER=v1.1.5
 #===================++++++++++========================
 LOG_FILE=$HOME/behind.log
 BEHIND_OK_VAL=${1:-1} # Если аргумент $1 не указан, используется 1
@@ -64,7 +64,7 @@ do
 	fi  
 
 	# Network connection
-	if ! ping -c 3 -W 1 "www.google.com" > /dev/null 2>&1; then
+	if ! ping -c 3 -W 1 "8.8.8.8" > /dev/null 2>&1; then
     	LOG "Network Error: Google did not ping"
 	fi
 
