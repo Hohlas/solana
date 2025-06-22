@@ -210,8 +210,7 @@ systemctl daemon-reload
 # download relayer bin
 JTAG=$(curl -s https://api.github.com/repos/jito-foundation/jito-relayer/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
 echo "latest jito-relayer TAG = $JTAG"
-mkdir -p $HOME/jito-relayer
-rm -r $HOME/jito-relayer/*
+if [ -d ~/jito-relayer ]; then rm -r ~/jito-relayer/*; else mkdir -p ~/jito-relayer; fi
 wget -P $HOME/jito-relayer https://github.com/jito-foundation/jito-relayer/releases/download/$JTAG/jito-transaction-relayer-x86_64-unknown-linux-gnu
 chmod +x $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu
 $HOME/jito-relayer/jito-transaction-relayer-x86_64-unknown-linux-gnu -V
