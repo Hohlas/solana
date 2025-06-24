@@ -114,7 +114,23 @@ sysctl fs.nr_open
 ```
 </details>
 
+<details>
+<summary>Ubuntu 24.04</summary>
 
+disable automated upgrade process
+```bash
+sudo systemctl stop unattended-upgrades && systemctl disable unattended-upgrades && sudo systemctl mask unattended-upgrades
+sudo systemctl stop apt-daily.timer
+sudo systemctl disable apt-daily.timer
+sudo systemctl stop apt-daily-upgrade.timer
+sudo systemctl disable apt-daily-upgrade.timer
+```
+disable needrestart
+```bash
+echo 'DPkg::Post-Invoke {"test -x /usr/lib/needrestart/apt-pinvoke && /usr/lib/needrestart/apt-pinvoke || true"; };' | sudo tee /etc/apt/apt.conf.d/99needrestart > /dev/null
+```
+
+</details>
 
 ## Install Solana Node
 ```   copy validator.json, vote.json to ~/keys   ```
