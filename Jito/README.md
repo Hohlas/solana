@@ -16,7 +16,7 @@ rustup show
 
 ```bash
 apt update
-apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
+apt install libclang-dev libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler -y
 ```
 
 </details>
