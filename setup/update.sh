@@ -1,6 +1,6 @@
 #!/bin/bash
-solana-install init $TAG
-solana --version
+agave-install init $TAG
+agave --version
 # create simlinks  agave -> solana
 cd "/root/.local/share/solana/install/active_release/bin/" || exit
 for file in agave-*; do # Перебираем все файлы, начинающиеся с "agave-"
