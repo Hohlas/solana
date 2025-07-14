@@ -25,10 +25,10 @@ apt install libclang-dev libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 # TAG=v2.2.18-paladin
 TAG=v2.2.20-jito 
-echo "export TAG=$TAG" >> $HOME/.bashrc
 ```
 
 ```bash
+echo "export TAG=$TAG" >> $HOME/.bashrc
 SOL_BIN="$HOME/.local/share/solana/install/releases/$TAG/solana-release/bin"
 API_URL="https://api.github.com/repos/Hohlas/solana-fork/contents/bin/$TAG"
 REPO_DIR=$HOME/solana-rep
