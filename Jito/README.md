@@ -65,7 +65,7 @@ git submodule update --init --recursive
 cd $REPO_DIR;
 rm -r $REPO_DIR/target/*
 rm -r $HOME/.local/share/solana/install/releases/$TAG
-# ./cargo build # to target/debug/
+export CARGO_BUILD_JOBS=2 # ограничение числа потоков CPU при сборке
 CI_COMMIT=$(git rev-parse HEAD) scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/"$TAG"/solana-release
 ```
 
