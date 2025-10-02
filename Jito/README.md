@@ -24,8 +24,8 @@ apt install libclang-dev libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang
 ```bash
 # TAG=$(git describe --tags `git rev-list --tags --max-count=1`) # get last TAG
 # TAG=v2.2.18-paladin
-TAG=v2.3.8-jito
-TAG=v3.0.1-jito
+TAG=v2.3.11-jito
+TAG=v3.0.4-jito
 ```
 
 ```bash
